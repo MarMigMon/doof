@@ -18,6 +18,7 @@ The following **optional** features are implemented:
 
 * [ ] There will be a search function to narrow the list of recipes
   * [ ] Options for prep time, price, ingredients, difficulty
+* [ ] Additional activity for nutritional information
 
 The following **additional** features are implemented:
 
