@@ -19,6 +19,8 @@ The following **optional** features are implemented:
 * [ ] There will be a search function to narrow the list of recipes
   * [ ] Options for prep time, price, ingredients, difficulty
 * [ ] Additional activity for nutritional information
+* [ ] Ability for the user to add/import their own saved recipes into the app database
+* [ ] An automatic timer that starts when a timed instruction is read, e.g. bake for 20 minutes
 
 The following **additional** features are implemented:
 
