@@ -61,16 +61,27 @@ Describe any challenges encountered while building the app:
 1. What is your product pitch?
    - Start with a problem statement and follow up with a solution.
    - Focus on engaging your audience with a relatable need.
+   The assumption is that people dislike interacting with their devices while cooking, as cooking tends to be hands-on and messy. However, nowadays, people commonly access recipes online, through such devices.
+   Cooking is messy, and people like keeping their devices clean (and their food free of germs).
+   WE PROVIDE A HANDS FREE COOKING EXPERIENCE THROUGH THE AUDIO FEATURE OF THIS APP.
+   
 2. Who are the key stakeholders for this app?
    - Who will be using this?
+     Anyone who cooks through recipes
    - What will they be using this for?
+     Following the steps of the recipes without the need to touch electronic devices while doing so
+   
 3. What are the core flows?
    - What are the key functions?
+     
    - What screens will each user see?
+   
 4. What will your final demo look like?
    - Describe the flow of your final demo
+   
 5. What mobile features do you leverage?
    - Leverage at least two mobile-oriented features (i.e. maps and camera)
+   
 6. What are your technical concerns?
    - What technical features do you need help or resources for?
 
