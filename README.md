@@ -33,6 +33,8 @@ The following **additional** features are implemented:
 
 
 ## Wireframe
+[Home]!(Home.png) [Details]!(Details.png)
+
 https://www.figma.com/file/XeCmflnw8JHiKel1N4hADTbL/AMarMigMon
 
 
