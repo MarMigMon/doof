@@ -20,6 +20,7 @@ The following **optional** features are implemented:
   * [ ] Options for prep time, price, ingredients, difficulty
 * [ ] Additional activity for nutritional information
 * [ ] Ability for the user to add/import their own saved recipes into the app database
+* [ ] Filter recipes by meal time/type and view keywords on detail page
 
 
 The following **stretch goals** are implemented:
