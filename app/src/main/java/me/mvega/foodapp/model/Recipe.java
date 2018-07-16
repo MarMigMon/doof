@@ -13,6 +13,8 @@ public class Recipe extends ParseObject {
     private static final String KEY_NAME = "name";
     private static final String KEY_IMAGE = "image";
     private static final String KEY_USER = "user";
+    private static final String KEY_RATING = "rating";
+    private static final String KEY_PREP_TIME = "prep_time";
 
     public String getName() {
         return getString(KEY_NAME);
@@ -30,12 +32,28 @@ public class Recipe extends ParseObject {
         put(KEY_DESCRIPTION, description);
     }
 
+    public String getPrepTime() {
+        return getString(KEY_DESCRIPTION);
+    }
+
+    public void setPrepTime(String prepTime) {
+        put(KEY_DESCRIPTION, prepTime);
+    }
+
     public ParseFile getImage() {
         return getParseFile(KEY_IMAGE);
     }
 
     public void setImage(ParseFile image) {
         put(KEY_IMAGE, image);
+    }
+
+    public Double getRating() {
+        return getDouble(KEY_RATING);
+    }
+
+    public void setRating(Double rating) {
+        put(KEY_RATING, rating);
     }
 
     public ParseUser getUser() {

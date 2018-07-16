@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -45,12 +46,16 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         // populate the view according to this data
         holder.tvName.setText(recipe.getName()); // TODO get recipe name
         holder.tvDescription.setText(recipe.getDescription()); // TODO get recipe description
+        holder.tvPrepTime.setText(recipe.getPrepTime()); // TODO get recipe prep time
 
         ParseFile picture = recipe.getImage(); // TODO get recipe image
         if (picture != null) {
             String imageUrl = picture.getUrl();
             Glide.with(context).load(imageUrl).into(holder.ivRecipe);
         } else holder.ivRecipe.setImageResource(R.drawable.image_placeholder);
+
+        float rating = (float) (double) recipe.getRating(); // TODO get recipe rating
+        holder.ratingBar.setRating(rating);
     }
 
     @Override
@@ -63,15 +68,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         public TextView tvName;
         public TextView tvDescription;
         public TextView tvPrepTime;
+        public RatingBar ratingBar;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             // perform findViewById lookups
-            ivRecipe = (ImageView) itemView.findViewById(R.id.ivRecipe);
-            tvName = (TextView) itemView.findViewById(R.id.tvName);
-            tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
-            tvPrepTime = (TextView) itemView.findViewById(R.id.tvPrepTime);
+            ivRecipe = itemView.findViewById(R.id.ivRecipe);
+            tvName = itemView.findViewById(R.id.tvName);
+            tvDescription = itemView.findViewById(R.id.tvDescription);
+            tvPrepTime = itemView.findViewById(R.id.tvPrepTime);
+            ratingBar = itemView.findViewById(R.id.ratingBar);
 
             // add this as the itemView's OnClickListener
             itemView.setOnClickListener(this);
