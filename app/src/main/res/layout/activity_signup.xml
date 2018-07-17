@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="me.mvega.foodapp.SignupActivity">
+
+    <TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etNewUser"
+        android:layout_alignStart="@+id/tvPassword"
+        android:text="Username:" />
+
+    <TextView
+        android:id="@+id/tvPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etNewPass"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="36dp"
+        android:text="Password:" />
+
+    <EditText
+        android:id="@+id/etNewUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/btCreateUser"
+        android:layout_marginTop="173dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="Enter new username" />
+
+    <EditText
+        android:id="@+id/etNewPass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/etNewUser"
+        android:layout_centerVertical="true"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="Enter new password"/>
+
+    <Button
+        android:id="@+id/btCreateUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="115dp"
+        android:text="Create Account" />
+
+</RelativeLayout>

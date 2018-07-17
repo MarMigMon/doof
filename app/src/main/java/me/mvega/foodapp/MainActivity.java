@@ -11,6 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.parse.ParseUser;
+
 import java.util.ArrayList;
 
 import me.mvega.foodapp.model.Recipe;
@@ -60,6 +62,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void onSpeechAction(MenuItem mi) {
         startActivity(new Intent(MainActivity.this, SpeechActivity.class));
+    }
+
+    public void onLogoutAction(MenuItem mi) {
+        ParseUser.logOut();
+        Intent i = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(i);
+        finish();
     }
 
     public void showFeed() {

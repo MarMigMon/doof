@@ -6,4 +6,10 @@
         android:title="Speech"
         android:onClick="onSpeechAction"
         />
+
+    <item
+        android:id="@+id/logout"
+        android:title="Logout"
+        android:onClick="onLogoutAction"
+        />
 </menu>

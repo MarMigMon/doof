@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="me.mvega.foodapp.LoginActivity">
+
+    <EditText
+        android:id="@+id/etUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="49dp"
+        android:layout_marginTop="139dp"
+        android:ems="10"
+        android:hint="Username"
+        android:inputType="textPersonName"
+        tools:layout_editor_absoluteX="121dp"
+        tools:layout_editor_absoluteY="182dp" />
+
+    <TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etUsername"
+        android:layout_alignStart="@+id/tvPassword"
+        android:text="Username:"
+        tools:layout_editor_absoluteX="35dp"
+        tools:layout_editor_absoluteY="200dp" />
+
+    <TextView
+        android:id="@+id/tvPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etPassword"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="42dp"
+        android:text="Password:"
+        tools:layout_editor_absoluteX="35dp"
+        tools:layout_editor_absoluteY="295dp" />
+
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/etUsername"
+        android:layout_marginTop="241dp"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPersonName"
+        tools:layout_editor_absoluteX="121dp"
+        tools:layout_editor_absoluteY="276dp" />
+
+    <Button
+        android:id="@+id/btLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="191dp"
+        android:text="Login"
+        tools:layout_editor_absoluteX="147dp"
+        tools:layout_editor_absoluteY="356dp" />
+
+    <Button
+        android:id="@+id/btSignup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="Sign Up"
+        tools:layout_editor_absoluteX="294dp"
+        tools:layout_editor_absoluteY="517dp" />
+</RelativeLayout>
