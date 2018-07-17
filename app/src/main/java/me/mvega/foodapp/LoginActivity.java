@@ -49,12 +49,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-//        currentUser = ParseUser.getCurrentUser();
-//        if (currentUser != null) {
-//            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-//            startActivity(i);
-//            finish();
-//        }
+        currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(i);
+            finish();
+        }
     }
 
     private void login(String username, String password) {

@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, SpeechActivity.class));
     }
 
-    public void onLogoutAction(MenuItem mi) {
+    public void onLogoutAction() {
         ParseUser.logOut();
         Intent i = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(i);
