@@ -39,11 +39,11 @@ public class Recipe extends ParseObject {
     }
 
     public String getPrepTime() {
-        return getString(KEY_DESCRIPTION);
+        return getString(KEY_PREP_TIME);
     }
 
     public void setPrepTime(String prepTime) {
-        put(KEY_DESCRIPTION, prepTime);
+        put(KEY_PREP_TIME, prepTime);
     }
 
     public ParseFile getImage() {
