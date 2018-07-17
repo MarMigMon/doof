@@ -1,0 +1,89 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="me.mvega.foodapp.RecipeFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RatingBar
+            android:id="@+id/ratingBar2"
+            style="@style/MyRatingBar"
+            android:layout_width="100dp"
+            android:layout_height="25dp"
+            android:layout_alignStart="@+id/tvName"
+            android:layout_below="@+id/tvName"
+            android:numStars="5" />
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="143dp"
+            android:layout_height="31dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Recipe Name"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tvName"
+            android:layout_below="@+id/ratingBar2"
+            android:text="Recipe Description" />
+
+        <TextView
+            android:id="@+id/tvPrepTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tvName"
+            android:layout_below="@+id/tvDescription"
+            android:text="Prep Time" />
+
+        <ImageView
+            android:id="@+id/ivImage"
+            android:layout_width="166dp"
+            android:layout_alignBottom="@+id/tvYield"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/image_placeholder" />
+
+        <TextView
+            android:id="@+id/tvYield"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tvName"
+            android:layout_below="@+id/tvPrepTime"
+            android:text="Recipe Yield" />
+
+        <TextView
+            android:id="@+id/tvIngredients"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tvName"
+            android:layout_alignEnd="@+id/ivImage"
+            android:layout_below="@+id/tvYield"
+            android:layout_marginTop="25dp"
+            android:text="Ingredients"
+            android:layout_alignLeft="@+id/tvName"
+            android:layout_alignRight="@+id/ivImage" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tvName"
+            android:layout_alignEnd="@+id/ivImage"
+            android:layout_below="@+id/tvIngredients"
+            android:layout_marginTop="15dp"
+            android:text="TextView"
+            android:layout_alignLeft="@+id/tvName"
+            android:layout_alignRight="@+id/ivImage" />
+
+    </RelativeLayout>
+</FrameLayout>

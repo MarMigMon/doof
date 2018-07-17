@@ -10,6 +10,7 @@ import java.util.Date;
 @ParseClassName("Recipe")
 public class Recipe extends ParseObject {
     private static final String KEY_NAME = "recipeName";
+    private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_INGREDIENTS = "ingredients";
     private static final String KEY_INSTRUCTIONS = "instructions";
     private static final String KEY_IMAGE = "image";
@@ -22,6 +23,13 @@ public class Recipe extends ParseObject {
     }
     public void setName(String name) {
         put(KEY_NAME, name);
+    }
+
+    public String getDescription() {
+        return getString(KEY_DESCRIPTION);
+    }
+    public void setDescription(String description) {
+        put(KEY_DESCRIPTION, description);
     }
 
     public String getIngredients() {
@@ -39,11 +47,11 @@ public class Recipe extends ParseObject {
     }
 
     public String getPrepTime() {
-        return getString(KEY_DESCRIPTION);
+        return getString(KEY_PREP_TIME);
     }
 
     public void setPrepTime(String prepTime) {
-        put(KEY_DESCRIPTION, prepTime);
+        put(KEY_PREP_TIME, prepTime);
     }
 
     public ParseFile getImage() {
