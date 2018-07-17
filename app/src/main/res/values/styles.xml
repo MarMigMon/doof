@@ -16,7 +16,7 @@
     <style name="BodyText" parent="TextAppearance.AppCompat">
     </style>
 
-    <string name="TitleText" parent="TextAppearance.AppCompat.Headline">
-    </string>
+    <style name="TitleText" parent="TextAppearance.AppCompat.Headline">
+    </style>
 
 </resources>
