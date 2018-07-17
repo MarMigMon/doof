@@ -9,8 +9,9 @@ import java.util.Date;
 
 @ParseClassName("Recipe")
 public class Recipe extends ParseObject {
-    private static final String KEY_DESCRIPTION = "description";
-    private static final String KEY_NAME = "name";
+    private static final String KEY_NAME = "recipeName";
+    private static final String KEY_INGREDIENTS = "ingredients";
+    private static final String KEY_INSTRUCTIONS = "instructions";
     private static final String KEY_IMAGE = "image";
     private static final String KEY_USER = "user";
     private static final String KEY_RATING = "rating";
@@ -19,17 +20,22 @@ public class Recipe extends ParseObject {
     public String getName() {
         return getString(KEY_NAME);
     }
-
     public void setName(String name) {
         put(KEY_NAME, name);
     }
 
-    public String getDescription() {
-        return getString(KEY_DESCRIPTION);
+    public String getIngredients() {
+        return getString(KEY_INGREDIENTS);
+    }
+    public void setIngredients(String ingredients) {
+        put(KEY_INGREDIENTS, ingredients);
     }
 
-    public void setDescription(String description) {
-        put(KEY_DESCRIPTION, description);
+    public String getInstructions() {
+        return getString(KEY_INSTRUCTIONS);
+    }
+    public void setInstructions(String instructions) {
+        put(KEY_INSTRUCTIONS, instructions);
     }
 
     public String getPrepTime() {
@@ -43,7 +49,6 @@ public class Recipe extends ParseObject {
     public ParseFile getImage() {
         return getParseFile(KEY_IMAGE);
     }
-
     public void setImage(ParseFile image) {
         put(KEY_IMAGE, image);
     }
@@ -59,7 +64,6 @@ public class Recipe extends ParseObject {
     public ParseUser getUser() {
         return getParseUser(KEY_USER);
     }
-
     public void setUser(ParseUser user) {
         put(KEY_USER, user);
     }
