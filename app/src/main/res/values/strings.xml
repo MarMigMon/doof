@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FoodApp</string>
+    <string name="caption_text">Instructions for user will appear here</string>
 </resources>

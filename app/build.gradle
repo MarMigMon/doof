@@ -32,6 +32,9 @@ dependencies {
     implementation 'com.parse:parse-android:1.17.3'
     // Glide for remote image loading
     implementation 'com.github.bumptech.glide:glide:3.8.0'
+    // ButterKnife
+    implementation 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 }
 
 ant.importBuild 'assets.xml'

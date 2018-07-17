@@ -9,12 +9,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.RecognitionListener;
@@ -24,31 +28,24 @@ import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 public class SpeechActivity extends AppCompatActivity implements
         RecognitionListener {
 
-    /* We only need the keyphrase to start recognition, one menu with list of choices,
-       and one word that is required for method switchSearch - it will bring recognizer
-       back to listening for the keyphrase*/
-    private static final String KEYPHRASE_SEARCH = "say begin";
     private static final String MENU_SEARCH = "say start or stop";
-    /* Keyword we are looking for to activate recognition */
-    private static final String KEYPHRASE = "begin";
 
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
 
     /* Recognition object */
     private SpeechRecognizer recognizer;
-    private TextView caption_text;
-    private TextView result_text;
+    @BindView(R.id.caption_text) TextView caption_text;
+    @BindView(R.id.result_text) TextView result_text;
+    @BindView(R.id.btStart) Button btStart;
+    @BindView(R.id.btStop) Button btStop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_speech);
 
-        // Prepare the data for UI
-        caption_text = (TextView) findViewById(R.id.caption_text);
-        result_text = (TextView) findViewById(R.id.result_text);
-
+        ButterKnife.bind(this);
 
         // Check if user has given permission to record audio
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
@@ -58,6 +55,25 @@ public class SpeechActivity extends AppCompatActivity implements
         }
 
         new SetupTask(this).execute();
+
+        btStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btStop.setVisibility(View.VISIBLE);
+                btStart.setVisibility(View.INVISIBLE);
+                switchSearch(MENU_SEARCH);
+            }
+        });
+
+        btStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recognizer.stop();
+                btStop.setVisibility(View.INVISIBLE);
+                btStart.setVisibility(View.VISIBLE);
+                caption_text.setText(R.string.caption_text);
+            }
+        });
 
     }
     private static class SetupTask extends AsyncTask<Void, Void, Exception> {
@@ -80,8 +96,6 @@ public class SpeechActivity extends AppCompatActivity implements
         protected void onPostExecute(Exception result) {
             if (result != null) {
                 activityReference.get().caption_text.setText("Failed to init recognizer " + result);
-            } else {
-                activityReference.get().switchSearch(KEYPHRASE_SEARCH);
             }
         }
     }
@@ -123,10 +137,7 @@ public class SpeechActivity extends AppCompatActivity implements
             return;
 
         String text = hypothesis.getHypstr();
-        if (text.equals(KEYPHRASE)) {
-            result_text.setText("begin");
-            switchSearch(MENU_SEARCH);
-        } else if (text.equals("start")) {
+        if (text.equals("start")) {
             result_text.setText("start");
         } else if (text.equals("stop")) {
             result_text.setText("stop");
@@ -147,9 +158,6 @@ public class SpeechActivity extends AppCompatActivity implements
         if (searchName.equals(MENU_SEARCH)) {
             Log.d("Speech recognition", "Listening for start or stop");
             caption_text.setText(MENU_SEARCH);
-        } else {
-            Log.d("Speech recognition", "Listening for begin");
-            caption_text.setText(KEYPHRASE_SEARCH);
         }
         recognizer.startListening(searchName);
     }
@@ -167,12 +175,6 @@ public class SpeechActivity extends AppCompatActivity implements
                 .getRecognizer();
         recognizer.addListener(this);
 
-        /* In your application you might not need to add all those searches.
-          They are added here for demonstration. You can leave just one.
-         */
-
-        // Create keyword-activation search.
-        recognizer.addKeyphraseSearch(KEYPHRASE_SEARCH, KEYPHRASE);
 
         // Create grammar-based search for selection between demos
         File menuGrammar = new File(assetsDir, "menu.gram");
