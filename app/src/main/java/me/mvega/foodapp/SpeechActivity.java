@@ -2,6 +2,8 @@ package me.mvega.foodapp;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,8 +35,11 @@ public class SpeechActivity extends AppCompatActivity implements
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
 
-    /* Recognition object */
+
     private SpeechRecognizer recognizer;
+    private MediaPlayer player;
+    AssetFileDescriptor afd;
+    private Boolean isPaused;
     @BindView(R.id.caption_text) TextView caption_text;
     @BindView(R.id.result_text) TextView result_text;
     @BindView(R.id.btStart) Button btStart;
@@ -48,19 +53,18 @@ public class SpeechActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         // Check if user has given permission to record audio
-        int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
-            return;
-        }
+        checkPermissions();
 
         new SetupTask(this).execute();
+
+        player = new MediaPlayer();
 
         btStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 btStop.setVisibility(View.VISIBLE);
                 btStart.setVisibility(View.INVISIBLE);
+                startPlayer();
                 switchSearch(MENU_SEARCH);
             }
         });
@@ -69,6 +73,19 @@ public class SpeechActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 recognizer.stop();
+                if (player.isPlaying()) {
+                    try {
+                        player.reset();
+                        player.prepare();
+                        player.stop();
+                        player.release();
+                        player=null;
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
                 btStop.setVisibility(View.INVISIBLE);
                 btStart.setVisibility(View.VISIBLE);
                 caption_text.setText(R.string.caption_text);
@@ -76,6 +93,26 @@ public class SpeechActivity extends AppCompatActivity implements
         });
 
     }
+
+    private void startPlayer() {
+        try {
+            afd = getAssets().openFd("test.mp3");
+            player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            player.prepare();
+            player.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void checkPermissions() {
+        int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
+            return;
+        }
+    }
+
     private static class SetupTask extends AsyncTask<Void, Void, Exception> {
         WeakReference<SpeechActivity> activityReference;
         SetupTask(SpeechActivity activity) {
@@ -133,15 +170,6 @@ public class SpeechActivity extends AppCompatActivity implements
      */
     @Override
     public void onPartialResult(Hypothesis hypothesis) {
-        if (hypothesis == null)
-            return;
-
-        String text = hypothesis.getHypstr();
-        if (text.equals("start")) {
-            result_text.setText("start");
-        } else if (text.equals("stop")) {
-            result_text.setText("stop");
-        }
     }
 
     /**
@@ -150,11 +178,10 @@ public class SpeechActivity extends AppCompatActivity implements
     @Override
     public void onEndOfSpeech() {
         Log.d("Speech recognition", "Calling end of speech");
-        switchSearch(MENU_SEARCH);
+        recognizer.stop();
     }
 
     private void switchSearch(String searchName) {
-        recognizer.stop();
         if (searchName.equals(MENU_SEARCH)) {
             Log.d("Speech recognition", "Listening for start or stop");
             caption_text.setText(MENU_SEARCH);
@@ -187,16 +214,29 @@ public class SpeechActivity extends AppCompatActivity implements
         Log.d("Speech recognition", error.toString());
     }
 
+    // Called after recognizer is stopped
+    @Override
+    public void onResult(Hypothesis hypothesis) {
+        int length = player.getCurrentPosition();
+        isPaused = !player.isPlaying() && length > 1;
+        if (hypothesis != null) {
+            String text = hypothesis.getHypstr();
+            if (text.equals("start") && isPaused) {
+                result_text.setText("start");
+                player.seekTo(length);
+                player.start();
+            } else if (text.equals("stop") && !isPaused) {
+                result_text.setText("stop");
+                player.pause();
+            }
+        }
+
+        switchSearch(MENU_SEARCH);
+    }
 
     /**
      * Unused methods
      */
-
-    // Called after recognizer is stopped
-    @Override
-    public void onResult(Hypothesis hypothesis) {
-    }
-
     // Called when speech begins
     @Override
     public void onBeginningOfSpeech() {
