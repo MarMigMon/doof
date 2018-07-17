@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <RatingBar
-            android:id="@+id/ratingBar2"
+            android:id="@+id/ratingBar"
             style="@style/MyRatingBar"
             android:layout_width="100dp"
             android:layout_height="25dp"
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/tvName"
-            android:layout_below="@+id/ratingBar2"
+            android:layout_below="@+id/tvType"
             android:text="Recipe Description" />
 
         <TextView
@@ -66,24 +66,32 @@
         <TextView
             android:id="@+id/tvIngredients"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/tvName"
             android:layout_alignEnd="@+id/ivImage"
+            android:layout_alignLeft="@+id/tvName"
+            android:layout_alignRight="@+id/ivImage"
+            android:layout_alignStart="@+id/tvName"
             android:layout_below="@+id/tvYield"
             android:layout_marginTop="25dp"
-            android:text="Ingredients"
-            android:layout_alignLeft="@+id/tvName"
-            android:layout_alignRight="@+id/ivImage" />
+            android:text="Ingredients" />
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/tvInstructions"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/tvName"
             android:layout_alignEnd="@+id/ivImage"
+            android:layout_alignLeft="@+id/tvName"
+            android:layout_alignRight="@+id/ivImage"
+            android:layout_alignStart="@+id/tvName"
             android:layout_below="@+id/tvIngredients"
             android:layout_marginTop="15dp"
-            android:text="TextView"
-            android:layout_alignLeft="@+id/tvName"
-            android:layout_alignRight="@+id/ivImage" />
+            android:text="Instructions" />
+
+        <TextView
+            android:id="@+id/tvType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tvName"
+            android:layout_below="@+id/ratingBar"
+            android:text="Recipe Type" />
 
     </RelativeLayout>
 </FrameLayout>

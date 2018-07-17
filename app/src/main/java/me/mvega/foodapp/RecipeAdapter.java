@@ -45,6 +45,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
         // populate the view according to this data
         holder.tvName.setText(recipe.getName()); // TODO get recipe name
+        holder.tvType.setText(recipe.getType()); // TODO get recipe type
         holder.tvDescription.setText(recipe.getDescription()); // TODO get recipe description
         holder.tvPrepTime.setText(recipe.getPrepTime()); // TODO get recipe prep time
 
@@ -66,6 +67,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView ivRecipe;
         public TextView tvName;
+        public TextView tvType;
         public TextView tvDescription;
         public TextView tvPrepTime;
         public RatingBar ratingBar;
@@ -76,6 +78,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             // perform findViewById lookups
             ivRecipe = itemView.findViewById(R.id.ivRecipe);
             tvName = itemView.findViewById(R.id.tvName);
+            tvType = itemView.findViewById(R.id.tvType);
             tvDescription = itemView.findViewById(R.id.tvDescription);
             tvPrepTime = itemView.findViewById(R.id.tvPrepTime);
             ratingBar = itemView.findViewById(R.id.ratingBar);
