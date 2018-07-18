@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +19,9 @@ import java.util.List;
 
 import me.mvega.foodapp.model.Recipe;
 
-public class FeedFragment extends Fragment {
+public class YourRecipesFragment extends Fragment {
 
-    RecipeAdapter recipeAdapter;
+    ProfileRecipesAdapter profileRecipesAdapter;
     ArrayList<Recipe> recipes;
     RecyclerView rvRecipes;
     private SwipeRefreshLayout swipeContainer;
@@ -46,18 +46,18 @@ public class FeedFragment extends Fragment {
         // initialize the ArrayList (data source)
         recipes = new ArrayList<>();
         // construct the adapter from this data source
-        recipeAdapter = new RecipeAdapter(recipes);
+        profileRecipesAdapter = new ProfileRecipesAdapter(recipes);
         // RecyclerView setup (layout manager, use adapter)
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        rvRecipes.setLayoutManager(linearLayoutManager);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        rvRecipes.setLayoutManager(gridLayoutManager);
         //set the adapter
-        rvRecipes.setAdapter(recipeAdapter);
+        rvRecipes.setAdapter(profileRecipesAdapter);
 
         RecyclerView.ItemDecoration itemDecoration = new
                 DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         rvRecipes.addItemDecoration(itemDecoration);
 
-        loadTopRecipes();
+        loadYourRecipes();
 
         // Lookup the swipe container view
         swipeContainer = view.findViewById(R.id.swipeContainer);
@@ -68,7 +68,7 @@ public class FeedFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                loadTopRecipes();
+                loadYourRecipes();
             }
         });
         // Configure the refreshing colors
@@ -78,24 +78,24 @@ public class FeedFragment extends Fragment {
                 android.R.color.holo_red_light);
     }
 
-    public static FeedFragment newInstance() {
-        FeedFragment fragmentFeed = new FeedFragment();
-        fragmentFeed.setArguments(new Bundle());
-        return fragmentFeed;
+    public static YourRecipesFragment newInstance() {
+        YourRecipesFragment fragmentYourRecipes = new YourRecipesFragment();
+        fragmentYourRecipes.setArguments(new Bundle());
+        return fragmentYourRecipes;
     }
 
-    private void loadTopRecipes() {
+    private void loadYourRecipes() {
         final Recipe.Query recipeQuery = new Recipe.Query();
-        recipeQuery.getTop().withUser().newestFirst();
+        recipeQuery.getTop().withUser().newestFirst(); // TODO update Query to reflect what the "Your Recipes" Fragment should be loading
 
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
                 if (e == null) {
                     // Remember to CLEAR OUT old items before appending in the new ones
-                    recipeAdapter.clear();
+                    profileRecipesAdapter.clear();
                     // ...the data has come back, add new items to your adapter...
-                    recipeAdapter.addAll(newRecipes);
+                    profileRecipesAdapter.addAll(newRecipes);
                     // Now we call setRefreshing(false) to signal refresh has finished
                     swipeContainer.setRefreshing(false);
 
@@ -106,3 +106,4 @@ public class FeedFragment extends Fragment {
         });
     }
 }
+

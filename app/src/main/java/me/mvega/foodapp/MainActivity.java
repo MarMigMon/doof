@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
                             case R.id.tab_feed:
                                 showFeed();
                                 return true;
+                            case R.id.tab_profile:
+                                showProfile();
+                                return true;
                             default:
                                 return false;
                         }
@@ -75,6 +78,10 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
     public void showFeed() {
         replaceFragment(FeedFragment.newInstance());
+    }
+
+    public void showProfile() {
+        replaceFragment(ProfileFragment.newInstance());
     }
 
     public void replaceFragment(Fragment f) {
