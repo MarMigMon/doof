@@ -21,7 +21,7 @@ import me.mvega.foodapp.model.Recipe;
 
 public class FeedFragment extends Fragment {
 
-    ProfileRecipesAdapter recipeAdapter;
+    RecipeAdapter recipeAdapter;
     ArrayList<Recipe> recipes;
     RecyclerView rvRecipes;
     private SwipeRefreshLayout swipeContainer;
@@ -46,7 +46,7 @@ public class FeedFragment extends Fragment {
         // initialize the ArrayList (data source)
         recipes = new ArrayList<>();
         // construct the adapter from this data source
-        recipeAdapter = new ProfileRecipesAdapter(recipes);
+        recipeAdapter = new RecipeAdapter(recipes);
         // RecyclerView setup (layout manager, use adapter)
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvRecipes.setLayoutManager(linearLayoutManager);

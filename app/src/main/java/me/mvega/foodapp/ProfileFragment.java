@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -34,7 +34,7 @@ public class ProfileFragment extends Fragment {
         // Setup any handles to view objects here
         // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
 
-        ImageButton ivProfile = view.findViewById(R.id.ivProfile);
+        ImageView ivProfile = view.findViewById(R.id.ivProfile);
         TextView tvUsername = view.findViewById(R.id.tvUsername);
         TextView tvContributed = view.findViewById(R.id.tvContributed);
         TextView tvCompleted = view.findViewById(R.id.tvCompleted);
