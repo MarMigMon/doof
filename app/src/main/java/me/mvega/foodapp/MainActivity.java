@@ -13,7 +13,9 @@ import android.view.MenuItem;
 
 import com.parse.ParseUser;
 
-public class MainActivity extends AppCompatActivity {
+import me.mvega.foodapp.model.Recipe;
+
+public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication {
 
     private ParseUser currentUser;
 
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+
     }
 
     @Override
@@ -79,5 +82,12 @@ public class MainActivity extends AppCompatActivity {
         final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         // Replace the contents of the container with the new fragment and complete the changes added above
         fragmentTransaction.replace(R.id.frameLayout, f).commit();
+    }
+
+    @Override
+    public void respond(Recipe recipe) {
+        RecipeFragment recipeFragment= new RecipeFragment();
+        recipeFragment.recipe = recipe;
+        replaceFragment(recipeFragment);
     }
 }

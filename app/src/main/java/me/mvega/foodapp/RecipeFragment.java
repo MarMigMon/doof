@@ -50,6 +50,5 @@ public class RecipeFragment extends Fragment {
         tvYield.setText(recipe.getYield());
         tvIngredients.setText(recipe.getIngredients());
         tvInstructions.setText(recipe.getInstructions());
-
     }
 }
