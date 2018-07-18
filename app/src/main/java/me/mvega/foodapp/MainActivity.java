@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.tab_feed:
                                 showFeed();
                                 return true;
+                            case R.id.tab_add:
+                                showAddRecipe();
+                                return true;
                             default:
                                 return false;
                         }
@@ -64,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void showFeed() {
         replaceFragment(FeedFragment.newInstance());
+    }
+
+    public void showAddRecipe() {
+        replaceFragment(new AddRecipeFragment());
     }
 
     public void replaceFragment(Fragment f) {

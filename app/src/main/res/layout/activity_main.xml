@@ -59,9 +59,10 @@
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/search_bar" />
+        android:layout_below="@+id/search_bar"
+        android:layout_above="@+id/navigation_bar"/>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation_bar"

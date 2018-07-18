@@ -5,6 +5,7 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
 import java.util.Date;
 
 @ParseClassName("Recipe")
@@ -18,12 +19,30 @@ public class Recipe extends ParseObject {
     private static final String KEY_USER = "user";
     private static final String KEY_RATING = "rating";
     private static final String KEY_PREP_TIME = "prep_time";
+    private static final String KEY_YIELD = "yield";
+    private static final String KEY_MEDIA = "media";
+
+    public ParseFile getMedia() {
+        return getParseFile(KEY_MEDIA);
+    }
+
+    public void setMedia(ParseFile media) {
+        put(KEY_MEDIA, media);
+    }
 
     public String getName() {
         return getString(KEY_NAME);
     }
     public void setName(String name) {
         put(KEY_NAME, name);
+    }
+
+    public String getYield() {
+        return getString(KEY_YIELD);
+    }
+
+    public void setYield(String yield) {
+        put(KEY_YIELD, yield);
     }
 
     public String getType() {

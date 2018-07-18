@@ -3,6 +3,9 @@ package me.mvega.foodapp;
 import android.app.Application;
 
 import com.parse.Parse;
+import com.parse.ParseObject;
+
+import me.mvega.foodapp.model.Recipe;
 
 public class ParseApp extends Application {
 
@@ -17,5 +20,7 @@ public class ParseApp extends Application {
                 .build();
 
         Parse.initialize(configuration);
+
+        ParseObject.registerSubclass(Recipe.class);
     }
 }
