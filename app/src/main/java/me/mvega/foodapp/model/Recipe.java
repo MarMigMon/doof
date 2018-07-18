@@ -19,7 +19,7 @@ public class Recipe extends ParseObject {
     private static final String KEY_IMAGE = "image";
     private static final String KEY_USER = "user";
     private static final String KEY_RATING = "rating";
-    private static final String KEY_PREP_TIME = "prep_time";
+    private static final String KEY_PREP_TIME = "prepTime";
 
 
     public String getName() {

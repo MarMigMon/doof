@@ -39,7 +39,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     // bind the values on the position of the element
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // get the data according to position
-        Recipe recipe = (Recipe) recipes.get(position);
+        Recipe recipe = recipes.get(position);
 //        ParseUser user = recipe.getUser();
 
         // populate the view according to this data
