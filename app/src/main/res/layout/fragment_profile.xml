@@ -17,8 +17,8 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center"
-            android:layout_marginStart="20dp"
             android:layout_marginEnd="15dp"
+            android:layout_marginStart="20dp"
             app:srcCompat="@android:color/background_dark" />
 
         <RelativeLayout
@@ -94,7 +94,9 @@
         android:id="@+id/profileTabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/userInfo" />
+        android:layout_below="@id/userInfo"
+        app:tabMode="fixed"
+        app:tabGravity="fill"/>
 
     <FrameLayout
         android:id="@+id/userRecipes"
@@ -102,6 +104,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@id/profileTabs"/>
+        android:layout_below="@id/profileTabs" />
 
 </RelativeLayout>
