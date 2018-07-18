@@ -18,7 +18,7 @@
         android:padding="10dp">
 
         <ImageView
-            android:id="@+id/ivProfile"
+            android:id="@+id/ivRecipe"
             android:layout_width="match_parent"
             android:layout_height="160dp"
             android:background="@drawable/image_placeholder"
@@ -38,7 +38,7 @@
                 android:layout_alignParentTop="true"/>
 
             <RatingBar
-                android:id="@+id/rbRating"
+                android:id="@+id/ratingBar"
                 style="@style/MyRatingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
                 android:id="@+id/tvPrepTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/rbRating"
+                android:layout_below="@id/ratingBar"
                 android:text="Prep Time"
                 android:textAlignment="textEnd"
                 android:layout_alignParentBottom="true"
