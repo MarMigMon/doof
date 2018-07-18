@@ -17,35 +17,33 @@ import java.util.List;
 
 import me.mvega.foodapp.model.Recipe;
 
-public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
+public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAdapter.ViewHolder> {
 
     private List<Recipe> recipes;
     Context context;
 
     // pass in the Recipes array in the constructor
-    public RecipeAdapter(List<Recipe> recipes) { this.recipes = recipes;
+    public ProfileRecipesAdapter(List<Recipe> recipes) { this.recipes = recipes;
     }
-    
+
     // for each row, inflate the layout and cache references into ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View recipeView = inflater.inflate(R.layout.item_recipe, parent, false);
+        View recipeView = inflater.inflate(R.layout.item_recipe_square, parent, false);
         return new ViewHolder(recipeView);
     }
 
     // bind the values on the position of the element
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // get the data according to position
-        Recipe recipe = recipes.get(position);
+        Recipe recipe = (Recipe) recipes.get(position);
 //        ParseUser user = recipe.getUser();
 
         // populate the view according to this data
         holder.tvName.setText(recipe.getName()); // TODO get recipe name
-        holder.tvType.setText(recipe.getType()); // TODO get recipe type
-        holder.tvDescription.setText(recipe.getDescription()); // TODO get recipe description
         holder.tvPrepTime.setText(recipe.getPrepTime()); // TODO get recipe prep time
 
         ParseFile picture = recipe.getImage(); // TODO get recipe image
@@ -66,8 +64,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView ivRecipe;
         public TextView tvName;
-        public TextView tvType;
-        public TextView tvDescription;
         public TextView tvPrepTime;
         public RatingBar ratingBar;
 
@@ -77,8 +73,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             // perform findViewById lookups
             ivRecipe = itemView.findViewById(R.id.ivRecipe);
             tvName = itemView.findViewById(R.id.tvName);
-            tvType = itemView.findViewById(R.id.tvType);
-            tvDescription = itemView.findViewById(R.id.tvDescription);
             tvPrepTime = itemView.findViewById(R.id.tvPrepTime);
             ratingBar = itemView.findViewById(R.id.ratingBar);
 
@@ -98,7 +92,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             }
         }
     }
-    
+
     // Clean all elements of the recycler
     public void clear() {
         recipes.clear();

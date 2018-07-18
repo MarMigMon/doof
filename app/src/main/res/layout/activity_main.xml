@@ -17,7 +17,8 @@
         app:contentInsetEnd="0dp"
         app:contentInsetLeft="0dp"
         app:contentInsetRight="0dp"
-        app:contentInsetStart="0dp">
+        app:contentInsetStart="0dp"
+        android:layout_alignParentLeft="true">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -50,7 +51,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/search"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.39" />
+                app:layout_constraintVertical_bias="0.39"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/search" />
 
         </android.support.constraint.ConstraintLayout>
 
@@ -62,7 +65,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/search_bar"
-        android:layout_above="@+id/navigation_bar"/>
+        android:layout_above="@+id/navigation_bar"
+        android:layout_alignParentLeft="true" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation_bar"
@@ -70,6 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        app:menu="@menu/menu_navigation" />
+        app:menu="@menu/menu_navigation"
+        android:layout_alignParentLeft="true" />
 
 </RelativeLayout>

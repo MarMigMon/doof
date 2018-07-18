@@ -11,19 +11,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.ArrayList;
-
-import me.mvega.foodapp.model.Recipe;
+import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity {
 
-    RecipeAdapter recipeAdapter;
-    ArrayList<Recipe> recipes;
+    private ParseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // Starts activity with feed fragment displayed
         showFeed();
@@ -44,9 +42,15 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.tab_feed:
                                 showFeed();
                                 return true;
+
                             case R.id.tab_add:
                                 showAddRecipe();
                                 return true;
+
+                            case R.id.tab_profile:
+                                showProfile();
+                                return true;
+
                             default:
                                 return false;
                         }
@@ -65,12 +69,26 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, SpeechActivity.class));
     }
 
+    public void onLogoutAction(MenuItem mi) {
+        ParseUser.logOut();
+        currentUser = ParseUser.getCurrentUser();
+        if (currentUser == null) {
+            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(i);
+            finish();
+        }
+    }
+
     public void showFeed() {
         replaceFragment(FeedFragment.newInstance());
     }
 
     public void showAddRecipe() {
         replaceFragment(new AddRecipeFragment());
+    }
+
+    public void showProfile() {
+        replaceFragment(ProfileFragment.newInstance());
     }
 
     public void replaceFragment(Fragment f) {

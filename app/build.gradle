@@ -3,8 +3,8 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "me.martha_gao.parstagram"
-        minSdkVersion 16
+        applicationId "me.mvega.foodapp"
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
