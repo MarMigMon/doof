@@ -31,29 +31,32 @@ public class LoginActivity extends AppCompatActivity {
         btLogin = findViewById(R.id.btLogin);
         btSignup = findViewById(R.id.btSignup);
 
-        btLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final String username = etUsername.getText().toString();
-                final String password = etPassword.getText().toString();
-
-                login(username, password);
-            }
-        });
-
-        btSignup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(LoginActivity.this, SignupActivity.class);
-                startActivity(i);
-            }
-        });
-
         currentUser = ParseUser.getCurrentUser();
-        if (currentUser != null) {
+        if (currentUser == null) {
+            btLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final String username = etUsername.getText().toString();
+                    final String password = etPassword.getText().toString();
+
+                    login(username, password);
+                }
+            });
+
+            btSignup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(LoginActivity.this, SignupActivity.class);
+                    startActivity(i);
+                }
+            });
+
+
+        } else {
             Intent i = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(i);
             finish();
+
         }
     }
 

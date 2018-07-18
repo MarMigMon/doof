@@ -13,19 +13,15 @@ import android.view.MenuItem;
 
 import com.parse.ParseUser;
 
-import java.util.ArrayList;
-
-import me.mvega.foodapp.model.Recipe;
-
 public class MainActivity extends AppCompatActivity {
 
-    RecipeAdapter recipeAdapter;
-    ArrayList<Recipe> recipes;
+    private ParseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // Starts activity with feed fragment displayed
         showFeed();
@@ -64,11 +60,14 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, SpeechActivity.class));
     }
 
-    public void onLogoutAction() {
+    public void onLogoutAction(MenuItem mi) {
         ParseUser.logOut();
-        Intent i = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(i);
-        finish();
+        currentUser = ParseUser.getCurrentUser();
+        if (currentUser == null) {
+            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(i);
+            finish();
+        }
     }
 
     public void showFeed() {

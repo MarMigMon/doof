@@ -23,8 +23,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     Context context;
 
     // pass in the Recipes array in the constructor
-    public RecipeAdapter(List<Recipe> recipes) {
-        this.recipes = recipes;
+    public RecipeAdapter(List<Recipe> recipes) { this.recipes = recipes;
     }
     
     // for each row, inflate the layout and cache references into ViewHolder
@@ -95,7 +94,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             // make sure the position is valid, i.e. actually exists in the view
             if (position != RecyclerView.NO_POSITION) {
                 // get the recipe at the position, this won't work if the class is static
-                Recipe recipe = recipes.get(position); 
+                Recipe recipe = recipes.get(position);
             }
         }
     }
