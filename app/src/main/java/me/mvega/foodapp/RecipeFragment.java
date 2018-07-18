@@ -5,14 +5,20 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.parse.ParseFile;
 
 import me.mvega.foodapp.model.Recipe;
 
 public class RecipeFragment extends Fragment {
+
     Recipe recipe;
     TextView tvName;
+    ImageView ivImage;
     RatingBar ratingBar;
     TextView tvType;
     TextView tvDescription;
@@ -20,10 +26,6 @@ public class RecipeFragment extends Fragment {
     TextView tvYield;
     TextView tvIngredients;
     TextView tvInstructions;
-
-//    public void setText(Recipe text) {
-//        this.recipe = text;
-//    }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy either dynamically or via XML layout inflation.
     @Override
@@ -38,6 +40,7 @@ public class RecipeFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         tvName = view.findViewById(R.id.tvName);
+        ivImage = view.findViewById(R.id.ivImage);
         ratingBar = view.findViewById(R.id.ratingBar);
         tvType = view.findViewById(R.id.tvType);
         tvDescription = view.findViewById(R.id.tvDescription);
@@ -53,7 +56,14 @@ public class RecipeFragment extends Fragment {
         tvYield.setText(recipe.getYield());
         tvIngredients.setText(recipe.getIngredients());
         tvInstructions.setText(recipe.getInstructions());
-    }
 
+        ParseFile image = recipe.getImage(); // TODO get recipe image
+        if (image != null) {
+            String imageUrl = image.getUrl();
+            Glide.with(getContext()).load(imageUrl).into(ivImage);
+        } else {
+            Glide.with(getContext()).load(R.drawable.image_placeholder).into(ivImage);
+        }
+    }
 
 }
