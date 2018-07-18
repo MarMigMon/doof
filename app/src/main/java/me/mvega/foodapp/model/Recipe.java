@@ -5,6 +5,7 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
 import java.util.Date;
 
 @ParseClassName("Recipe")
@@ -19,6 +20,7 @@ public class Recipe extends ParseObject {
     private static final String KEY_USER = "user";
     private static final String KEY_RATING = "rating";
     private static final String KEY_PREP_TIME = "prep_time";
+
 
     public String getName() {
         return getString(KEY_NAME);
