@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
@@ -47,8 +48,9 @@ public class ProfileFragment extends Fragment {
         ParseFile profileImage = user.getParseFile("image");
         if (profileImage != null) {
             String imageUrl = profileImage.getUrl();
-            Glide.with(getContext()).load(imageUrl).into(ivProfile);
-        } else ivProfile.setImageResource(R.drawable.image_placeholder);
+            Glide.with(getContext()).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(ivProfile);
+        } else Glide.with(getContext()).load(R.drawable.image_placeholder).apply(RequestOptions.circleCropTransform()).into(ivProfile);
+
 
         final TabLayout tabLayout = view.findViewById(R.id.profileTabs);
         final TabLayout.Tab yourRecipes = new TabLayout.Tab();
