@@ -18,12 +18,12 @@ import me.mvega.foodapp.model.Recipe;
 public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication {
 
     private ParseUser currentUser;
+    RecipeFragment recipeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         // Starts activity with feed fragment displayed
         showFeed();
@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
                         }
                     }
                 });
-
     }
 
     @Override
@@ -106,5 +105,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         RecipeFragment recipeFragment= new RecipeFragment();
         recipeFragment.recipe = recipe;
         replaceFragment(recipeFragment);
+//        if (recipeFragment != null && recipeFragment.isInLayout()) {
+//            recipeFragment.setText(recipe);
+//        }
     }
 }

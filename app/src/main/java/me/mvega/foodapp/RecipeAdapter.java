@@ -19,7 +19,7 @@ import me.mvega.foodapp.model.Recipe;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
-    private AdapterCommunication mCommunicator;
+    private AdapterCommunication mCommunication;
     private List<Recipe> recipes;
     Context context;
 
@@ -29,7 +29,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     }
 
     public void setListener(AdapterCommunication listener) {
-        this.mCommunicator = listener;
+        this.mCommunication = listener;
     }
 
     // pass in the Recipes array in the constructor
@@ -81,7 +81,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         public TextView tvDescription;
         public TextView tvPrepTime;
         public RatingBar ratingBar;
-        public FeedFragment.FragmentCommunication mCommunication;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -107,7 +106,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             if (position != RecyclerView.NO_POSITION) {
                 // get the recipe at the position, this won't work if the class is static
                 Recipe recipe = recipes.get(position);
-                mCommunicator.respond(recipe);
+                mCommunication.respond(recipe);
             }
 
         }

@@ -21,13 +21,16 @@ public class RecipeFragment extends Fragment {
     TextView tvIngredients;
     TextView tvInstructions;
 
+//    public void setText(Recipe text) {
+//        this.recipe = text;
+//    }
+
     // The onCreateView method is called when Fragment should create its View object hierarchy either dynamically or via XML layout inflation.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Defines the xml file for the fragment
-        View view = inflater.inflate(R.layout.fragment_recipe, parent, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_recipe, parent, false);
     }
 
     // This event is triggered soon after onCreateView().
@@ -51,4 +54,6 @@ public class RecipeFragment extends Fragment {
         tvIngredients.setText(recipe.getIngredients());
         tvInstructions.setText(recipe.getInstructions());
     }
+
+
 }
