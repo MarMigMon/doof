@@ -20,7 +20,14 @@ public class Recipe extends ParseObject {
     private static final String KEY_USER = "user";
     private static final String KEY_RATING = "rating";
     private static final String KEY_PREP_TIME = "prepTime";
+    private static final String KEY_MEDIA = "media";
 
+    public ParseFile getMedia() {
+        return getParseFile(KEY_MEDIA);
+    }
+    public void setMedia(ParseFile media) {
+        put(KEY_MEDIA, media);
+    }
 
     public String getName() {
         return getString(KEY_NAME);

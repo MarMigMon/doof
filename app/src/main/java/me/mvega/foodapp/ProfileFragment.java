@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -34,7 +34,7 @@ public class ProfileFragment extends Fragment {
         // Setup any handles to view objects here
         // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
 
-        ImageButton ivProfile = view.findViewById(R.id.ivProfile);
+        ImageView ivProfile = view.findViewById(R.id.ivProfile);
         TextView tvUsername = view.findViewById(R.id.tvUsername);
         TextView tvContributed = view.findViewById(R.id.tvContributed);
         TextView tvCompleted = view.findViewById(R.id.tvCompleted);
@@ -51,10 +51,11 @@ public class ProfileFragment extends Fragment {
             Glide.with(getContext()).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(ivProfile);
         } else Glide.with(getContext()).load(R.drawable.image_placeholder).apply(RequestOptions.circleCropTransform()).into(ivProfile);
 
+        showYourRecipes(); // Automatically selects Your Recipes tab to start profile screen
 
         final TabLayout tabLayout = view.findViewById(R.id.profileTabs);
-        final TabLayout.Tab yourRecipes = new TabLayout.Tab();
-        final TabLayout.Tab favorites = new TabLayout.Tab();
+        final TabLayout.Tab yourRecipes = tabLayout.newTab().setText("Your Recipes");
+        final TabLayout.Tab favorites = tabLayout.newTab().setText("Favorites");
         tabLayout.addTab(yourRecipes, 0, true);
         tabLayout.addTab(favorites, 1, false);
 

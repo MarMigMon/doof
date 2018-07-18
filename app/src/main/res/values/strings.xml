@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">FoodApp</string>
     <string name="caption_text">Instructions for user will appear here</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="recipe_name">Recipe Name</string>
+    <string name="new_recipe">New Recipe</string>
+    <string name="recipe_ing">Ingredients</string>
+    <string name="recipe_ins">Instructions</string>
+    <string name="recipe_desc">Description</string>
 </resources>
