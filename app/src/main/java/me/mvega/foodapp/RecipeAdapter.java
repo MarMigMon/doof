@@ -91,6 +91,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
             // add this as the itemView's OnClickListener
             itemView.setOnClickListener(this);
+
         }
 
         // when the user clicks on a row, show details for the selected recipe
