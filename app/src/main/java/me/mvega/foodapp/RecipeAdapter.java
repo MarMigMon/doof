@@ -15,6 +15,8 @@ import com.parse.ParseFile;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
@@ -75,26 +77,21 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public ImageView ivRecipe;
-        public TextView tvName;
-        public TextView tvType;
-        public TextView tvDescription;
-        public TextView tvPrepTime;
-        public RatingBar ratingBar;
+        @BindView(R.id.ivRecipe) ImageView ivRecipe;
+        @BindView(R.id.tvName) TextView tvName;
+        @BindView(R.id.tvType) TextView tvType;
+        @BindView(R.id.tvDescription) TextView tvDescription;
+        @BindView(R.id.tvPrepTime) TextView tvPrepTime;
+        @BindView(R.id.ratingBar) RatingBar ratingBar;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            // perform findViewById lookups
-            ivRecipe = itemView.findViewById(R.id.ivRecipe);
-            tvName = itemView.findViewById(R.id.tvName);
-            tvType = itemView.findViewById(R.id.tvType);
-            tvDescription = itemView.findViewById(R.id.tvDescription);
-            tvPrepTime = itemView.findViewById(R.id.tvPrepTime);
-            ratingBar = itemView.findViewById(R.id.ratingBar);
+            ButterKnife.bind(this, itemView);
 
             // add this as the itemView's OnClickListener
             itemView.setOnClickListener(this);
+
         }
 
         // when the user clicks on a row, show details for the selected recipe

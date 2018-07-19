@@ -122,5 +122,10 @@ public class Recipe extends ParseObject {
             include("user");
             return this;
         }
+
+        public Query fromUser(ParseUser user) {
+            whereEqualTo(KEY_USER, user);
+            return this;
+        }
     }
 }

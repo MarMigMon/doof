@@ -96,12 +96,13 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         // Begin the transaction
         final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         // Replace the contents of the container with the new fragment and complete the changes added above
+        fragmentTransaction.addToBackStack("main");
         fragmentTransaction.replace(R.id.frameLayout, f).commit();
     }
 
     @Override
     public void respond(Recipe recipe) {
-        RecipeFragment recipeFragment= new RecipeFragment();
+        recipeFragment= new RecipeFragment();
         recipeFragment.recipe = recipe;
         replaceFragment(recipeFragment);
 //        if (recipeFragment != null && recipeFragment.isInLayout()) {

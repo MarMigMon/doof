@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +107,7 @@ public class YourRecipesFragment extends Fragment {
 
     private void loadYourRecipes() {
         final Recipe.Query recipeQuery = new Recipe.Query();
-        recipeQuery.getTop().withUser().newestFirst(); // TODO update Query to reflect what the "Your Recipes" Fragment should be loading
+        recipeQuery.fromUser(ParseUser.getCurrentUser()); // TODO update Query to reflect what the "Your Recipes" Fragment should be loading
 
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override

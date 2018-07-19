@@ -11,20 +11,21 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class SignupActivity extends AppCompatActivity {
 
-    private EditText etNewUser;
-    private EditText etNewPass;
-    private Button btCreateUser;
+    @BindView(R.id.etNewUser) EditText etNewUser;
+    @BindView(R.id.etNewPass) EditText etNewPass;
+    @BindView(R.id.btCreateUser) Button btCreateUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        etNewUser = findViewById(R.id.etNewUser);
-        etNewPass = findViewById(R.id.etNewPass);
-        btCreateUser = findViewById(R.id.btCreateUser);
+        ButterKnife.bind(this);
 
         btCreateUser.setOnClickListener(new View.OnClickListener() {
             @Override
