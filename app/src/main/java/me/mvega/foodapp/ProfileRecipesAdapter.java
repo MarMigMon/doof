@@ -19,7 +19,7 @@ import me.mvega.foodapp.model.Recipe;
 
 public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAdapter.ViewHolder> {
 
-//    private ProfileAdapterCommunication nCommunication;
+    private ProfileAdapterCommunication nCommunication;
     private List<Recipe> recipes;
     Context context;
 
@@ -27,14 +27,15 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
     public ProfileRecipesAdapter(List<Recipe> recipes) { this.recipes = recipes;
     }
 
-//    // communicates information from adapter to fragment
-//    public interface ProfileAdapterCommunication {
-//        void respond(Recipe recipe);
-//    }
-//
-//    public void setProfileListener(RecipeAdapter.AdapterCommunication profileListener) {
-//        this.nCommunication = (ProfileAdapterCommunication) profileListener;
-//    }
+    // communicates information from adapter to fragment
+    public interface ProfileAdapterCommunication {
+        void respond(Recipe recipe);
+        void showDeleteDialog(Recipe recipe);
+    }
+
+    public void setProfileListener(ProfileAdapterCommunication profileListener) {
+        this.nCommunication = (ProfileAdapterCommunication) profileListener;
+    }
 
     // for each row, inflate the layout and cache references into ViewHolder
     @NonNull
@@ -71,7 +72,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
         return recipes.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         public ImageView ivRecipe;
         public TextView tvName;
         public TextView tvPrepTime;
@@ -88,6 +89,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
 
             // add this as the itemView's OnClickListener
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         // when the user clicks on a grid, show details for the selected recipe
@@ -102,9 +104,25 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
 //                nCommunication.respond(recipe);
             }
         }
+
+        // when the user clicks on a grid, show a dialog box for the selected recipe
+        @Override
+        public boolean onLongClick(View view) {
+            // gets item position
+            int position = getAdapterPosition();
+            // make sure the position is valid, i.e. actually exists in the view
+            if (position != RecyclerView.NO_POSITION) {
+                // get the recipe at the position, this won't work if the class is static
+                final Recipe recipe = recipes.get(position);
+                nCommunication.showDeleteDialog(recipe);
+                return true;
+            }
+            return false;
+        }
     }
 
-    // Clean all elements of the recycler
+
+        // Clean all elements of the recycler
     public void clear() {
         recipes.clear();
         notifyDataSetChanged();
