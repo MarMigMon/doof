@@ -1,15 +1,19 @@
 package me.mvega.foodapp;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -25,7 +29,7 @@ public class YourRecipesFragment extends Fragment {
     ArrayList<Recipe> recipes;
     RecyclerView rvRecipes;
     private SwipeRefreshLayout swipeContainer;
-//    FragmentCommunication profileListenerFragment;
+    FragmentCommunication profileListenerFragment;
 
     // implement interface
     public interface FragmentCommunication {
@@ -44,7 +48,7 @@ public class YourRecipesFragment extends Fragment {
 //    public void onAttach(Context context) {
 //        super.onAttach(context);
 //        if (context instanceof FragmentCommunication) {
-//            profileListenerFragment = (FragmentCommunication) context;}
+//            profileListenerFragment = (FragmentCommunication) context;
 //        } else {
 //            throw new ClassCastException(context.toString() + " must implement FeedFragment.FragmentCommunication");
 //        }
@@ -70,12 +74,54 @@ public class YourRecipesFragment extends Fragment {
         //set the adapter
         rvRecipes.setAdapter(profileRecipesAdapter);
 
-//        profileRecipesAdapter.setProfileListener(new RecipeAdapter.AdapterCommunication() {
-//            @Override
-//            public void respond(Recipe recipe) {
+        profileRecipesAdapter.setProfileListener(new ProfileRecipesAdapter.ProfileAdapterCommunication() {
+            @Override
+            public void respond(Recipe recipe) {
 //                profileListenerFragment.respond(recipe);
-//            }
-//        });
+            }
+
+            @Override
+            public void showDeleteDialog(final Recipe recipe) {
+                // Create alert dialog
+                final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+
+                // Add cancel option and message
+                alertDialog.setCancelable(true);
+                alertDialog.setMessage(Html.fromHtml("Are you sure you want to delete <b>" + recipe.getName() + "</b>?"));
+
+                // Configure dialog button (OK)
+                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(final DialogInterface dialog, int which) {
+                                // Delete recipe
+                                recipe.deleteInBackground(new DeleteCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        if (e == null) {
+                                            loadYourRecipes();
+                                            dialog.dismiss();
+                                        } else {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
+                // Configure dialog button (CANCEL)
+                alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(final DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                // Display the dialog
+                alertDialog.show();
+            }
+        });
 
         loadYourRecipes();
 
