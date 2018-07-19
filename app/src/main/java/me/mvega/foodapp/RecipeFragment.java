@@ -57,13 +57,16 @@ public class RecipeFragment extends Fragment {
         tvIngredients.setText(recipe.getIngredients());
         tvInstructions.setText(recipe.getInstructions());
 
-        ParseFile image = recipe.getImage(); // TODO get recipe image
+        ParseFile image = recipe.getImage();
         if (image != null) {
             String imageUrl = image.getUrl();
             Glide.with(getContext()).load(imageUrl).into(ivImage);
         } else {
             Glide.with(getContext()).load(R.drawable.image_placeholder).into(ivImage);
         }
+
+        float rating = (float) (double) recipe.getRating(); // TODO get recipe rating
+        ratingBar.setRating(rating);
     }
 
 }
