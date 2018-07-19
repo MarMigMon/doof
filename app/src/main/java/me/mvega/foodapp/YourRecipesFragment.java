@@ -106,7 +106,7 @@ public class YourRecipesFragment extends Fragment {
 
     private void loadYourRecipes() {
         final Recipe.Query recipeQuery = new Recipe.Query();
-        recipeQuery.fromUser(ParseUser.getCurrentUser()); // TODO update Query to reflect what the "Your Recipes" Fragment should be loading
+        recipeQuery.fromUser(ParseUser.getCurrentUser());
 
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override
