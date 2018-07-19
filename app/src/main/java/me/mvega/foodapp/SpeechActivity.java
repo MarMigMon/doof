@@ -2,7 +2,6 @@ package me.mvega.foodapp;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,7 +12,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.parse.ParseFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +29,7 @@ import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
+import me.mvega.foodapp.model.Recipe;
 
 public class SpeechActivity extends AppCompatActivity implements
         RecognitionListener {
@@ -35,15 +39,18 @@ public class SpeechActivity extends AppCompatActivity implements
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
 
-
+    private Recipe recipe;
+    private ParseFile audioFile;
     private SpeechRecognizer recognizer;
     private MediaPlayer player;
-    AssetFileDescriptor afd;
     private Boolean isPaused;
-    @BindView(R.id.caption_text) TextView caption_text;
-    @BindView(R.id.result_text) TextView result_text;
+
     @BindView(R.id.btStart) Button btStart;
     @BindView(R.id.btStop) Button btStop;
+    @BindView(R.id.tvName) TextView tvName;
+    @BindView(R.id.tvInstructions) TextView tvInstructions;
+    @BindView(R.id.tvIngredients) TextView tvIngredients;
+    @BindView(R.id.pbLoading) ProgressBar pbLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,47 +66,81 @@ public class SpeechActivity extends AppCompatActivity implements
 
         player = new MediaPlayer();
 
+        // Set views
+        recipe = getIntent().getParcelableExtra("recipe");
+        audioFile = recipe.getMedia();
+        tvName.setText(recipe.getName());
+        tvIngredients.setText(recipe.getIngredients());
+        tvInstructions.setText(recipe.getInstructions());
+
         btStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btStop.setVisibility(View.VISIBLE);
-                btStart.setVisibility(View.INVISIBLE);
-                startPlayer();
-                switchSearch(MENU_SEARCH);
+                beginRecipe();
             }
         });
 
         btStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recognizer.stop();
-                if (player.isPlaying()) {
-                    try {
-                        player.reset();
-                        player.prepare();
-                        player.stop();
-                        player.release();
-                        player=null;
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-                btStop.setVisibility(View.INVISIBLE);
-                btStart.setVisibility(View.VISIBLE);
-                caption_text.setText(R.string.caption_text);
+                finishRecipe();
             }
         });
 
     }
 
+    private void beginRecipe() {
+        // If audio file exists, start player and speech recognition
+        if (audioFile != null) {
+            toggleVisibility(btStop);
+            toggleVisibility(btStart);
+            pbLoading.setVisibility(ProgressBar.VISIBLE);
+            startPlayer();
+
+            Toast.makeText(SpeechActivity.this, "Listening for start or stop", Toast.LENGTH_SHORT).show();
+            startRecognition(MENU_SEARCH);
+        } else {
+            Toast.makeText(SpeechActivity.this, "Audio file not found", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void finishRecipe() {
+        // Stop speech recognition and player and reset to start button
+        recognizer.stop();
+        stopPlayer();
+        toggleVisibility(btStop);
+        toggleVisibility(btStart);
+    }
+
+    public void toggleVisibility(View view) {
+        view.setVisibility((view.getVisibility() == View.VISIBLE)
+                ? View.INVISIBLE
+                : View.VISIBLE);
+    }
+
+    private void stopPlayer() {
+        if (player.isPlaying()) {
+            try {
+                player.reset();
+                player.prepare();
+                player.stop();
+                player.release();
+                player=null;
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void startPlayer() {
         try {
-            afd = getAssets().openFd("test.mp3");
-            player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            String audioFileURL = audioFile.getUrl();
+            player.setDataSource(audioFileURL);
             player.prepare();
             player.start();
+            pbLoading.setVisibility(ProgressBar.INVISIBLE);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -132,7 +173,7 @@ public class SpeechActivity extends AppCompatActivity implements
         @Override
         protected void onPostExecute(Exception result) {
             if (result != null) {
-                activityReference.get().caption_text.setText("Failed to init recognizer " + result);
+                Toast.makeText(activityReference.get(),"Failed to init recognizer " + result, Toast.LENGTH_LONG);
             }
         }
     }
@@ -173,7 +214,7 @@ public class SpeechActivity extends AppCompatActivity implements
     }
 
     /**
-     * After end of speech, call switchSearch method to stop recognizer and get a final result
+     * After end of speech, stop recognizer and get a final result
      */
     @Override
     public void onEndOfSpeech() {
@@ -181,11 +222,7 @@ public class SpeechActivity extends AppCompatActivity implements
         recognizer.stop();
     }
 
-    private void switchSearch(String searchName) {
-        if (searchName.equals(MENU_SEARCH)) {
-            Log.d("Speech recognition", "Listening for start or stop");
-            caption_text.setText(MENU_SEARCH);
-        }
+    private void startRecognition(String searchName) {
         recognizer.startListening(searchName);
     }
 
@@ -196,17 +233,14 @@ public class SpeechActivity extends AppCompatActivity implements
         recognizer = SpeechRecognizerSetup.defaultSetup()
                 .setAcousticModel(new File(assetsDir, "en-us-ptm"))
                 .setDictionary(new File(assetsDir, "cmudict-en-us.dict"))
-
                 .setRawLogDir(assetsDir) // To disable logging of raw audio comment out this call (takes a lot of space on the device)
-
                 .getRecognizer();
-        recognizer.addListener(this);
 
+        recognizer.addListener(this);
 
         // Create grammar-based search for selection between demos
         File menuGrammar = new File(assetsDir, "menu.gram");
         recognizer.addGrammarSearch(MENU_SEARCH, menuGrammar);
-
     }
 
     @Override
@@ -222,16 +256,16 @@ public class SpeechActivity extends AppCompatActivity implements
         if (hypothesis != null) {
             String text = hypothesis.getHypstr();
             if (text.equals("start") && isPaused) {
-                result_text.setText("start");
+                Toast.makeText(this, "Start", Toast.LENGTH_SHORT).show();
                 player.seekTo(length);
                 player.start();
             } else if (text.equals("stop") && !isPaused) {
-                result_text.setText("stop");
+                Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
                 player.pause();
             }
         }
 
-        switchSearch(MENU_SEARCH);
+        startRecognition(MENU_SEARCH);
     }
 
     /**
