@@ -19,13 +19,24 @@ import me.mvega.foodapp.model.Recipe;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
+    private AdapterCommunication mCommunication;
     private List<Recipe> recipes;
     Context context;
 
-    // pass in the Recipes array in the constructor
-    public RecipeAdapter(List<Recipe> recipes) { this.recipes = recipes;
+    // communicates information from adapter to fragment
+    public interface AdapterCommunication {
+        void respond(Recipe recipe);
     }
-    
+
+    public void setListener(AdapterCommunication listener) {
+        this.mCommunication = listener;
+    }
+
+    // pass in the Recipes array in the constructor
+    public RecipeAdapter(List<Recipe> recipes) {
+        this.recipes = recipes;
+    }
+
     // for each row, inflate the layout and cache references into ViewHolder
     @NonNull
     @Override
@@ -95,7 +106,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             if (position != RecyclerView.NO_POSITION) {
                 // get the recipe at the position, this won't work if the class is static
                 Recipe recipe = recipes.get(position);
+                mCommunication.respond(recipe);
             }
+
         }
     }
     

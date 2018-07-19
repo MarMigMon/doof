@@ -4,9 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,14 +47,11 @@ public class YourRecipesFragment extends Fragment {
         // construct the adapter from this data source
         profileRecipesAdapter = new ProfileRecipesAdapter(recipes);
         // RecyclerView setup (layout manager, use adapter)
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        rvRecipes.setLayoutManager(gridLayoutManager);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+        rvRecipes.setLayoutManager(layoutManager);
         //set the adapter
         rvRecipes.setAdapter(profileRecipesAdapter);
-
-        RecyclerView.ItemDecoration itemDecoration = new
-                DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-        rvRecipes.addItemDecoration(itemDecoration);
 
         loadYourRecipes();
 

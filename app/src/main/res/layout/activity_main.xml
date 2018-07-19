@@ -32,6 +32,7 @@
                 android:background="@drawable/et_search"
                 android:ems="10"
                 android:textSize="12sp"
+                android:hint="@string/search_bar"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/search_btn"
                 app:layout_constraintStart_toStartOf="parent"

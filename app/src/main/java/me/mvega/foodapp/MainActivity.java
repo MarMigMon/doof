@@ -13,15 +13,17 @@ import android.view.MenuItem;
 
 import com.parse.ParseUser;
 
-public class MainActivity extends AppCompatActivity {
+import me.mvega.foodapp.model.Recipe;
+
+public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication {
 
     private ParseUser currentUser;
+    RecipeFragment recipeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         // Starts activity with feed fragment displayed
         showFeed();
@@ -95,6 +97,17 @@ public class MainActivity extends AppCompatActivity {
         // Begin the transaction
         final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         // Replace the contents of the container with the new fragment and complete the changes added above
+        fragmentTransaction.addToBackStack("main");
         fragmentTransaction.replace(R.id.frameLayout, f).commit();
+    }
+
+    @Override
+    public void respond(Recipe recipe) {
+        RecipeFragment recipeFragment= new RecipeFragment();
+        recipeFragment.recipe = recipe;
+        replaceFragment(recipeFragment);
+//        if (recipeFragment != null && recipeFragment.isInLayout()) {
+//            recipeFragment.setText(recipe);
+//        }
     }
 }

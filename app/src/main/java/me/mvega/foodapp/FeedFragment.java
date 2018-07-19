@@ -1,5 +1,6 @@
 package me.mvega.foodapp;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -25,13 +26,28 @@ public class FeedFragment extends Fragment {
     ArrayList<Recipe> recipes;
     RecyclerView rvRecipes;
     private SwipeRefreshLayout swipeContainer;
+    FragmentCommunication listenerFragment;
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
+    public interface FragmentCommunication {
+        void respond(Recipe recipe);
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_feed, parent, false);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof FragmentCommunication) {
+            listenerFragment = (FragmentCommunication) context;
+        } else {
+            throw new ClassCastException(context.toString() + " must implement FeedFragment.FragmentCommunication");
+        }
     }
 
     // This event is triggered soon after onCreateView().
@@ -52,6 +68,13 @@ public class FeedFragment extends Fragment {
         rvRecipes.setLayoutManager(linearLayoutManager);
         //set the adapter
         rvRecipes.setAdapter(recipeAdapter);
+
+        recipeAdapter.setListener(new RecipeAdapter.AdapterCommunication() {
+            @Override
+            public void respond(Recipe recipe) {
+                listenerFragment.respond(recipe);
+            }
+        });
 
         RecyclerView.ItemDecoration itemDecoration = new
                 DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
@@ -105,4 +128,6 @@ public class FeedFragment extends Fragment {
             }
         });
     }
+
+
 }
