@@ -22,7 +22,6 @@ import me.mvega.foodapp.model.Recipe;
 public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication {
 
     private ParseUser currentUser;
-    RecipeFragment recipeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,8 +106,9 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
     @Override
     public void respond(Recipe recipe, ImageView image) {
-        recipeFragment = new RecipeFragment();
+        RecipeFragment recipeFragment = new RecipeFragment();
 
+        // Set transitions if minimum api requirements are met
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             recipeFragment.setSharedElementEnterTransition(new Fade());
             recipeFragment.setEnterTransition(new Fade());
@@ -123,9 +123,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         fragmentTransaction.addToBackStack("main");
         fragmentTransaction.addSharedElement(image, "image");
         fragmentTransaction.replace(R.id.frameLayout, recipeFragment).commit();
-//        if (recipeFragment != null && recipeFragment.isInLayout()) {
-//            recipeFragment.setText(recipe);
-//        }
+
     }
 
     @Override

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,12 @@ public class YourRecipesFragment extends Fragment {
     ArrayList<Recipe> recipes;
     RecyclerView rvRecipes;
     private SwipeRefreshLayout swipeContainer;
+//    FragmentCommunication profileListenerFragment;
+
+    // implement interface
+    public interface FragmentCommunication {
+        void respond(Recipe recipe);
+    }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -32,6 +39,16 @@ public class YourRecipesFragment extends Fragment {
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_feed, parent, false);
     }
+
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//        if (context instanceof FragmentCommunication) {
+//            profileListenerFragment = (FragmentCommunication) context;}
+//        } else {
+//            throw new ClassCastException(context.toString() + " must implement FeedFragment.FragmentCommunication");
+//        }
+//    }
 
     // This event is triggered soon after onCreateView().
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
@@ -52,6 +69,13 @@ public class YourRecipesFragment extends Fragment {
         rvRecipes.setLayoutManager(layoutManager);
         //set the adapter
         rvRecipes.setAdapter(profileRecipesAdapter);
+
+//        profileRecipesAdapter.setProfileListener(new RecipeAdapter.AdapterCommunication() {
+//            @Override
+//            public void respond(Recipe recipe) {
+//                profileListenerFragment.respond(recipe);
+//            }
+//        });
 
         loadYourRecipes();
 
@@ -82,7 +106,7 @@ public class YourRecipesFragment extends Fragment {
 
     private void loadYourRecipes() {
         final Recipe.Query recipeQuery = new Recipe.Query();
-        recipeQuery.getTop().withUser().newestFirst(); // TODO update Query to reflect what the "Your Recipes" Fragment should be loading
+        recipeQuery.fromUser(ParseUser.getCurrentUser());
 
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override

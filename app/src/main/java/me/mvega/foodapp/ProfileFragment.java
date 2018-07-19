@@ -13,13 +13,17 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.parse.CountCallback;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.mvega.foodapp.model.Recipe;
 
 public class ProfileFragment extends Fragment {
+
     ParseUser user = ParseUser.getCurrentUser();
     @BindView(R.id.ivProfile) ImageView ivProfile;
     @BindView(R.id.tvUsername) TextView tvUsername;
@@ -46,7 +50,20 @@ public class ProfileFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         tvUsername.setText(user.getUsername());
-        tvContributed.setText("0"); // TODO get user's # of contributed recipes
+
+        final Recipe.Query recipeQuery = new Recipe.Query();
+        recipeQuery.fromUser(ParseUser.getCurrentUser());
+        recipeQuery.countInBackground(new CountCallback() {
+            @Override
+            public void done(int count, ParseException e) {
+                if (e == null) {
+                    tvContributed.setText(Integer.toString(count));
+                } else {
+                    e.printStackTrace();
+                    tvContributed.setText("0");
+                }
+            }
+        });
         tvCompleted.setText("0"); // TODO get user's # of completed recipes
         tvReviewed.setText("0"); // TODO get user's # of reviewed recipes
 
@@ -106,4 +123,5 @@ public class ProfileFragment extends Fragment {
         // Replace the contents of the container with the new fragment and complete the changes added above
         fragmentTransaction.replace(R.id.userRecipes, f).commit();
     }
+
 }

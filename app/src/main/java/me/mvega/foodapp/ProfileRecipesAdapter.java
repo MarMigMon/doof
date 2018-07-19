@@ -19,12 +19,22 @@ import me.mvega.foodapp.model.Recipe;
 
 public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAdapter.ViewHolder> {
 
+//    private ProfileAdapterCommunication nCommunication;
     private List<Recipe> recipes;
     Context context;
 
     // pass in the Recipes array in the constructor
     public ProfileRecipesAdapter(List<Recipe> recipes) { this.recipes = recipes;
     }
+
+//    // communicates information from adapter to fragment
+//    public interface ProfileAdapterCommunication {
+//        void respond(Recipe recipe);
+//    }
+//
+//    public void setProfileListener(RecipeAdapter.AdapterCommunication profileListener) {
+//        this.nCommunication = (ProfileAdapterCommunication) profileListener;
+//    }
 
     // for each row, inflate the layout and cache references into ViewHolder
     @NonNull
@@ -80,7 +90,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
             itemView.setOnClickListener(this);
         }
 
-        // when the user clicks on a row, show details for the selected recipe
+        // when the user clicks on a grid, show details for the selected recipe
         @Override
         public void onClick(View v) {
             // gets item position
@@ -89,6 +99,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
             if (position != RecyclerView.NO_POSITION) {
                 // get the recipe at the position, this won't work if the class is static
                 Recipe recipe = recipes.get(position);
+//                nCommunication.respond(recipe);
             }
         }
     }

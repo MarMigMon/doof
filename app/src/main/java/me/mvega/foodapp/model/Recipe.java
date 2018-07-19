@@ -127,5 +127,10 @@ public class Recipe extends ParseObject {
             whereFullText("recipeName", query);
             return this;
         }
+
+        public Query fromUser(ParseUser user) {
+            whereEqualTo(KEY_USER, user);
+            return this;
+        }
     }
 }
