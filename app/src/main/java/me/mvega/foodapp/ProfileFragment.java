@@ -16,8 +16,17 @@ import com.bumptech.glide.request.RequestOptions;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ProfileFragment extends Fragment {
     ParseUser user = ParseUser.getCurrentUser();
+    @BindView(R.id.ivProfile) ImageView ivProfile;
+    @BindView(R.id.tvUsername) TextView tvUsername;
+    @BindView(R.id.tvContributed) TextView tvContributed;
+    @BindView(R.id.tvCompleted) TextView tvCompleted;
+    @BindView(R.id.tvReviewed) TextView tvReviewed;
+    @BindView(R.id.profileTabs) TabLayout tabLayout;
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -34,11 +43,7 @@ public class ProfileFragment extends Fragment {
         // Setup any handles to view objects here
         // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
 
-        ImageView ivProfile = view.findViewById(R.id.ivProfile);
-        TextView tvUsername = view.findViewById(R.id.tvUsername);
-        TextView tvContributed = view.findViewById(R.id.tvContributed);
-        TextView tvCompleted = view.findViewById(R.id.tvCompleted);
-        TextView tvReviewed = view.findViewById(R.id.tvReviewed);
+        ButterKnife.bind(this, view);
 
         tvUsername.setText(user.getUsername());
         tvContributed.setText("0"); // TODO get user's # of contributed recipes
@@ -53,7 +58,6 @@ public class ProfileFragment extends Fragment {
 
         showYourRecipes(); // Automatically selects Your Recipes tab to start profile screen
 
-        final TabLayout tabLayout = view.findViewById(R.id.profileTabs);
         final TabLayout.Tab yourRecipes = tabLayout.newTab().setText("Your Recipes");
         final TabLayout.Tab favorites = tabLayout.newTab().setText("Favorites");
         tabLayout.addTab(yourRecipes, 0, true);
