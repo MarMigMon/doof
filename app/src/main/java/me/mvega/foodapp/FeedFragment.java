@@ -18,14 +18,16 @@ import com.parse.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
 public class FeedFragment extends Fragment {
 
     RecipeAdapter recipeAdapter;
     ArrayList<Recipe> recipes;
-    RecyclerView rvRecipes;
-    private SwipeRefreshLayout swipeContainer;
+    @BindView(R.id.rvRecipes) RecyclerView rvRecipes;
+    @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
     FragmentCommunication listenerFragment;
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
@@ -54,11 +56,7 @@ public class FeedFragment extends Fragment {
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        // Setup any handles to view objects here
-        // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
-
-        // find the Recycler View
-        rvRecipes = view.findViewById(R.id.rvRecipes);
+        ButterKnife.bind(this, view);
         // initialize the ArrayList (data source)
         recipes = new ArrayList<>();
         // construct the adapter from this data source
@@ -81,9 +79,12 @@ public class FeedFragment extends Fragment {
         rvRecipes.addItemDecoration(itemDecoration);
 
         loadTopRecipes();
+        setSwipeContainer();
 
-        // Lookup the swipe container view
-        swipeContainer = view.findViewById(R.id.swipeContainer);
+
+    }
+
+    public void setSwipeContainer() {
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
