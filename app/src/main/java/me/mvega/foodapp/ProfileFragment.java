@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
 public class ProfileFragment extends Fragment {
+
     ParseUser user = ParseUser.getCurrentUser();
     @BindView(R.id.ivProfile) ImageView ivProfile;
     @BindView(R.id.tvUsername) TextView tvUsername;
@@ -122,4 +123,5 @@ public class ProfileFragment extends Fragment {
         // Replace the contents of the container with the new fragment and complete the changes added above
         fragmentTransaction.replace(R.id.userRecipes, f).commit();
     }
+
 }

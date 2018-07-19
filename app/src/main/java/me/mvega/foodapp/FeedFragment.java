@@ -30,12 +30,13 @@ public class FeedFragment extends Fragment {
     @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
     FragmentCommunication listenerFragment;
 
-    // The onCreateView method is called when Fragment should create its View object hierarchy,
-    // either dynamically or via XML layout inflation.
+    // implement interface
     public interface FragmentCommunication {
         void respond(Recipe recipe);
     }
 
+    // The onCreateView method is called when Fragment should create its View object hierarchy,
+    // either dynamically or via XML layout inflation.
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment

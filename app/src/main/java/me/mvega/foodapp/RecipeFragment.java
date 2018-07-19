@@ -59,7 +59,7 @@ public class RecipeFragment extends Fragment {
             Glide.with(getContext()).load(R.drawable.image_placeholder).into(ivImage);
         }
 
-        float rating = (float) (double) recipe.getRating(); // TODO get recipe rating
+        float rating = (float) (double) recipe.getRating();
         ratingBar.setRating(rating);
     }
 
