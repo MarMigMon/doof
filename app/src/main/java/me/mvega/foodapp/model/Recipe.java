@@ -122,5 +122,10 @@ public class Recipe extends ParseObject {
             include("user");
             return this;
         }
+
+        public Query containsQuery(String query) {
+            whereFullText("recipeName", query);
+            return this;
+        }
     }
 }

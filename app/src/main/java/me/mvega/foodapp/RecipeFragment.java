@@ -8,16 +8,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
 public class RecipeFragment extends Fragment {
 
     Recipe recipe;
+    ImageView image;
     @BindView(R.id.tvName) TextView tvName;
     @BindView(R.id.ratingBar) RatingBar ratingBar;
     @BindView(R.id.tvType) TextView tvType;

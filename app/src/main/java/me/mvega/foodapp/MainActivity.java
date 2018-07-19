@@ -1,6 +1,7 @@
 package me.mvega.foodapp;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -8,8 +9,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
+import android.transition.Fade;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import com.parse.ParseUser;
 
@@ -102,12 +106,30 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     }
 
     @Override
-    public void respond(Recipe recipe) {
-        recipeFragment= new RecipeFragment();
+    public void respond(Recipe recipe, ImageView image) {
+        recipeFragment = new RecipeFragment();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            recipeFragment.setSharedElementEnterTransition(new Fade());
+            recipeFragment.setEnterTransition(new Fade());
+            recipeFragment.setExitTransition(new Fade());
+            recipeFragment.setSharedElementReturnTransition(new Explode());
+        }
+
         recipeFragment.recipe = recipe;
-        replaceFragment(recipeFragment);
+        // Begin the transaction
+        final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        // Replace the contents of the container with the new fragment and complete the changes added above
+        fragmentTransaction.addToBackStack("main");
+        fragmentTransaction.addSharedElement(image, "image");
+        fragmentTransaction.replace(R.id.frameLayout, recipeFragment).commit();
 //        if (recipeFragment != null && recipeFragment.isInLayout()) {
 //            recipeFragment.setText(recipe);
 //        }
+    }
+
+    @Override
+    public void respond(Recipe recipe) {
+
     }
 }
