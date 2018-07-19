@@ -13,12 +13,15 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText etUsername;
-    private EditText etPassword;
-    private Button btLogin;
-    private Button btSignup;
+    @BindView(R.id.etUsername) EditText etUsername;
+    @BindView(R.id.etPassword) EditText etPassword;
+    @BindView(R.id.btLogin) Button btLogin;
+    @BindView(R.id.btSignup) Button btSignup;
     private ParseUser currentUser;
 
     @Override
@@ -26,10 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        etUsername = findViewById(R.id.etUsername);
-        etPassword = findViewById(R.id.etPassword);
-        btLogin = findViewById(R.id.btLogin);
-        btSignup = findViewById(R.id.btSignup);
+        ButterKnife.bind(this);
 
         currentUser = ParseUser.getCurrentUser();
         if (currentUser == null) {

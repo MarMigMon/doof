@@ -8,18 +8,20 @@ import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
 public class RecipeFragment extends Fragment {
     Recipe recipe;
-    TextView tvName;
-    RatingBar ratingBar;
-    TextView tvType;
-    TextView tvDescription;
-    TextView tvPrepTime;
-    TextView tvYield;
-    TextView tvIngredients;
-    TextView tvInstructions;
+    @BindView(R.id.tvName) TextView tvName;
+    @BindView(R.id.ratingBar) RatingBar ratingBar;
+    @BindView(R.id.tvType) TextView tvType;
+    @BindView(R.id.tvDescription) TextView tvDescription;
+    @BindView(R.id.tvPrepTime) TextView tvPrepTime;
+    @BindView(R.id.tvYield) TextView tvYield;
+    @BindView(R.id.tvIngredients) TextView tvIngredients;
+    @BindView(R.id.tvInstructions) TextView tvInstructions;
 
     // The onCreateView method is called when Fragment should create its View object hierarchy either dynamically or via XML layout inflation.
     @Override
@@ -34,14 +36,7 @@ public class RecipeFragment extends Fragment {
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        tvName = view.findViewById(R.id.tvName);
-        ratingBar = view.findViewById(R.id.ratingBar);
-        tvType = view.findViewById(R.id.tvType);
-        tvDescription = view.findViewById(R.id.tvDescription);
-        tvPrepTime = view.findViewById(R.id.tvPrepTime);
-        tvYield = view.findViewById(R.id.tvYield);
-        tvIngredients = view.findViewById(R.id.tvIngredients);
-        tvInstructions = view.findViewById(R.id.tvInstructions);
+        ButterKnife.bind(this, view);
 
         tvName.setText(recipe.getName());
         tvType.setText(recipe.getType());

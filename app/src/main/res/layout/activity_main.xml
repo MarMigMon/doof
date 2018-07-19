@@ -28,7 +28,7 @@
             <EditText
                 android:id="@+id/search"
                 android:layout_width="0dp"
-                android:layout_height="20dp"
+                android:layout_height="35dp"
                 android:background="@drawable/et_search"
                 android:ems="10"
                 android:textSize="12sp"
@@ -39,21 +39,19 @@
 
             <Button
                 android:id="@+id/search_btn"
-                android:layout_width="60dp"
-                android:layout_height="20dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="10dp"
                 android:layout_toEndOf="@id/search"
-                android:background="@drawable/round_button"
-                android:text="Search"
+                android:layout_toRightOf="@id/search"
+                android:background="@drawable/ic_search"
                 android:textAllCaps="false"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/search"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.39"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@id/search" />
+                app:layout_constraintVertical_bias="0.39" />
 
         </android.support.constraint.ConstraintLayout>
 
