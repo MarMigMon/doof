@@ -4,9 +4,11 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -118,8 +120,12 @@ public class SpeechActivity extends AppCompatActivity implements
             startPlayer();
             Toast.makeText(SpeechActivity.this, "Listening for start or stop", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(SpeechActivity.this, "Custom audio file not found, playing instructions", Toast.LENGTH_LONG).show();
-            tts.speak(instructions, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Toast.makeText(SpeechActivity.this, "Custom audio file not found, playing instructions", Toast.LENGTH_LONG).show();
+                tts.speak(instructions, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
+            } else {
+                Toast.makeText(SpeechActivity.this, "Custom audio file not found", Toast.LENGTH_LONG).show();
+            }
         }
 
         startRecognition(MENU_SEARCH);
@@ -276,6 +282,36 @@ public class SpeechActivity extends AppCompatActivity implements
         Log.d("Speech recognition", error.toString());
     }
 
+    // Called in onResult if using media player
+    private void processPlayerResult(String text) {
+        int length = player.getCurrentPosition();
+        isPaused = !player.isPlaying() && length > 1;
+
+        if (text.equals("start") && isPaused) {
+            Toast.makeText(this, "Start", Toast.LENGTH_SHORT).show();
+            player.seekTo(length);
+            player.start();
+        } else if (text.equals("stop") && !isPaused) {
+            Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
+            player.pause();
+        }
+    }
+
+    // Called in onResult if using text to speech
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void processTtsResult(String text) {
+        isSpeaking = tts.isSpeaking();
+
+        if (text.equals("start") && !isSpeaking) {
+            Toast.makeText(this, "Start", Toast.LENGTH_SHORT).show();
+            tts.speak(instructions, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
+
+        } else if (text.equals("stop") && isSpeaking) {
+            Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
+            tts.stop();
+        }
+    }
+
     // Called after recognizer is stopped
     @Override
     public void onResult(Hypothesis hypothesis) {
@@ -284,28 +320,10 @@ public class SpeechActivity extends AppCompatActivity implements
             String text = hypothesis.getHypstr();
 
             if (audioFile != null) {
-                int length = player.getCurrentPosition();
-                isPaused = !player.isPlaying() && length > 1;
-
-                if (text.equals("start") && isPaused) {
-                    Toast.makeText(this, "Start", Toast.LENGTH_SHORT).show();
-                    player.seekTo(length);
-                    player.start();
-                } else if (text.equals("stop") && !isPaused) {
-                    Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
-                    player.pause();
-                }
-
+                processPlayerResult(text);
             } else {
-                isSpeaking = tts.isSpeaking();
-
-                if (text.equals("start") && !isSpeaking) {
-                    Toast.makeText(this, "Start", Toast.LENGTH_SHORT).show();
-                    tts.speak(instructions, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
-
-                } else if (text.equals("stop") && isSpeaking) {
-                    Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
-                    tts.stop();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    processTtsResult(text);
                 }
             }
         }
