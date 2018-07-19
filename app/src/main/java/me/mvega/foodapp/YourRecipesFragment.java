@@ -1,5 +1,6 @@
 package me.mvega.foodapp;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -24,6 +25,12 @@ public class YourRecipesFragment extends Fragment {
     ArrayList<Recipe> recipes;
     RecyclerView rvRecipes;
     private SwipeRefreshLayout swipeContainer;
+    FragmentCommunication profileListenerFragment;
+
+    // implement interface
+    public interface FragmentCommunication {
+        void respond(Recipe recipe);
+    }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -31,6 +38,16 @@ public class YourRecipesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_feed, parent, false);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof FragmentCommunication) {
+            profileListenerFragment = (FragmentCommunication) context;}
+//        } else {
+//            throw new ClassCastException(context.toString() + " must implement FeedFragment.FragmentCommunication");
+//        }
     }
 
     // This event is triggered soon after onCreateView().
@@ -52,6 +69,13 @@ public class YourRecipesFragment extends Fragment {
         rvRecipes.setLayoutManager(layoutManager);
         //set the adapter
         rvRecipes.setAdapter(profileRecipesAdapter);
+
+        profileRecipesAdapter.setProfileListener(new RecipeAdapter.AdapterCommunication() {
+            @Override
+            public void respond(Recipe recipe) {
+                profileListenerFragment.respond(recipe);
+            }
+        });
 
         loadYourRecipes();
 

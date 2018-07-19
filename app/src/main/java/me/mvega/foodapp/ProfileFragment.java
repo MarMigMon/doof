@@ -17,6 +17,7 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 public class ProfileFragment extends Fragment {
+
     ParseUser user = ParseUser.getCurrentUser();
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
@@ -102,4 +103,5 @@ public class ProfileFragment extends Fragment {
         // Replace the contents of the container with the new fragment and complete the changes added above
         fragmentTransaction.replace(R.id.userRecipes, f).commit();
     }
+
 }

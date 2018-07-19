@@ -18,7 +18,6 @@ import me.mvega.foodapp.model.Recipe;
 public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication {
 
     private ParseUser currentUser;
-    RecipeFragment recipeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
