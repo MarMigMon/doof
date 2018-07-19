@@ -1,6 +1,5 @@
 package me.mvega.foodapp;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -26,7 +25,7 @@ public class YourRecipesFragment extends Fragment {
     ArrayList<Recipe> recipes;
     RecyclerView rvRecipes;
     private SwipeRefreshLayout swipeContainer;
-    FragmentCommunication profileListenerFragment;
+//    FragmentCommunication profileListenerFragment;
 
     // implement interface
     public interface FragmentCommunication {
@@ -41,15 +40,15 @@ public class YourRecipesFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_feed, parent, false);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof FragmentCommunication) {
-            profileListenerFragment = (FragmentCommunication) context;}
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//        if (context instanceof FragmentCommunication) {
+//            profileListenerFragment = (FragmentCommunication) context;}
 //        } else {
 //            throw new ClassCastException(context.toString() + " must implement FeedFragment.FragmentCommunication");
 //        }
-    }
+//    }
 
     // This event is triggered soon after onCreateView().
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
@@ -71,12 +70,12 @@ public class YourRecipesFragment extends Fragment {
         //set the adapter
         rvRecipes.setAdapter(profileRecipesAdapter);
 
-        profileRecipesAdapter.setProfileListener(new RecipeAdapter.AdapterCommunication() {
-            @Override
-            public void respond(Recipe recipe) {
-                profileListenerFragment.respond(recipe);
-            }
-        });
+//        profileRecipesAdapter.setProfileListener(new RecipeAdapter.AdapterCommunication() {
+//            @Override
+//            public void respond(Recipe recipe) {
+//                profileListenerFragment.respond(recipe);
+//            }
+//        });
 
         loadYourRecipes();
 
