@@ -11,6 +11,7 @@ import com.parse.SaveCallback;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @ParseClassName("Recipe")
 public class Recipe extends ParseObject {
@@ -28,8 +29,8 @@ public class Recipe extends ParseObject {
     private static final String KEY_USERS_WHO_FAVORITED = "usersWhoFavorited";
     private static final String KEY_STEPS = "steps";
 
-    public ParseObject getSteps() {
-        return getParseObject(KEY_STEPS);
+    public List<String> getSteps() {
+        return getList(KEY_STEPS);
     }
     public void setSteps(ArrayList<String> steps) {
         put(KEY_STEPS, steps);

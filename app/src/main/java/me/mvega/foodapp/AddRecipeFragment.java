@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseException;
@@ -51,7 +52,6 @@ public class AddRecipeFragment extends Fragment {
     @BindView(R.id.etRecipeName) EditText etRecipeName;
     @BindView(R.id.etDescription) EditText etDescription;
     @BindView(R.id.etIngredients) EditText etIngredients;
-    @BindView(R.id.etInstructions) EditText etInstructions;
     @BindView(R.id.etYield) EditText etYield;
     @BindView(R.id.etPrepTime) EditText etPrepTime;
     @BindView(R.id.etType) EditText etType;
@@ -60,7 +60,8 @@ public class AddRecipeFragment extends Fragment {
     @BindView(R.id.btAudio) Button btAudio;
     @BindView(R.id.btAddStep) Button btAddStep;
     @BindView(R.id.ivPreview) ImageView ivPreview;
-    @BindView(R.id.ingredientsLayout) RelativeLayout ingredientsLayout;
+    @BindView(R.id.instructionsLayout) RelativeLayout instructionsLayout;
+    @BindView(R.id.tvInstructions) TextView tvInstructions;
     @BindView(R.id.step1) EditText step1;
 
     private Bitmap recipeImage;
@@ -165,7 +166,7 @@ public class AddRecipeFragment extends Fragment {
 
         // Add step
         steps.add(step);
-        ingredientsLayout.addView(step);
+        instructionsLayout.addView(step);
     }
 
     private void onPickAudio() {
@@ -309,9 +310,13 @@ public class AddRecipeFragment extends Fragment {
 
     private ArrayList<String> parseInstructions() {
         ArrayList<String> stepStrings = new ArrayList<>();
+        String stepText;
 
         for (int i = 0; i < steps.size(); i++) {
-            stepStrings.add(steps.get(i).getText().toString());
+            stepText = steps.get(i).getText().toString().trim();
+            if (!stepText.equals("")) {
+                stepStrings.add(stepText);
+            }
         }
 
         return stepStrings;
@@ -325,7 +330,6 @@ public class AddRecipeFragment extends Fragment {
         recipe.setName(etRecipeName.getText().toString());
         recipe.setDescription(etDescription.getText().toString());
         recipe.setIngredients(etIngredients.getText().toString());
-        recipe.setInstructions(etInstructions.getText().toString());
         recipe.setPrepTime(etPrepTime.getText().toString());
         recipe.setYield(etYield.getText().toString());
         recipe.setType(etType.getText().toString());
