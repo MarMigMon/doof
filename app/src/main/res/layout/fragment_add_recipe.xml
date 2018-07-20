@@ -63,39 +63,12 @@
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/etIngredientsLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/etDescriptionLayout">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/etIngredients"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/recipe_ing"
-                    android:inputType="textMultiLine" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/etInstructionsLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/etIngredientsLayout">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/etInstructions"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/recipe_ins"
-                    android:inputType="textMultiLine" />
-            </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/etYieldLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/etInstructionsLayout">
+                android:layout_below="@+id/etDescriptionLayout">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/etYield"
@@ -133,11 +106,62 @@
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/etIngredientsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etTypeLayout">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/etIngredients"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/recipe_ing"
+                    android:inputType="textMultiLine" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/etInstructionsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etIngredientsLayout">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/etInstructions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/recipe_ins"
+                    android:inputType="textMultiLine" />
+            </android.support.design.widget.TextInputLayout>
+
+            <RelativeLayout
+                android:id="@+id/ingredientsLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etInstructionsLayout">
+
+                <EditText
+                    android:id="@+id/step1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Step 1"/>
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btAddStep"
+                android:text="Add Step"
+                android:layout_below="@+id/ingredientsLayout"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
             <Button
                 android:id="@+id/btImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/etTypeLayout"
+                android:layout_below="@+id/btAddStep"
                 android:layout_margin="10dp"
                 android:layout_centerHorizontal="true"
                 android:text="Upload Image" />
