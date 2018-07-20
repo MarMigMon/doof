@@ -1,6 +1,7 @@
 package me.mvega.foodapp;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -8,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +24,7 @@ import com.parse.ParseFile;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -45,12 +46,15 @@ public class SpeechActivity extends AppCompatActivity implements
 
     private TextToSpeech tts;
     private Recipe recipe;
-    private String instructions;
+    private ArrayList<String> instructions;
     private ParseFile audioFile;
     private SpeechRecognizer recognizer;
     private MediaPlayer player;
     private Boolean isPaused;
     private Boolean isSpeaking;
+    private int stepCount = 0;
+    private int totalSteps;
+    private String currStep;
 
     @BindView(R.id.btStart) Button btStart;
     @BindView(R.id.btStop) Button btStop;
@@ -58,6 +62,7 @@ public class SpeechActivity extends AppCompatActivity implements
     @BindView(R.id.tvInstructions) TextView tvInstructions;
     @BindView(R.id.tvIngredients) TextView tvIngredients;
     @BindView(R.id.pbLoading) ProgressBar pbLoading;
+    @BindView(R.id.btNext) Button btNext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +82,8 @@ public class SpeechActivity extends AppCompatActivity implements
         tvName.setText(recipe.getName());
         tvIngredients.setText(recipe.getIngredients());
 
-        instructions = recipe.getInstructions();
-        tvInstructions.setText(instructions);
+        instructions = (ArrayList<String>) recipe.getSteps();
+        totalSteps = instructions.size();
 
         btStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +96,13 @@ public class SpeechActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 finishRecipe();
+            }
+        });
+
+        btNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                speakStep();
             }
         });
 
@@ -109,9 +121,14 @@ public class SpeechActivity extends AppCompatActivity implements
         });
     }
 
-    private void beginRecipe() {
+    private void toggleButtons() {
         toggleVisibility(btStop);
         toggleVisibility(btStart);
+        toggleVisibility(btNext);
+    }
+
+    private void beginRecipe() {
+        toggleButtons();
 
         // If audio file exists, start player
         if (audioFile != null) {
@@ -122,7 +139,7 @@ public class SpeechActivity extends AppCompatActivity implements
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Toast.makeText(SpeechActivity.this, "Custom audio file not found, playing instructions", Toast.LENGTH_LONG).show();
-                tts.speak(instructions, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
+                speakStep();
             } else {
                 Toast.makeText(SpeechActivity.this, "Custom audio file not found", Toast.LENGTH_LONG).show();
             }
@@ -131,15 +148,29 @@ public class SpeechActivity extends AppCompatActivity implements
         startRecognition(MENU_SEARCH);
     }
 
+    @SuppressLint("NewApi")
+    private void speakStep( ){
+        if (stepCount < totalSteps) {
+            currStep = instructions.get(stepCount);
+            tvInstructions.setText(currStep);
+            tts.speak(currStep, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
+            stepCount += 1;
+        } else {
+            tvInstructions.setText(R.string.recipe_completed);
+            tts.stop();
+        }
+    }
+
     private void finishRecipe() {
         // Stop speech recognition and player or text to speech and reset to start button
         recognizer.stop();
-        stopPlayer();
+        if (player != null) {
+            stopPlayer();
+        }
         if (tts.isSpeaking()) {
             tts.stop();
         }
-        toggleVisibility(btStop);
-        toggleVisibility(btStart);
+        toggleButtons();
     }
 
     public void toggleVisibility(View view) {
@@ -298,18 +329,16 @@ public class SpeechActivity extends AppCompatActivity implements
     }
 
     // Called in onResult if using text to speech
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void processTtsResult(String text) {
         isSpeaking = tts.isSpeaking();
 
         if (text.equals(R.string.start_command) && !isSpeaking) {
             Toast.makeText(this, "Start", Toast.LENGTH_SHORT).show();
-            tts.speak(instructions, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
-
         } else if (text.equals(R.string.stop_command) && isSpeaking) {
             Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
-            tts.stop();
         }
+
+        speakStep();
     }
 
     // Called after recognizer is stopped

@@ -32,7 +32,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvIngredients"
             android:layout_marginTop="15dp"
-            android:text="Instructions will appear here."/>
+            android:textSize="30sp"
+            android:textAlignment="center"
+            android:text="@string/before_start_recipe_caption"/>
 
         <Button
             android:id="@+id/btStart"
@@ -45,15 +47,24 @@
             android:text="Begin" />
 
         <Button
-            android:id="@+id/btStop"
+            android:id="@+id/btNext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvInstructions"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
             android:visibility="invisible"
-            android:layout_margin="30dp"
-            android:text="Finish" />
+            android:text="@string/next_step" />
 
+        <Button
+            android:id="@+id/btStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btNext"
+            android:layout_centerHorizontal="true"
+            android:visibility="invisible"
+            android:layout_marginTop="15dp"
+            android:text="@string/finish_recipe" />
 
         <ProgressBar
             android:id="@+id/pbLoading"
@@ -62,7 +73,6 @@
             android:indeterminate="true"
             android:layout_marginBottom="20dp"
             android:visibility="invisible"
-            android:translationZ="2dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"/>
 
