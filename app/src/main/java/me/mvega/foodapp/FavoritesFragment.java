@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,19 +20,47 @@ import java.util.List;
 
 import me.mvega.foodapp.model.Recipe;
 
+import static android.support.constraint.Constraints.TAG;
+
 public class FavoritesFragment extends Fragment {
 
     ProfileRecipesAdapter profileRecipesAdapter;
+    YourRecipesFragment.YourRecipesFragmentCommunication profileListenerFragment;
     ArrayList<Recipe> recipes;
     RecyclerView rvRecipes;
     private SwipeRefreshLayout swipeContainer;
+
+    // implement interface
+    public interface YourRecipesFragmentCommunication {
+        void respond(Recipe recipe);
+    }
+
+    public void setYourRecipeListener(YourRecipesFragment.YourRecipesFragmentCommunication yourRecipesListener) {
+        this.profileListenerFragment = (YourRecipesFragment.YourRecipesFragmentCommunication) yourRecipesListener;
+    }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        Log.i(TAG, "onCreate");
+        super.onCreate(savedInstanceState);
+        onAttachToParentFragment(getParentFragment());
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_feed, parent, false);
+    }
+
+    public void onAttachToParentFragment(Fragment childFragment) {
+        try
+        {
+            profileListenerFragment = (YourRecipesFragment.YourRecipesFragmentCommunication) childFragment;
+
+        }
+        catch (ClassCastException e)
+        {
+            throw new ClassCastException(
+                    childFragment.toString() + " must implement OnPlayerSelectionSetListener");
+        }
     }
 
     // This event is triggered soon after onCreateView().
@@ -53,6 +82,18 @@ public class FavoritesFragment extends Fragment {
         rvRecipes.setLayoutManager(layoutManager);
         //set the adapter
         rvRecipes.setAdapter(profileRecipesAdapter);
+
+        profileRecipesAdapter.setProfileListener(new ProfileRecipesAdapter.ProfileAdapterCommunication() {
+            @Override
+            public void respond(Recipe recipe) {
+                profileListenerFragment.respond(recipe);
+                }
+
+            @Override
+            public void showDeleteDialog(Recipe recipe) {
+
+            }
+        });
 
         loadFavorites();
 

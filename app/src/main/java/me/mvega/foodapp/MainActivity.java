@@ -128,6 +128,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
     @Override
     public void respond(Recipe recipe) {
-
+        RecipeFragment recipeFragment = new RecipeFragment();
+        recipeFragment.recipe = recipe;
+        replaceFragment(recipeFragment);
     }
 }

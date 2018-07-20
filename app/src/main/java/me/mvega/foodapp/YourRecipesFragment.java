@@ -8,8 +8,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,8 +40,8 @@ public class YourRecipesFragment extends Fragment {
         void respond(Recipe recipe);
     }
 
-    public void setYourRecipeListener(YourRecipesFragmentCommunication yourRecipeListener) {
-        this.profileListenerFragment = (YourRecipesFragmentCommunication) yourRecipeListener;
+    public void setYourRecipeListener(YourRecipesFragmentCommunication yourRecipesListener) {
+        this.profileListenerFragment = (YourRecipesFragmentCommunication) yourRecipesListener;
     }
 
 
@@ -49,6 +49,9 @@ public class YourRecipesFragment extends Fragment {
     // either dynamically or via XML layout inflation.
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        Log.i(TAG, "onCreate");
+        super.onCreate(savedInstanceState);
+        onAttachToParentFragment(getParentFragment());
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_feed, parent, false);
     }
@@ -65,6 +68,8 @@ public class YourRecipesFragment extends Fragment {
                     childFragment.toString() + " must implement OnPlayerSelectionSetListener");
         }
     }
+
+
 
     // This event is triggered soon after onCreateView().
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
@@ -85,6 +90,8 @@ public class YourRecipesFragment extends Fragment {
         rvRecipes.setLayoutManager(layoutManager);
         //set the adapter
         rvRecipes.setAdapter(profileRecipesAdapter);
+
+
 
         profileRecipesAdapter.setProfileListener(new ProfileRecipesAdapter.ProfileAdapterCommunication() {
             @Override
@@ -137,10 +144,6 @@ public class YourRecipesFragment extends Fragment {
         });
 
         loadYourRecipes();
-
-        Log.i(TAG, "onCreate");
-        super.onCreate(savedInstanceState);
-        onAttachToParentFragment(getParentFragment());
 
         // Lookup the swipe container view
         swipeContainer = view.findViewById(R.id.swipeContainer);
