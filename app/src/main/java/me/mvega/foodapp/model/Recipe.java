@@ -1,12 +1,15 @@
 package me.mvega.foodapp.model;
 
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +26,7 @@ public class Recipe extends ParseObject {
     private static final String KEY_RATING = "rating";
     private static final String KEY_PREP_TIME = "prepTime";
     private static final String KEY_MEDIA = "media";
+    private static final String KEY_USERS_WHO_FAVORITED = "usersWhoFavorited";
     private static final String KEY_STEPS = "steps";
 
     public List<String> getSteps() {
@@ -31,6 +35,7 @@ public class Recipe extends ParseObject {
     public void setSteps(ArrayList<String> steps) {
         put(KEY_STEPS, steps);
     }
+
 
     public ParseFile getMedia() {
         return getParseFile(KEY_MEDIA);
@@ -113,6 +118,30 @@ public class Recipe extends ParseObject {
         return getCreatedAt();
     }
 
+    public void addFavorite(ParseUser user) {
+        addAll(KEY_USERS_WHO_FAVORITED, Collections.singletonList(user.getObjectId()));
+        this.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) e.printStackTrace();
+            }
+        });
+    }
+
+    public void removeFavorite(ParseUser user) {
+        removeAll(KEY_USERS_WHO_FAVORITED, Collections.singletonList(user.getObjectId()));
+        this.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) e.printStackTrace();
+            }
+        });
+    }
+
+    public ArrayList<String> getFavorites() {
+        return (ArrayList<String>) get(KEY_USERS_WHO_FAVORITED);
+    }
+
     public static class Query extends ParseQuery<Recipe> {
         public Query() {
             super(Recipe.class);
@@ -140,6 +169,11 @@ public class Recipe extends ParseObject {
 
         public Query fromUser(ParseUser user) {
             whereEqualTo(KEY_USER, user);
+            return this;
+        }
+
+        public Query getFavorites(ParseUser user) {
+            whereContainedIn(KEY_USERS_WHO_FAVORITED, Collections.singletonList(user.getObjectId()));
             return this;
         }
     }

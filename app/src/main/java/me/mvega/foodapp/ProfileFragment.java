@@ -1,5 +1,6 @@
 package me.mvega.foodapp;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -22,15 +23,26 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements YourRecipesFragment.YourRecipesFragmentCommunication {
 
+    ProfileFragmentCommunication yourRecipesListenerFragment;
     ParseUser user = ParseUser.getCurrentUser();
-    @BindView(R.id.ivProfile) ImageView ivProfile;
-    @BindView(R.id.tvUsername) TextView tvUsername;
-    @BindView(R.id.tvContributed) TextView tvContributed;
-    @BindView(R.id.tvCompleted) TextView tvCompleted;
-    @BindView(R.id.tvReviewed) TextView tvReviewed;
-    @BindView(R.id.profileTabs) TabLayout tabLayout;
+    @BindView(R.id.ivProfile)
+    ImageView ivProfile;
+    @BindView(R.id.tvUsername)
+    TextView tvUsername;
+    @BindView(R.id.tvContributed)
+    TextView tvContributed;
+    @BindView(R.id.tvCompleted)
+    TextView tvCompleted;
+    @BindView(R.id.tvReviewed)
+    TextView tvReviewed;
+    @BindView(R.id.profileTabs)
+    TabLayout tabLayout;
+
+    public interface ProfileFragmentCommunication {
+        void respond(Recipe recipe);
+    }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -39,6 +51,15 @@ public class ProfileFragment extends Fragment {
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_profile, parent, false);
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof ProfileFragmentCommunication) {
+            yourRecipesListenerFragment = (ProfileFragmentCommunication) context;
+        }
+    }
+
 
     // This event is triggered soon after onCreateView().
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
@@ -72,6 +93,8 @@ public class ProfileFragment extends Fragment {
             String imageUrl = profileImage.getUrl();
             Glide.with(getContext()).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(ivProfile);
         } else Glide.with(getContext()).load(R.drawable.image_placeholder).apply(RequestOptions.circleCropTransform()).into(ivProfile);
+
+
 
         showYourRecipes(); // Automatically selects Your Recipes tab to start profile screen
 
@@ -107,6 +130,14 @@ public class ProfileFragment extends Fragment {
         replaceFragment(YourRecipesFragment.newInstance());
     }
 
+    public void respond(Recipe recipe) {
+//        FragmentManager fragmentManager = getChildFragmentManager();
+//        YourRecipesFragment yourRecipesFragment = (YourRecipesFragment) fragmentManager.findFragmentByTag("YourRecipes");
+//        if (yourRecipesFragment != null) {
+            yourRecipesListenerFragment.respond(recipe);
+//        }
+    }
+
     public void showFavorites() {
         replaceFragment(FavoritesFragment.newInstance());
     }
@@ -123,5 +154,4 @@ public class ProfileFragment extends Fragment {
         // Replace the contents of the container with the new fragment and complete the changes added above
         fragmentTransaction.replace(R.id.userRecipes, f).commit();
     }
-
 }

@@ -101,7 +101,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
             if (position != RecyclerView.NO_POSITION) {
                 // get the recipe at the position, this won't work if the class is static
                 Recipe recipe = recipes.get(position);
-//                nCommunication.respond(recipe);
+                nCommunication.respond(recipe);
             }
         }
 

@@ -3,6 +3,7 @@ package me.mvega.foodapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
+
+import java.util.ArrayList;
 
 import java.util.ArrayList;
 
@@ -39,6 +43,7 @@ public class RecipeFragment extends Fragment {
     @BindView(R.id.instructionsLayout) RelativeLayout instructionsLayout;
     @BindView(R.id.ivImage) ImageView ivImage;
     @BindView(R.id.btPlay) ImageButton btPlay;
+    @BindView(R.id.btFavorite) ImageButton btFavorite;
 
     // The onCreateView method is called when Fragment should create its View object hierarchy either dynamically or via XML layout inflation.
     @Override
@@ -68,6 +73,29 @@ public class RecipeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 beginRecipe();
+            }
+        });
+
+        ArrayList<String> usersWhoFavorited = recipe.getFavorites();
+        if (usersWhoFavorited != null) {
+            Log.d("RecipeFragment", usersWhoFavorited.toString());
+            if (usersWhoFavorited.contains(ParseUser.getCurrentUser().getObjectId())) {
+                Log.d("RecipeFragment", "We're in");
+                btFavorite.setSelected(true);
+            }
+        }
+
+        btFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Set the button's appearance
+                btFavorite.setSelected(!btFavorite.isSelected());
+
+                if (btFavorite.isSelected()) {
+                    recipe.addFavorite(ParseUser.getCurrentUser());
+                } else {
+                    recipe.removeFavorite(ParseUser.getCurrentUser());
+                }
             }
         });
 
