@@ -11,6 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -26,13 +29,18 @@ public class FeedFragment extends Fragment {
 
     RecipeAdapter recipeAdapter;
     ArrayList<Recipe> recipes;
+    Recipe.Query recipeQuery;
     @BindView(R.id.rvRecipes) RecyclerView rvRecipes;
     @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
+    EditText search;
+    Button btSearch;
+
     FragmentCommunication listenerFragment;
 
     // implement interface
     public interface FragmentCommunication {
         void respond(Recipe recipe);
+        void respond(Recipe recipe, ImageView image);
     }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
@@ -58,6 +66,10 @@ public class FeedFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
+        search = getActivity().findViewById(R.id.search);
+        btSearch = getActivity().findViewById(R.id.search_btn);
+
+        recipeQuery = new Recipe.Query();
         // initialize the ArrayList (data source)
         recipes = new ArrayList<>();
         // construct the adapter from this data source
@@ -73,6 +85,11 @@ public class FeedFragment extends Fragment {
             public void respond(Recipe recipe) {
                 listenerFragment.respond(recipe);
             }
+
+            @Override
+            public void respond(Recipe recipe, ImageView image) {
+                listenerFragment.respond(recipe, image);
+            }
         });
 
         RecyclerView.ItemDecoration itemDecoration = new
@@ -82,7 +99,23 @@ public class FeedFragment extends Fragment {
         loadTopRecipes();
         setSwipeContainer();
 
+        btSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String query = search.getText().toString();
+                searchRecipes(query);
+            }
+        });
+    }
 
+    private void searchRecipes(String query) {
+        recipeQuery.getTop().withUser().newestFirst().containsQuery(query);
+        recipeQuery.findInBackground(new FindCallback<Recipe>() {
+            @Override
+            public void done(List<Recipe> newRecipes, ParseException e) {
+                resetAdapter(newRecipes, e);
+            }
+        });
     }
 
     public void setSwipeContainer() {
@@ -109,24 +142,26 @@ public class FeedFragment extends Fragment {
         return fragmentFeed;
     }
 
-    private void loadTopRecipes() {
-        final Recipe.Query recipeQuery = new Recipe.Query();
-        recipeQuery.getTop().withUser().newestFirst();
+    private void resetAdapter(List<Recipe> newRecipes, ParseException e) {
+        if (e == null) {
+            // Remember to CLEAR OUT old items before appending in the new ones
+            recipeAdapter.clear();
+            // ...the data has come back, add new items to your adapter...
+            recipeAdapter.addAll(newRecipes);
+            // Now we call setRefreshing(false) to signal refresh has finished
+            swipeContainer.setRefreshing(false);
 
+        } else {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadTopRecipes() {
+        recipeQuery.getTop().withUser().newestFirst();
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
-                if (e == null) {
-                    // Remember to CLEAR OUT old items before appending in the new ones
-                    recipeAdapter.clear();
-                    // ...the data has come back, add new items to your adapter...
-                    recipeAdapter.addAll(newRecipes);
-                    // Now we call setRefreshing(false) to signal refresh has finished
-                    swipeContainer.setRefreshing(false);
-
-                } else {
-                    e.printStackTrace();
-                }
+                resetAdapter(newRecipes, e);
             }
         });
     }

@@ -6,6 +6,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 @ParseClassName("Recipe")
@@ -21,6 +22,14 @@ public class Recipe extends ParseObject {
     private static final String KEY_RATING = "rating";
     private static final String KEY_PREP_TIME = "prepTime";
     private static final String KEY_MEDIA = "media";
+    private static final String KEY_STEPS = "steps";
+
+    public ParseObject getSteps() {
+        return getParseObject(KEY_STEPS);
+    }
+    public void setSteps(ArrayList<String> steps) {
+        put(KEY_STEPS, steps);
+    }
 
     public ParseFile getMedia() {
         return getParseFile(KEY_MEDIA);
@@ -120,6 +129,11 @@ public class Recipe extends ParseObject {
 
         public Query withUser() {
             include("user");
+            return this;
+        }
+
+        public Query containsQuery(String query) {
+            whereFullText("recipeName", query);
             return this;
         }
 

@@ -1,23 +1,27 @@
 package me.mvega.foodapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
 public class RecipeFragment extends Fragment {
 
     Recipe recipe;
+    ImageView image;
     @BindView(R.id.tvName) TextView tvName;
     @BindView(R.id.ratingBar) RatingBar ratingBar;
     @BindView(R.id.tvType) TextView tvType;
@@ -27,6 +31,7 @@ public class RecipeFragment extends Fragment {
     @BindView(R.id.tvIngredients) TextView tvIngredients;
     @BindView(R.id.tvInstructions) TextView tvInstructions;
     @BindView(R.id.ivImage) ImageView ivImage;
+    @BindView(R.id.btPlay) ImageButton btPlay;
 
     // The onCreateView method is called when Fragment should create its View object hierarchy either dynamically or via XML layout inflation.
     @Override
@@ -51,6 +56,13 @@ public class RecipeFragment extends Fragment {
         tvIngredients.setText(recipe.getIngredients());
         tvInstructions.setText(recipe.getInstructions());
 
+        btPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                beginRecipe();
+            }
+        });
+
         ParseFile image = recipe.getImage();
         if (image != null) {
             String imageUrl = image.getUrl();
@@ -63,4 +75,9 @@ public class RecipeFragment extends Fragment {
         ratingBar.setRating(rating);
     }
 
+    public void beginRecipe() {
+        Intent i = new Intent(getContext(), SpeechActivity.class);
+        i.putExtra("recipe", recipe);
+        startActivity(i);
+    }
 }

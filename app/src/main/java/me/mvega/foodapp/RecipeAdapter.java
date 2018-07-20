@@ -25,9 +25,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     private List<Recipe> recipes;
     Context context;
 
+
     // communicates information from adapter to fragment
     public interface AdapterCommunication {
         void respond(Recipe recipe);
+        void respond(Recipe recipe, ImageView image);
     }
 
     public void setListener(AdapterCommunication listener) {
@@ -103,7 +105,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             if (position != RecyclerView.NO_POSITION) {
                 // get the recipe at the position, this won't work if the class is static
                 Recipe recipe = recipes.get(position);
-                mCommunication.respond(recipe);
+                mCommunication.respond(recipe, ivRecipe);
             }
 
         }

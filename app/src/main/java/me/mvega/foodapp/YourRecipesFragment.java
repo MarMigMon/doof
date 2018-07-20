@@ -1,16 +1,20 @@
 package me.mvega.foodapp;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -61,14 +65,6 @@ public class YourRecipesFragment extends Fragment {
         }
     }
 
-//    @Override
-//    public void onAttachFragment(Fragment childFragment) {
-//        super.onAttach(childFragment);
-//        if (childFragment instanceof YourRecipesFragmentCommunication) {
-//            profileListenerFragment = (YourRecipesFragmentCommunication) childFragment;
-//        }
-//    }
-
     // This event is triggered soon after onCreateView().
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
@@ -94,13 +90,55 @@ public class YourRecipesFragment extends Fragment {
             public void respond(Recipe recipe) {
                 profileListenerFragment.respond(recipe);
             }
+
+            @Override
+            public void showDeleteDialog(final Recipe recipe) {
+                // Create alert dialog
+                final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+
+                // Add cancel option and message
+                alertDialog.setCancelable(true);
+                alertDialog.setMessage(Html.fromHtml("Are you sure you want to delete <b>" + recipe.getName() + "</b>?"));
+
+                // Configure dialog button (OK)
+                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(final DialogInterface dialog, int which) {
+                                // Delete recipe
+                                recipe.deleteInBackground(new DeleteCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        if (e == null) {
+                                            loadYourRecipes();
+                                            dialog.dismiss();
+                                        } else {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
+                // Configure dialog button (CANCEL)
+                alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(final DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                // Display the dialog
+                alertDialog.show();
+            }
         });
+
+        loadYourRecipes();
 
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         onAttachToParentFragment(getParentFragment());
-
-        loadYourRecipes();
 
         // Lookup the swipe container view
         swipeContainer = view.findViewById(R.id.swipeContainer);

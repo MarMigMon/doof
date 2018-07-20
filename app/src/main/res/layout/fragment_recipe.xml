@@ -1,101 +1,117 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="me.mvega.foodapp.RecipeFragment">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- TODO: Update blank fragment layout -->
-    <RelativeLayout
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context="me.mvega.foodapp.RecipeFragment">
 
-        <RatingBar
-            android:id="@+id/ratingBar"
-            style="@style/MyRatingBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvName"
-            android:layout_alignStart="@+id/tvName"
-            android:numStars="5" />
+        <!-- TODO: Update blank fragment layout -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tvName"
-            android:layout_width="143dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:text="Recipe Name"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="@style/MyRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvName"
+                android:layout_alignStart="@+id/tvName"
+                android:numStars="5" />
 
-        <TextView
-            android:id="@+id/tvDescription"
-            android:layout_width="177dp"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/tvName"
-            android:layout_below="@+id/tvType"
-            android:text="Recipe Description" />
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="143dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Recipe Name"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tvPrepTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/tvName"
-            android:layout_below="@+id/tvDescription"
-            android:text="Prep Time" />
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_width="177dp"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/tvName"
+                android:layout_below="@+id/tvType"
+                android:text="Recipe Description" />
 
-        <ImageView
-            android:id="@+id/ivImage"
-            android:layout_width="175dp"
-            android:layout_height="150dp"
-            android:layout_alignBottom="@+id/tvYield"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:transitionName="image"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/image_placeholder" />
+            <TextView
+                android:id="@+id/tvPrepTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/tvName"
+                android:layout_below="@+id/tvDescription"
+                android:text="Prep Time" />
 
-        <TextView
-            android:id="@+id/tvYield"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/tvName"
-            android:layout_below="@+id/tvPrepTime"
-            android:text="Recipe Yield" />
+            <ImageView
+                android:id="@+id/ivImage"
+                android:layout_width="175dp"
+                android:layout_height="150dp"
+                android:layout_alignBottom="@+id/tvYield"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:transitionName="image"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/image_placeholder" />
 
-        <TextView
-            android:id="@+id/tvIngredients"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/ivImage"
-            android:layout_alignLeft="@+id/tvName"
-            android:layout_alignRight="@+id/ivImage"
-            android:layout_alignStart="@+id/tvName"
-            android:layout_below="@+id/tvYield"
-            android:layout_marginTop="25dp"
-            android:text="Ingredients" />
+            <TextView
+                android:id="@+id/tvYield"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/tvName"
+                android:layout_below="@+id/tvPrepTime"
+                android:text="Recipe Yield" />
 
-        <TextView
-            android:id="@+id/tvInstructions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/ivImage"
-            android:layout_alignLeft="@+id/tvName"
-            android:layout_alignRight="@+id/ivImage"
-            android:layout_alignStart="@+id/tvName"
-            android:layout_below="@+id/tvIngredients"
-            android:layout_marginTop="15dp"
-            android:text="Instructions" />
+            <ImageButton
+                android:id="@+id/btPlay"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/tvYield"
+                android:layout_alignStart="@+id/tvYield"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/circle_button"
+                android:src="@android:drawable/ic_media_play" />
 
-        <TextView
-            android:id="@+id/tvType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/tvName"
-            android:layout_below="@+id/ratingBar"
-            android:text="Recipe Type" />
+            <TextView
+                android:id="@+id/tvIngredients"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/ivImage"
+                android:layout_alignLeft="@+id/tvName"
+                android:layout_alignRight="@+id/ivImage"
+                android:layout_alignStart="@+id/tvName"
+                android:layout_below="@+id/btPlay"
+                android:layout_marginTop="25dp"
+                android:text="Ingredients" />
 
-    </RelativeLayout>
-</FrameLayout>
+            <TextView
+                android:id="@+id/tvInstructions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/ivImage"
+                android:layout_alignLeft="@+id/tvName"
+                android:layout_alignRight="@+id/ivImage"
+                android:layout_alignStart="@+id/tvName"
+                android:layout_below="@+id/tvIngredients"
+                android:layout_marginTop="15dp"
+                android:text="Instructions" />
+
+            <TextView
+                android:id="@+id/tvType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/tvName"
+                android:layout_below="@+id/ratingBar"
+                android:text="Recipe Type" />
+
+
+        </RelativeLayout>
+    </FrameLayout>
+</ScrollView>
