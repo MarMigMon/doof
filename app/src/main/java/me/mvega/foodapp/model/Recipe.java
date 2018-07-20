@@ -26,6 +26,15 @@ public class Recipe extends ParseObject {
     private static final String KEY_PREP_TIME = "prepTime";
     private static final String KEY_MEDIA = "media";
     private static final String KEY_USERS_WHO_FAVORITED = "usersWhoFavorited";
+    private static final String KEY_STEPS = "steps";
+
+    public ParseObject getSteps() {
+        return getParseObject(KEY_STEPS);
+    }
+    public void setSteps(ArrayList<String> steps) {
+        put(KEY_STEPS, steps);
+    }
+
 
     public ParseFile getMedia() {
         return getParseFile(KEY_MEDIA);

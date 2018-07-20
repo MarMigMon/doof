@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,18 +25,25 @@ import java.util.List;
 
 import me.mvega.foodapp.model.Recipe;
 
+import static android.support.constraint.Constraints.TAG;
+
 public class YourRecipesFragment extends Fragment {
 
     ProfileRecipesAdapter profileRecipesAdapter;
+    YourRecipesFragmentCommunication profileListenerFragment;
     ArrayList<Recipe> recipes;
     RecyclerView rvRecipes;
     private SwipeRefreshLayout swipeContainer;
-    FragmentCommunication profileListenerFragment;
 
     // implement interface
-    public interface FragmentCommunication {
+    public interface YourRecipesFragmentCommunication {
         void respond(Recipe recipe);
     }
+
+    public void setYourRecipeListener(YourRecipesFragmentCommunication yourRecipeListener) {
+        this.profileListenerFragment = (YourRecipesFragmentCommunication) yourRecipeListener;
+    }
+
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -45,15 +53,18 @@ public class YourRecipesFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_feed, parent, false);
     }
 
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof FragmentCommunication) {
-//            profileListenerFragment = (FragmentCommunication) context;
-//        } else {
-//            throw new ClassCastException(context.toString() + " must implement FeedFragment.FragmentCommunication");
-//        }
-//    }
+    public void onAttachToParentFragment(Fragment childFragment) {
+        try
+        {
+            profileListenerFragment = (YourRecipesFragmentCommunication) childFragment;
+
+        }
+        catch (ClassCastException e)
+        {
+            throw new ClassCastException(
+                    childFragment.toString() + " must implement OnPlayerSelectionSetListener");
+        }
+    }
 
     // This event is triggered soon after onCreateView().
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
@@ -78,7 +89,7 @@ public class YourRecipesFragment extends Fragment {
         profileRecipesAdapter.setProfileListener(new ProfileRecipesAdapter.ProfileAdapterCommunication() {
             @Override
             public void respond(Recipe recipe) {
-//                profileListenerFragment.respond(recipe);
+                profileListenerFragment.respond(recipe);
             }
 
             @Override
@@ -126,6 +137,10 @@ public class YourRecipesFragment extends Fragment {
         });
 
         loadYourRecipes();
+
+        Log.i(TAG, "onCreate");
+        super.onCreate(savedInstanceState);
+        onAttachToParentFragment(getParentFragment());
 
         // Lookup the swipe container view
         swipeContainer = view.findViewById(R.id.swipeContainer);

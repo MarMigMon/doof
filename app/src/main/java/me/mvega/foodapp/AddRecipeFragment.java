@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.parse.ParseException;
@@ -33,6 +35,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,13 +58,18 @@ public class AddRecipeFragment extends Fragment {
     @BindView(R.id.btAdd) Button btAdd;
     @BindView(R.id.btImage) Button btImage;
     @BindView(R.id.btAudio) Button btAudio;
+    @BindView(R.id.btAddStep) Button btAddStep;
     @BindView(R.id.ivPreview) ImageView ivPreview;
+    @BindView(R.id.ingredientsLayout) RelativeLayout ingredientsLayout;
+    @BindView(R.id.step1) EditText step1;
 
     private Bitmap recipeImage;
     private Uri audioUri;
     private String audioName;
     private final static int PICK_PHOTO_CODE = 1046;
     private final static int PICK_AUDIO_CODE = 1;
+    private int stepCount = 1;
+    private ArrayList<EditText> steps;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -74,6 +82,10 @@ public class AddRecipeFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
+
+        steps = new ArrayList<>();
+        step1.setId(stepCount);
+        steps.add(step1);
 
         btAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,8 +108,19 @@ public class AddRecipeFragment extends Fragment {
             }
         });
 
+        btAddStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onAddStep();
+            }
+        });
+
         checkStoragePermissions();
     }
+
+    /**
+     * Request read external storage permissions to upload images and audio
+      */
 
     private void checkStoragePermissions() {
         int permissionCheck = ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -122,6 +145,27 @@ public class AddRecipeFragment extends Fragment {
                 Toast.makeText(getContext(), "Accept permissions to enable adding recipes", Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    private void onAddStep() {
+        EditText step = new EditText(getContext());
+
+        // Set layout params
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams (
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.BELOW, stepCount);
+
+        // Set up new EditText view
+        stepCount += 1;
+        step.setId(stepCount);
+        step.setHint("Step " + stepCount);
+        step.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        step.setLayoutParams(params);
+
+        // Add step
+        steps.add(step);
+        ingredientsLayout.addView(step);
     }
 
     private void onPickAudio() {
@@ -182,6 +226,8 @@ public class AddRecipeFragment extends Fragment {
                 // Load the selected image into a preview
                 ivPreview.setImageBitmap(selectedImage);
                 recipeImage = selectedImage;
+            } else {
+                return;
             }
         } else if (requestCode == PICK_AUDIO_CODE) {
             if (data != null && resultCode == RESULT_OK){
@@ -190,27 +236,37 @@ public class AddRecipeFragment extends Fragment {
                 audioName = getFileName(audioUri);
                 btAudio.setText(audioName);
                 Log.d("AddRecipeFragment", "Picked audio");
+            } else {
+                return;
             }
 
         }
     }
 
     private ParseFile prepareImage(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+        if (bitmap != null) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
 
-        byte[] bitmapBytes = stream.toByteArray();
+            byte[] bitmapBytes = stream.toByteArray();
 
-        ParseFile image = new ParseFile("RecipeImage", bitmapBytes);
-        return image;
+            ParseFile image = new ParseFile("RecipeImage", bitmapBytes);
+            return image;
+        } else {
+            return null;
+        }
     }
 
     private ParseFile prepareAudio(Uri audioUri) {
-        byte[] audioBytes = audioToByteArray(audioUri);
-        // Create the ParseFile
-        ParseFile file = new ParseFile("Audio", audioBytes);
-        Log.d("AddRecipeFragment", "Successfully returned audio file");
-        return file;
+        if (audioUri != null) {
+            byte[] audioBytes = audioToByteArray(audioUri);
+            // Create the ParseFile
+            ParseFile file = new ParseFile("Audio", audioBytes);
+            Log.d("AddRecipeFragment", "Successfully returned audio file");
+            return file;
+        } else {
+            return null;
+        }
     }
 
     private byte[] audioToByteArray(Uri audioUri) {
@@ -251,9 +307,21 @@ public class AddRecipeFragment extends Fragment {
         return audioBytes;
     }
 
+    private ArrayList<String> parseInstructions() {
+        ArrayList<String> stepStrings = new ArrayList<>();
+
+        for (int i = 0; i < steps.size(); i++) {
+            stepStrings.add(steps.get(i).getText().toString());
+        }
+
+        return stepStrings;
+    }
+
     private void addRecipe() {
         pbLoading.setVisibility(ProgressBar.VISIBLE);
         final Recipe recipe = new Recipe();
+
+        recipe.setSteps(parseInstructions());
         recipe.setName(etRecipeName.getText().toString());
         recipe.setDescription(etDescription.getText().toString());
         recipe.setIngredients(etIngredients.getText().toString());
@@ -261,8 +329,13 @@ public class AddRecipeFragment extends Fragment {
         recipe.setPrepTime(etPrepTime.getText().toString());
         recipe.setYield(etYield.getText().toString());
         recipe.setType(etType.getText().toString());
-        recipe.setImage(prepareImage(recipeImage));
-        recipe.setMedia(prepareAudio(audioUri));
+
+        if (recipeImage != null) {
+            recipe.setImage(prepareImage(recipeImage));
+        }
+        if (audioUri != null) {
+            recipe.setMedia(prepareAudio(audioUri));
+        }
 
         recipe.saveInBackground(new SaveCallback() {
             @Override

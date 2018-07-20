@@ -4,8 +4,11 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +24,7 @@ import com.parse.ParseFile;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,11 +43,14 @@ public class SpeechActivity extends AppCompatActivity implements
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
 
+    private TextToSpeech tts;
     private Recipe recipe;
+    private String instructions;
     private ParseFile audioFile;
     private SpeechRecognizer recognizer;
     private MediaPlayer player;
     private Boolean isPaused;
+    private Boolean isSpeaking;
 
     @BindView(R.id.btStart) Button btStart;
     @BindView(R.id.btStop) Button btStop;
@@ -64,14 +71,14 @@ public class SpeechActivity extends AppCompatActivity implements
 
         new SetupTask(this).execute();
 
-        player = new MediaPlayer();
-
         // Set views
         recipe = getIntent().getParcelableExtra("recipe");
         audioFile = recipe.getMedia();
         tvName.setText(recipe.getName());
         tvIngredients.setText(recipe.getIngredients());
-        tvInstructions.setText(recipe.getInstructions());
+
+        instructions = recipe.getInstructions();
+        tvInstructions.setText(instructions);
 
         btStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,27 +94,50 @@ public class SpeechActivity extends AppCompatActivity implements
             }
         });
 
+        setTextToSpeech();
+    }
+
+    private void setTextToSpeech() {
+        tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    tts.setLanguage(Locale.US);
+                    tts.setSpeechRate(0.9f);
+                }
+            }
+        });
     }
 
     private void beginRecipe() {
-        // If audio file exists, start player and speech recognition
+        toggleVisibility(btStop);
+        toggleVisibility(btStart);
+
+        // If audio file exists, start player
         if (audioFile != null) {
-            toggleVisibility(btStop);
-            toggleVisibility(btStart);
+            player = new MediaPlayer();
             pbLoading.setVisibility(ProgressBar.VISIBLE);
             startPlayer();
-
             Toast.makeText(SpeechActivity.this, "Listening for start or stop", Toast.LENGTH_SHORT).show();
-            startRecognition(MENU_SEARCH);
         } else {
-            Toast.makeText(SpeechActivity.this, "Audio file not found", Toast.LENGTH_SHORT).show();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Toast.makeText(SpeechActivity.this, "Custom audio file not found, playing instructions", Toast.LENGTH_LONG).show();
+                tts.speak(instructions, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
+            } else {
+                Toast.makeText(SpeechActivity.this, "Custom audio file not found", Toast.LENGTH_LONG).show();
+            }
         }
+
+        startRecognition(MENU_SEARCH);
     }
 
     private void finishRecipe() {
-        // Stop speech recognition and player and reset to start button
+        // Stop speech recognition and player or text to speech and reset to start button
         recognizer.stop();
         stopPlayer();
+        if (tts.isSpeaking()) {
+            tts.stop();
+        }
         toggleVisibility(btStop);
         toggleVisibility(btStart);
     }
@@ -202,6 +232,10 @@ public class SpeechActivity extends AppCompatActivity implements
             recognizer.cancel();
             recognizer.shutdown();
         }
+
+        if (tts != null) {
+            tts.shutdown();
+        }
     }
 
     /**
@@ -248,20 +282,49 @@ public class SpeechActivity extends AppCompatActivity implements
         Log.d("Speech recognition", error.toString());
     }
 
+    // Called in onResult if using media player
+    private void processPlayerResult(String text) {
+        int length = player.getCurrentPosition();
+        isPaused = !player.isPlaying() && length > 1;
+
+        if (text.equals(R.string.start_command) && isPaused) {
+            Toast.makeText(this, "Start", Toast.LENGTH_SHORT).show();
+            player.seekTo(length);
+            player.start();
+        } else if (text.equals(R.string.stop_command) && !isPaused) {
+            Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
+            player.pause();
+        }
+    }
+
+    // Called in onResult if using text to speech
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void processTtsResult(String text) {
+        isSpeaking = tts.isSpeaking();
+
+        if (text.equals(R.string.start_command) && !isSpeaking) {
+            Toast.makeText(this, "Start", Toast.LENGTH_SHORT).show();
+            tts.speak(instructions, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
+
+        } else if (text.equals(R.string.stop_command) && isSpeaking) {
+            Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
+            tts.stop();
+        }
+    }
+
     // Called after recognizer is stopped
     @Override
     public void onResult(Hypothesis hypothesis) {
-        int length = player.getCurrentPosition();
-        isPaused = !player.isPlaying() && length > 1;
+
         if (hypothesis != null) {
             String text = hypothesis.getHypstr();
-            if (text.equals("start") && isPaused) {
-                Toast.makeText(this, "Start", Toast.LENGTH_SHORT).show();
-                player.seekTo(length);
-                player.start();
-            } else if (text.equals("stop") && !isPaused) {
-                Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
-                player.pause();
+
+            if (audioFile != null) {
+                processPlayerResult(text);
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    processTtsResult(text);
+                }
             }
         }
 
@@ -280,4 +343,5 @@ public class SpeechActivity extends AppCompatActivity implements
     @Override
     public void onTimeout() {
     }
+
 }
