@@ -57,8 +57,8 @@ public class AddRecipeFragment extends Fragment {
     @BindView(R.id.btAudio) Button btAudio;
     @BindView(R.id.ivPreview) ImageView ivPreview;
 
-    private Bitmap recipeImage;
-    private Uri audioUri;
+    private Bitmap recipeImage = null;
+    private Uri audioUri = null;
     private String audioName;
     private final static int PICK_PHOTO_CODE = 1046;
     private final static int PICK_AUDIO_CODE = 1;
@@ -182,6 +182,8 @@ public class AddRecipeFragment extends Fragment {
                 // Load the selected image into a preview
                 ivPreview.setImageBitmap(selectedImage);
                 recipeImage = selectedImage;
+            } else {
+                return;
             }
         } else if (requestCode == PICK_AUDIO_CODE) {
             if (data != null && resultCode == RESULT_OK){
@@ -190,27 +192,37 @@ public class AddRecipeFragment extends Fragment {
                 audioName = getFileName(audioUri);
                 btAudio.setText(audioName);
                 Log.d("AddRecipeFragment", "Picked audio");
+            } else {
+                return;
             }
 
         }
     }
 
     private ParseFile prepareImage(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+        if (bitmap != null) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
 
-        byte[] bitmapBytes = stream.toByteArray();
+            byte[] bitmapBytes = stream.toByteArray();
 
-        ParseFile image = new ParseFile("RecipeImage", bitmapBytes);
-        return image;
+            ParseFile image = new ParseFile("RecipeImage", bitmapBytes);
+            return image;
+        } else {
+            return null;
+        }
     }
 
     private ParseFile prepareAudio(Uri audioUri) {
-        byte[] audioBytes = audioToByteArray(audioUri);
-        // Create the ParseFile
-        ParseFile file = new ParseFile("Audio", audioBytes);
-        Log.d("AddRecipeFragment", "Successfully returned audio file");
-        return file;
+        if (audioUri != null) {
+            byte[] audioBytes = audioToByteArray(audioUri);
+            // Create the ParseFile
+            ParseFile file = new ParseFile("Audio", audioBytes);
+            Log.d("AddRecipeFragment", "Successfully returned audio file");
+            return file;
+        } else {
+            return null;
+        }
     }
 
     private byte[] audioToByteArray(Uri audioUri) {
@@ -261,8 +273,13 @@ public class AddRecipeFragment extends Fragment {
         recipe.setPrepTime(etPrepTime.getText().toString());
         recipe.setYield(etYield.getText().toString());
         recipe.setType(etType.getText().toString());
-        recipe.setImage(prepareImage(recipeImage));
-        recipe.setMedia(prepareAudio(audioUri));
+
+        if (recipeImage != null) {
+            recipe.setImage(prepareImage(recipeImage));
+        }
+        if (audioUri != null) {
+            recipe.setMedia(prepareAudio(audioUri));
+        }
 
         recipe.saveInBackground(new SaveCallback() {
             @Override

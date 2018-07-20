@@ -7,4 +7,6 @@
     <string name="recipe_ins">Instructions</string>
     <string name="recipe_desc">Description</string>
     <string name="search_bar">Search for a recipe</string>
+    <string name="start_command">start</string>
+    <string name="stop_command">stop</string>
 </resources>

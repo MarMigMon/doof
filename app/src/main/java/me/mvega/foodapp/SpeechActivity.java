@@ -287,11 +287,11 @@ public class SpeechActivity extends AppCompatActivity implements
         int length = player.getCurrentPosition();
         isPaused = !player.isPlaying() && length > 1;
 
-        if (text.equals("start") && isPaused) {
+        if (text.equals(R.string.start_command) && isPaused) {
             Toast.makeText(this, "Start", Toast.LENGTH_SHORT).show();
             player.seekTo(length);
             player.start();
-        } else if (text.equals("stop") && !isPaused) {
+        } else if (text.equals(R.string.stop_command) && !isPaused) {
             Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
             player.pause();
         }
@@ -302,11 +302,11 @@ public class SpeechActivity extends AppCompatActivity implements
     private void processTtsResult(String text) {
         isSpeaking = tts.isSpeaking();
 
-        if (text.equals("start") && !isSpeaking) {
+        if (text.equals(R.string.start_command) && !isSpeaking) {
             Toast.makeText(this, "Start", Toast.LENGTH_SHORT).show();
             tts.speak(instructions, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
 
-        } else if (text.equals("stop") && isSpeaking) {
+        } else if (text.equals(R.string.stop_command) && isSpeaking) {
             Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
             tts.stop();
         }
