@@ -8,6 +8,7 @@ import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @ParseClassName("Recipe")
 public class Recipe extends ParseObject {
@@ -24,8 +25,8 @@ public class Recipe extends ParseObject {
     private static final String KEY_MEDIA = "media";
     private static final String KEY_STEPS = "steps";
 
-    public ParseObject getSteps() {
-        return getParseObject(KEY_STEPS);
+    public List<String> getSteps() {
+        return getList(KEY_STEPS);
     }
     public void setSteps(ArrayList<String> steps) {
         put(KEY_STEPS, steps);

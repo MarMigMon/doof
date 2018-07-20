@@ -9,10 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,6 +25,9 @@ public class RecipeFragment extends Fragment {
 
     Recipe recipe;
     ImageView image;
+    ArrayList<String> steps;
+    int stepCount = 0;
+
     @BindView(R.id.tvName) TextView tvName;
     @BindView(R.id.ratingBar) RatingBar ratingBar;
     @BindView(R.id.tvType) TextView tvType;
@@ -30,6 +36,7 @@ public class RecipeFragment extends Fragment {
     @BindView(R.id.tvYield) TextView tvYield;
     @BindView(R.id.tvIngredients) TextView tvIngredients;
     @BindView(R.id.tvInstructions) TextView tvInstructions;
+    @BindView(R.id.instructionsLayout) RelativeLayout instructionsLayout;
     @BindView(R.id.ivImage) ImageView ivImage;
     @BindView(R.id.btPlay) ImageButton btPlay;
 
@@ -47,6 +54,7 @@ public class RecipeFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
         ButterKnife.bind(this, view);
+        steps = (ArrayList<String>) recipe.getSteps();
 
         tvName.setText(recipe.getName());
         tvType.setText(recipe.getType());
@@ -54,7 +62,7 @@ public class RecipeFragment extends Fragment {
         tvPrepTime.setText(recipe.getPrepTime());
         tvYield.setText(recipe.getYield());
         tvIngredients.setText(recipe.getIngredients());
-        tvInstructions.setText(recipe.getInstructions());
+        setInstructions(steps);
 
         btPlay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +81,32 @@ public class RecipeFragment extends Fragment {
 
         float rating = (float) (double) recipe.getRating();
         ratingBar.setRating(rating);
+    }
+
+    private void setInstructions(ArrayList<String> steps) {
+
+        while (stepCount < steps.size()) {
+            TextView step = new TextView(getContext());
+
+            if (stepCount > 0) {
+                // Set layout params
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams (
+                        RelativeLayout.LayoutParams.WRAP_CONTENT,
+                        RelativeLayout.LayoutParams.WRAP_CONTENT);
+                params.addRule(RelativeLayout.BELOW, stepCount);
+                step.setLayoutParams(params);
+            }
+
+            String stepText = (stepCount + 1) + ". " + steps.get(stepCount);
+            step.setText(stepText);
+
+            stepCount += 1;
+            step.setId(stepCount);
+
+            // Add step
+            instructionsLayout.addView(step);
+        }
+
     }
 
     public void beginRecipe() {

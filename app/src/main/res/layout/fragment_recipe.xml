@@ -101,7 +101,18 @@
                 android:layout_alignStart="@+id/tvName"
                 android:layout_below="@+id/tvIngredients"
                 android:layout_marginTop="15dp"
-                android:text="Instructions" />
+                android:layout_marginBottom="15dp"
+                android:textSize="20sp"
+                android:text="Instructions"/>
+
+            <RelativeLayout
+                android:id="@+id/instructionsLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvInstructions"
+                android:layout_margin="10dp">
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/tvType"
