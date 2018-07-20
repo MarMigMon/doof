@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +83,7 @@ public class FavoritesFragment extends Fragment {
 
     private void loadFavorites() {
         final Recipe.Query recipeQuery = new Recipe.Query();
-        recipeQuery.getTop().withUser().newestFirst(); // TODO update Query to reflect what the "Favorites" Fragment should be loading
+        recipeQuery.getFavorites(ParseUser.getCurrentUser());
 
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override

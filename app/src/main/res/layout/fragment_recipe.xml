@@ -1,4 +1,5 @@
-<ScrollView android:layout_height="match_parent"
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -69,16 +70,6 @@
                 android:layout_below="@+id/tvPrepTime"
                 android:text="Recipe Yield" />
 
-            <ImageButton
-                android:id="@+id/btPlay"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_below="@id/tvYield"
-                android:layout_alignStart="@+id/tvYield"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/circle_button"
-                android:src="@android:drawable/ic_media_play" />
-
             <TextView
                 android:id="@+id/tvIngredients"
                 android:layout_width="wrap_content"
@@ -111,6 +102,27 @@
                 android:layout_below="@+id/ratingBar"
                 android:text="Recipe Type" />
 
+            <ImageButton
+                android:id="@+id/btPlay"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/tvYield"
+                android:layout_alignStart="@+id/tvYield"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/circle_button"
+                android:src="@android:drawable/ic_media_play" />
+
+            <ImageButton
+                android:id="@+id/btFavorite"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignTop="@+id/btPlay"
+                android:layout_toEndOf="@+id/btPlay"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:layout_marginStart="15dp"
+                android:padding="5dp"
+                app:srcCompat="@drawable/ufi_heart_icon" />
 
         </RelativeLayout>
     </FrameLayout>
