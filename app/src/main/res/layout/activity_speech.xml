@@ -27,20 +27,54 @@
             android:text="Ingredients"/>
 
         <TextView
+            android:id="@+id/tvCurrentStepLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/tvIngredients"
+            android:textStyle="italic"
+            android:text="@string/current_step_label"/>
+
+        <TextView
             android:id="@+id/tvInstructions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvIngredients"
-            android:layout_marginTop="15dp"
-            android:textSize="30sp"
+            android:layout_below="@+id/tvCurrentStepLabel"
+            android:layout_margin="15dp"
+            android:layout_centerHorizontal="true"
+            android:textSize="40sp"
             android:textAlignment="center"
             android:text="@string/before_start_recipe_caption"/>
+
+        <TextView
+            android:id="@+id/tvNextStepLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/tvInstructions"
+            android:visibility="invisible"
+            android:textStyle="italic"
+            android:text="@string/next_step_label"/>
+
+        <TextView
+            android:id="@+id/tvNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvNextStepLabel"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="15dp"
+            android:textSize="15sp"
+            android:textAlignment="center"
+            android:visibility="invisible"/>
 
         <Button
             android:id="@+id/btStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvInstructions"
+            android:layout_below="@+id/tvNext"
             android:layout_centerHorizontal="true"
             android:layout_margin="30dp"
             android:visibility="visible"
@@ -50,7 +84,7 @@
             android:id="@+id/btNext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvInstructions"
+            android:layout_below="@+id/tvNext"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
             android:visibility="invisible"

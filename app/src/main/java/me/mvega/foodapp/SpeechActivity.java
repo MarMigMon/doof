@@ -61,6 +61,9 @@ public class SpeechActivity extends AppCompatActivity implements
     @BindView(R.id.tvName) TextView tvName;
     @BindView(R.id.tvInstructions) TextView tvInstructions;
     @BindView(R.id.tvIngredients) TextView tvIngredients;
+    @BindView(R.id.tvNext) TextView tvNext;
+    @BindView(R.id.tvNextStepLabel) TextView tvNextStepLabel;
+    @BindView(R.id.tvCurrentStepLabel) TextView tvCurrentStepLabel;
     @BindView(R.id.pbLoading) ProgressBar pbLoading;
     @BindView(R.id.btNext) Button btNext;
 
@@ -121,14 +124,16 @@ public class SpeechActivity extends AppCompatActivity implements
         });
     }
 
-    private void toggleButtons() {
+    private void toggleViews() {
         toggleVisibility(btStop);
         toggleVisibility(btStart);
         toggleVisibility(btNext);
+        toggleVisibility(tvNext);
+        toggleVisibility(tvNextStepLabel);
     }
 
     private void beginRecipe() {
-        toggleButtons();
+        toggleViews();
 
         // If audio file exists, start player
         if (audioFile != null) {
@@ -138,10 +143,10 @@ public class SpeechActivity extends AppCompatActivity implements
             Toast.makeText(SpeechActivity.this, "Listening for start or stop", Toast.LENGTH_SHORT).show();
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Toast.makeText(SpeechActivity.this, "Custom audio file not found, playing instructions", Toast.LENGTH_LONG).show();
+                Toast.makeText(SpeechActivity.this, "Custom audio file not found, playing instructions", Toast.LENGTH_SHORT).show();
                 speakStep();
             } else {
-                Toast.makeText(SpeechActivity.this, "Custom audio file not found", Toast.LENGTH_LONG).show();
+                Toast.makeText(SpeechActivity.this, "Custom audio file not found", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -155,9 +160,17 @@ public class SpeechActivity extends AppCompatActivity implements
             tvInstructions.setText(currStep);
             tts.speak(currStep, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
             stepCount += 1;
+
+            // Check if next step exists, then set text for next step
+            if (stepCount < totalSteps) {
+                currStep = instructions.get(stepCount);
+                tvNext.setText(currStep);
+            } else {
+                tvNext.setText(R.string.recipe_completed);
+            }
         } else {
-            tvInstructions.setText(R.string.recipe_completed);
             tts.stop();
+            recognizer.stop();
         }
     }
 
@@ -168,9 +181,11 @@ public class SpeechActivity extends AppCompatActivity implements
             stopPlayer();
         }
         if (tts.isSpeaking()) {
+            stepCount = 0;
+            tvInstructions.setText(R.string.before_start_recipe_caption);
             tts.stop();
         }
-        toggleButtons();
+        toggleViews();
     }
 
     public void toggleVisibility(View view) {
