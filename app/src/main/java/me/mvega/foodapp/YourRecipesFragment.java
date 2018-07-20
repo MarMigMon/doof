@@ -12,6 +12,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
@@ -100,6 +101,7 @@ public class YourRecipesFragment extends Fragment {
                                     public void done(ParseException e) {
                                         if (e == null) {
                                             loadYourRecipes();
+                                            reduceContributed();
                                             dialog.dismiss();
                                         } else {
                                             e.printStackTrace();
@@ -170,6 +172,11 @@ public class YourRecipesFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void reduceContributed() {
+        TextView contributed = getParentFragment().getView().findViewById(R.id.tvContributed);
+        contributed.setText(Integer.toString(Integer.parseInt(contributed.getText().toString()) - 1));
     }
 }
 

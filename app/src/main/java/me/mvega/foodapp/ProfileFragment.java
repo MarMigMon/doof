@@ -123,5 +123,4 @@ public class ProfileFragment extends Fragment {
         // Replace the contents of the container with the new fragment and complete the changes added above
         fragmentTransaction.replace(R.id.userRecipes, f).commit();
     }
-
 }
