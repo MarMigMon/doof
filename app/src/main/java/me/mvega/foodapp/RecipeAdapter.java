@@ -3,6 +3,7 @@ package me.mvega.foodapp;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,9 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.SaveCallback;
 
 import java.util.List;
 
@@ -24,7 +27,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     private AdapterCommunication mCommunication;
     private List<Recipe> recipes;
     Context context;
-
 
     // communicates information from adapter to fragment
     public interface AdapterCommunication {
@@ -62,6 +64,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         holder.tvType.setText(recipe.getType()); // TODO get recipe type
         holder.tvDescription.setText(recipe.getDescription()); // TODO get recipe description
         holder.tvPrepTime.setText(recipe.getPrepTime()); // TODO get recipe prep time
+        holder.tvViewCount.setText(recipe.getViews().toString());
 
         ParseFile picture = recipe.getImage(); // TODO get recipe image
         if (picture != null) {
@@ -85,6 +88,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         @BindView(R.id.tvDescription) TextView tvDescription;
         @BindView(R.id.tvPrepTime) TextView tvPrepTime;
         @BindView(R.id.ratingBar) RatingBar ratingBar;
+        @BindView(R.id.tvViewCount) TextView tvViewCount;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -104,13 +108,24 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             // make sure the position is valid, i.e. actually exists in the view
             if (position != RecyclerView.NO_POSITION) {
                 // get the recipe at the position, this won't work if the class is static
-                Recipe recipe = recipes.get(position);
+                final Recipe recipe = recipes.get(position);
+                // update view count when recipe is clicked
+                recipe.put("views", recipe.getViews()+1);
+                recipe.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Log.d("Recipe", "Saved");
+                        } else {
+                            e.printStackTrace();
+                        }
+                    }
+                });
                 mCommunication.respond(recipe, ivRecipe);
             }
-
         }
     }
-    
+
     // Clean all elements of the recycler
     public void clear() {
         recipes.clear();
