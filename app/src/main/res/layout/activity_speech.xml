@@ -80,23 +80,40 @@
             android:visibility="visible"
             android:text="Begin" />
 
-        <Button
-            android:id="@+id/btNext"
+        <RelativeLayout
+            android:id="@+id/prevNextLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvNext"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:visibility="invisible"
-            android:text="@string/next_step" />
+            android:visibility="invisible">
+
+            <Button
+                android:id="@+id/btPrevious"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="@string/prev_step" />
+
+            <Button
+                android:id="@+id/btNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_toRightOf="@+id/btPrevious"
+                android:layout_marginLeft="15dp"
+                android:text="@string/next_step" />
+
+        </RelativeLayout>
+
 
         <Button
             android:id="@+id/btPause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btNext"
+            android:layout_below="@+id/prevNextLayout"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="15dp"
             android:visibility="invisible"
             android:text="Pause" />
 
@@ -104,7 +121,7 @@
             android:id="@+id/btResume"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btNext"
+            android:layout_below="@+id/prevNextLayout"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
             android:visibility="invisible"

@@ -23,4 +23,5 @@
     <string name="recipe_completed">Recipe completed.</string>
     <string name="current_step_label">Current Step</string>
     <string name="next_step_label">Next Step</string>
+    <string name="prev_step">Previous Step</string>
 </resources>

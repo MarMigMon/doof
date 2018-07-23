@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,6 +63,8 @@ public class SpeechActivity extends AppCompatActivity implements
     @BindView(R.id.btNext) Button btNext;
     @BindView(R.id.btPause) Button btPause;
     @BindView(R.id.btResume) Button btResume;
+    @BindView(R.id.btPrevious) Button btPrevious;
+    @BindView(R.id.prevNextLayout) RelativeLayout prevNextLayout;
 
     // Text views
     @BindView(R.id.tvName) TextView tvName;
@@ -129,6 +132,13 @@ public class SpeechActivity extends AppCompatActivity implements
             }
         });
 
+        btPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                previousTts();
+            }
+        });
+
         setTextToSpeech();
     }
 
@@ -147,7 +157,7 @@ public class SpeechActivity extends AppCompatActivity implements
     private void beginRecipe() {
         // Toggle views
         btStart.setVisibility(View.INVISIBLE);
-        btNext.setVisibility(View.VISIBLE);
+        prevNextLayout.setVisibility(View.VISIBLE);
         btStop.setVisibility(View.VISIBLE);
         btPause.setVisibility(View.VISIBLE);
         tvNext.setVisibility(View.VISIBLE);
@@ -196,8 +206,6 @@ public class SpeechActivity extends AppCompatActivity implements
 
     private void finishRecipe() {
         // Stop speech recognition and player or text to speech and reset to start button
-        Toast.makeText(this, "Stopping player", Toast.LENGTH_SHORT).show();
-
         recognizer.stop();
         if (player != null) {
             stopPlayer();
@@ -210,7 +218,7 @@ public class SpeechActivity extends AppCompatActivity implements
 
         // Toggle views
         btStart.setVisibility(View.VISIBLE);
-        btNext.setVisibility(View.INVISIBLE);
+        prevNextLayout.setVisibility(View.INVISIBLE);
         btStop.setVisibility(View.INVISIBLE);
         btPause.setVisibility(View.INVISIBLE);
         btResume.setVisibility(View.INVISIBLE);
@@ -368,10 +376,7 @@ public class SpeechActivity extends AppCompatActivity implements
         } else if (text.equals("repeat step")) {
             repeatTts();
         } else if (text.equals("previous step")) {
-            if (stepCount > 1) {
-                stepCount -= 2;
-                speakStep();
-            }
+            previousTts();
         }
     }
 
@@ -387,6 +392,13 @@ public class SpeechActivity extends AppCompatActivity implements
     private void repeatTts() {
         stepCount -= 1;
         speakStep();
+    }
+
+    private void previousTts() {
+        if (stepCount > 1) {
+            stepCount -= 2;
+            speakStep();
+        }
     }
 
     private void resumeTts() {
