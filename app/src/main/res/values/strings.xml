@@ -7,10 +7,18 @@
     <string name="recipe_ins">Instructions</string>
     <string name="recipe_desc">Description</string>
     <string name="search_bar">Search for a recipe</string>
-    <string name="start_command">start</string>
-    <string name="stop_command">stop</string>
+
+    <!--commands-->
+    <string name="start_command">next step</string>
+    <string name="stop_command">finish recipe</string>
+    <string name="repeat_command">repeat step</string>
+    <string name="previous_command">previous step</string>
+
+    <!--Speech activity buttons-->
     <string name="next_step">Next Step</string>
     <string name="finish_recipe">Finish</string>
+
+    <!--Speech activity text-->
     <string name="before_start_recipe_caption">Tap \"begin\" to start playing the recipe.</string>
     <string name="recipe_completed">Recipe completed.</string>
     <string name="current_step_label">Current Step</string>
