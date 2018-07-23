@@ -14,12 +14,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
-
-import java.util.ArrayList;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,6 +32,7 @@ public class RecipeFragment extends Fragment {
     ImageView image;
     ArrayList<String> steps;
     int stepCount = 0;
+    private static final String KEY_FAVORITE = "favorites";
 
     @BindView(R.id.tvName) TextView tvName;
     @BindView(R.id.ratingBar) RatingBar ratingBar;
@@ -80,7 +82,6 @@ public class RecipeFragment extends Fragment {
         if (usersWhoFavorited != null) {
             Log.d("RecipeFragment", usersWhoFavorited.toString());
             if (usersWhoFavorited.contains(ParseUser.getCurrentUser().getObjectId())) {
-                Log.d("RecipeFragment", "We're in");
                 btFavorite.setSelected(true);
             }
         }
@@ -90,11 +91,25 @@ public class RecipeFragment extends Fragment {
             public void onClick(View view) {
                 //Set the button's appearance
                 btFavorite.setSelected(!btFavorite.isSelected());
-
+                ParseUser user = ParseUser.getCurrentUser();
                 if (btFavorite.isSelected()) {
-                    recipe.addFavorite(ParseUser.getCurrentUser());
+                    recipe.addFavorite(user);
+                    user.addAll(KEY_FAVORITE, Collections.singletonList(recipe.getObjectId()));
+                    user.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) e.printStackTrace();
+                        }
+                    });
                 } else {
-                    recipe.removeFavorite(ParseUser.getCurrentUser());
+                    recipe.removeFavorite(user);
+                    user.removeAll(KEY_FAVORITE, Collections.singletonList(recipe.getObjectId()));
+                    user.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) e.printStackTrace();
+                        }
+                    });
                 }
             }
         });

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -95,8 +96,6 @@ public class FavoritesFragment extends Fragment {
             }
         });
 
-        loadFavorites();
-
         // Lookup the swipe container view
         swipeContainer = view.findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
@@ -114,6 +113,8 @@ public class FavoritesFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+
+        loadFavorites();
     }
 
     public static FavoritesFragment newInstance() {
@@ -123,25 +124,37 @@ public class FavoritesFragment extends Fragment {
     }
 
     private void loadFavorites() {
-        final Recipe.Query recipeQuery = new Recipe.Query();
-        recipeQuery.getFavorites(ParseUser.getCurrentUser());
+        ArrayList<String> userFavorites = (ArrayList<String>) ParseUser.getCurrentUser().get("favorites");
+        final List<ParseQuery<Recipe>> queries = new ArrayList<>();
 
-        recipeQuery.findInBackground(new FindCallback<Recipe>() {
-            @Override
-            public void done(List<Recipe> newRecipes, ParseException e) {
-                if (e == null) {
-                    // Remember to CLEAR OUT old items before appending in the new ones
-                    profileRecipesAdapter.clear();
-                    // ...the data has come back, add new items to your adapter...
-                    profileRecipesAdapter.addAll(newRecipes);
-                    // Now we call setRefreshing(false) to signal refresh has finished
-                    swipeContainer.setRefreshing(false);
+        for (int i = 0; i < userFavorites.size(); i++) {
+            final Recipe.Query recipeQuery = new Recipe.Query();
+            recipeQuery.is(userFavorites.get(i));
+            queries.add(recipeQuery);
+        }
 
-                } else {
-                    e.printStackTrace();
+        if (!queries.isEmpty()) {
+            ParseQuery.or(queries).findInBackground(new FindCallback<Recipe>() {
+                @Override
+                public void done(List<Recipe> newRecipes, ParseException e) {
+                    if (e == null) {
+                        // Remember to CLEAR OUT old items before appending in the new ones
+                        profileRecipesAdapter.clear();
+                        // ...the data has come back, add new items to your adapter...
+                        profileRecipesAdapter.addAll(newRecipes);
+                        // Now we call setRefreshing(false) to signal refresh has finished
+                        swipeContainer.setRefreshing(false);
+                    } else {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            // Remember to CLEAR OUT old items before appending in the new ones
+            profileRecipesAdapter.clear();
+            // Now we call setRefreshing(false) to signal refresh has finished
+            swipeContainer.setRefreshing(false);
+        }
     }
 }
 

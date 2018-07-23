@@ -28,6 +28,7 @@ public class Recipe extends ParseObject {
     private static final String KEY_MEDIA = "media";
     private static final String KEY_USERS_WHO_FAVORITED = "usersWhoFavorited";
     private static final String KEY_STEPS = "steps";
+    private static final String KEY_OBJECT_ID = "objectId";
 
     public List<String> getSteps() {
         return getList(KEY_STEPS);
@@ -172,8 +173,8 @@ public class Recipe extends ParseObject {
             return this;
         }
 
-        public Query getFavorites(ParseUser user) {
-            whereContainedIn(KEY_USERS_WHO_FAVORITED, Collections.singletonList(user.getObjectId()));
+        public Query is(String objectId) {
+            whereEqualTo(KEY_OBJECT_ID, objectId);
             return this;
         }
     }
