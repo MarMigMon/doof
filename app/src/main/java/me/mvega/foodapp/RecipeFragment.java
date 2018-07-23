@@ -1,10 +1,14 @@
 package me.mvega.foodapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -124,6 +128,17 @@ public class RecipeFragment extends Fragment {
 
         float rating = (float) (double) recipe.getRating();
         ratingBar.setRating(rating);
+
+        ratingBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    Log.d("RecipeFragment", "RatingBar has been clicked!");
+                    showRatingDialog();
+                }
+                return true;
+            }
+        });
     }
 
     private void setInstructions(ArrayList<String> steps) {
@@ -156,5 +171,41 @@ public class RecipeFragment extends Fragment {
         Intent i = new Intent(getContext(), SpeechActivity.class);
         i.putExtra("recipe", recipe);
         startActivity(i);
+    }
+
+    public void showRatingDialog() {
+        // Create builder using dialog layout
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        View dialog = getLayoutInflater().inflate(R.layout.dialog_rating, null);
+        final RatingBar userRating = dialog.findViewById(R.id.rbDialog);
+        builder.setView(dialog);
+
+        // Add cancel option and message
+        builder.setCancelable(true);
+        builder.setMessage(Html.fromHtml("What would you like to rate <b>" + recipe.getName() + "</b>?"));
+
+        // Create alert dialog
+        AlertDialog alertDialog = builder.create();
+
+        // Configure dialog button (OK)
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        Log.d("RecipeFragment", Float.toString(userRating.getRating()));
+                    }
+                });
+
+        // Configure dialog button (CANCEL)
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        // Display the dialog
+        alertDialog.show();
     }
 }
