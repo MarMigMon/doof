@@ -18,12 +18,12 @@
         app:contentInsetLeft="0dp"
         app:contentInsetRight="0dp"
         app:contentInsetStart="0dp"
-        android:layout_alignParentLeft="true">
+        android:background="@color/colorPrimary" >
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="10dp">
+            android:padding="10dp" >
 
             <EditText
                 android:id="@+id/search"
@@ -74,6 +74,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         app:menu="@menu/menu_navigation"
-        android:layout_alignParentLeft="true" />
+        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored" />
 
 </RelativeLayout>
