@@ -29,6 +29,7 @@ public class Recipe extends ParseObject {
     private static final String KEY_USERS_WHO_FAVORITED = "usersWhoFavorited";
     private static final String KEY_STEPS = "steps";
     private static final String KEY_OBJECT_ID = "objectId";
+    private static final String KEY_VIEWS = "views";
 
     public List<String> getSteps() {
         return getList(KEY_STEPS);
@@ -117,6 +118,13 @@ public class Recipe extends ParseObject {
 
     public Date getTimestamp() {
         return getCreatedAt();
+    }
+
+    public Integer getViews() {
+        return getInt(KEY_VIEWS);
+    }
+    public void setViews(Integer views) {
+        put(KEY_VIEWS, views);
     }
 
     public void addFavorite(ParseUser user) {

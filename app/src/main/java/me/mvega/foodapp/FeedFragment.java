@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -34,6 +35,7 @@ public class FeedFragment extends Fragment {
     @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
     EditText search;
     Button btSearch;
+    TextView tvViewCount;
 
     FragmentCommunication listenerFragment;
 
