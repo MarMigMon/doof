@@ -54,11 +54,11 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // get the data according to position
         Recipe recipe = (Recipe) recipes.get(position);
-//        ParseUser user = recipe.getUser();
 
         // populate the view according to this data
         holder.tvName.setText(recipe.getName()); // TODO get recipe name
         holder.tvPrepTime.setText(recipe.getPrepTime()); // TODO get recipe prep time
+        holder.tvViewCount.setText(recipe.getViews().toString());
 
         ParseFile picture = recipe.getImage(); // TODO get recipe image
         if (picture != null) {
@@ -80,6 +80,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
         public TextView tvName;
         public TextView tvPrepTime;
         public RatingBar ratingBar;
+        public TextView tvViewCount;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -89,6 +90,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
             tvName = itemView.findViewById(R.id.tvName);
             tvPrepTime = itemView.findViewById(R.id.tvPrepTime);
             ratingBar = itemView.findViewById(R.id.ratingBar);
+            tvViewCount = itemView.findViewById(R.id.tvViewCount);
 
             // add this as the itemView's OnClickListener
             itemView.setOnClickListener(this);

@@ -19,8 +19,6 @@ import com.parse.ParseUser;
 
 import java.util.ArrayList;
 
-import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
@@ -33,6 +31,7 @@ public class RecipeFragment extends Fragment {
     int stepCount = 0;
 
     @BindView(R.id.tvName) TextView tvName;
+    @BindView(R.id.tvUsername) TextView tvUsername;
     @BindView(R.id.ratingBar) RatingBar ratingBar;
     @BindView(R.id.tvType) TextView tvType;
     @BindView(R.id.tvDescription) TextView tvDescription;
@@ -62,6 +61,7 @@ public class RecipeFragment extends Fragment {
         steps = (ArrayList<String>) recipe.getSteps();
 
         tvName.setText(recipe.getName());
+        tvUsername.setText("@" + recipe.getUser().getUsername());
         tvType.setText(recipe.getType());
         tvDescription.setText(recipe.getDescription());
         tvPrepTime.setText(recipe.getPrepTime());

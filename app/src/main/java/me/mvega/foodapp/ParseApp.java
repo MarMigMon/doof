@@ -5,6 +5,7 @@ import android.app.Application;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
+import me.mvega.foodapp.model.Notification;
 import me.mvega.foodapp.model.Recipe;
 
 public class ParseApp extends Application {
@@ -22,5 +23,6 @@ public class ParseApp extends Application {
         Parse.initialize(configuration);
 
         ParseObject.registerSubclass(Recipe.class);
+        ParseObject.registerSubclass(Notification.class);
     }
 }
