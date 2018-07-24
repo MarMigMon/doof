@@ -125,7 +125,7 @@ public class RecipeFragment extends Fragment {
             Glide.with(getContext()).load(R.drawable.image_placeholder).into(ivImage);
         }
 
-        float rating = (float) (double) recipe.getRating();
+        float rating = recipe.getRating().floatValue();
         ratingBar.setRating(rating);
 
         ratingBar.setOnTouchListener(new View.OnTouchListener() {
@@ -178,12 +178,7 @@ public class RecipeFragment extends Fragment {
         final RatingBar userRating = dialog.findViewById(R.id.rbDialog);
 
         // Creates the rating dialog box with the previously input user rating (0 if never rated)
-        HashMap<String, Float> recipesRated = (HashMap<String, Float>) user.get("recipesRated");
-        if (recipesRated != null) {
-            if (recipesRated.containsKey(recipeId)) {
-                userRating.setRating(recipesRated.get(recipeId));
-            }
-        }
+        userRating.setRating(recipe.getUserRating(user).floatValue());
 
         builder.setView(dialog);
 
@@ -218,12 +213,12 @@ public class RecipeFragment extends Fragment {
         alertDialog.show();
     }
 
-    public void updateRating(float rating) {
+    public void updateRating(Number rating) {
         // updates user's rating in recipe object
         recipe.setUserRating(user, rating);
 
         // updates user's rating in user object
-        HashMap<String, Float> recipesRated = (HashMap<String, Float>) user.get("recipesRated");
+        HashMap<String, Number> recipesRated = (HashMap<String, Number>) user.get("recipesRated");
         if (recipesRated == null) {
             recipesRated = new HashMap<>();
         }
@@ -234,7 +229,7 @@ public class RecipeFragment extends Fragment {
         recipe.updateRating();
 
         // updates recipe rating on rating bar
-        float recipeRating = (float) (double) recipe.getRating();
+        float recipeRating = recipe.getRating().floatValue();
         ratingBar.setRating(recipeRating);
 
         recipe.saveInBackground();
