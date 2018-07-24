@@ -2,7 +2,7 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -14,11 +14,11 @@
             android:id="@+id/pbLoading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:indeterminate="true"
+            android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="20dp"
+            android:indeterminate="true"
             android:translationZ="2dp"
-            android:layout_gravity="bottom|center_horizontal"/>
+            android:visibility="invisible" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -122,60 +122,73 @@
 
             <TextView
                 android:id="@+id/tvInstructions"
-                android:layout_below="@+id/etIngredientsLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/etIngredientsLayout"
                 android:layout_marginTop="15dp"
-                android:textSize="20sp"
                 android:text="Instructions"
-                android:textStyle="bold"/>
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <RelativeLayout
                 android:id="@+id/instructionsLayout"
-                android:layout_below="@+id/tvInstructions"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvInstructions">
 
                 <EditText
                     android:id="@+id/step1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Step 1"/>
+                    android:hint="Step 1" />
             </RelativeLayout>
 
-            <Button
-                android:id="@+id/btAddStep"
-                android:text="Add Step"
+            <LinearLayout
+                android:id="@+id/buttonLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/instructionsLayout"
-                android:layout_centerHorizontal="true"
                 android:layout_margin="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:gravity="center">
 
+                <Button
+                    android:id="@+id/btAddStep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add Step" />
+
+                <Button
+                    android:id="@+id/btRemoveStep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Remove Step"
+                    android:visibility="gone" />
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/btAddStep"
-                android:layout_margin="10dp"
+                android:layout_below="@+id/buttonLayout"
                 android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"
                 android:text="Upload Image" />
 
             <ImageView
                 android:id="@+id/ivPreview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:layout_below="@+id/btImage"/>
+                android:layout_below="@+id/btImage"
+                android:adjustViewBounds="true" />
 
             <Button
                 android:id="@+id/btAudio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ivPreview"
-                android:layout_margin="10dp"
                 android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"
                 android:text="Upload Audio" />
 
             <Button
@@ -183,11 +196,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/btAudio"
-                android:layout_margin="10dp"
                 android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"
                 android:text="Submit Recipe" />
 
         </RelativeLayout>
-
     </FrameLayout>
 </ScrollView>

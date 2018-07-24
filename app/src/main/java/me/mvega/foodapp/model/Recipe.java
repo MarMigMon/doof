@@ -102,30 +102,31 @@ public class Recipe extends ParseObject {
         put(KEY_IMAGE, image);
     }
 
-    public Double getRating() {
-        return getDouble(KEY_RATING);
+    public Number getRating() {
+        return getNumber(KEY_RATING);
     }
     public void updateRating() {
-        HashMap<String, Float> userRatings = (HashMap<String, Float>) get(KEY_USER_RATINGS);
+        HashMap<String, Number> userRatings = (HashMap<String, Number>) get(KEY_USER_RATINGS);
         if (userRatings != null) {
-            float recipeRating = 0f;
-            for (float userRating : userRatings.values()) {
-                recipeRating += userRating;
+            Number recipeRating = 0f;
+            for (Number userRating : userRatings.values()) {
+                recipeRating = recipeRating.doubleValue() + userRating.doubleValue();
             }
-            put(KEY_RATING, recipeRating / userRatings.size());
+            recipeRating = recipeRating.doubleValue() / userRatings.size();
+            put(KEY_RATING, recipeRating);
         }
     }
 
-    public float getUserRating(ParseUser user) {
-        HashMap<String, Float> userRatings = (HashMap<String, Float>) get(KEY_USER_RATINGS);
+    public Number getUserRating(ParseUser user) {
+        HashMap<String, Number> userRatings = (HashMap<String, Number>) get(KEY_USER_RATINGS);
         if (userRatings == null) {
             userRatings = new HashMap<>();
         }
-        Float rating = userRatings.get(user.getObjectId());
-        return (rating == null) ? 0f : rating;
+        Number rating = userRatings.get(user.getObjectId());
+        return (rating == null) ? 0.0 : rating;
     }
-    public void setUserRating(ParseUser user, float rating) {
-        HashMap<String, Float> userRatings = (HashMap<String, Float>) get(KEY_USER_RATINGS);
+    public void setUserRating(ParseUser user, Number rating) {
+        HashMap<String, Number> userRatings = (HashMap<String, Number>) get(KEY_USER_RATINGS);
         if (userRatings == null) {
             userRatings = new HashMap<>();
         }
