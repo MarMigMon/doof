@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +24,7 @@ import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +32,9 @@ import me.mvega.foodapp.model.Recipe;
 
 public class RecipeFragment extends Fragment {
 
+    private static final ParseUser user = ParseUser.getCurrentUser();
     Recipe recipe;
+    String recipeId;
     ImageView image;
     ArrayList<String> steps;
     int stepCount = 0;
@@ -66,6 +68,7 @@ public class RecipeFragment extends Fragment {
 
         ButterKnife.bind(this, view);
         steps = (ArrayList<String>) recipe.getSteps();
+        recipeId = recipe.getObjectId();
 
         tvName.setText(recipe.getName());
         tvType.setText(recipe.getType());
@@ -82,12 +85,11 @@ public class RecipeFragment extends Fragment {
             }
         });
 
-        ArrayList<String> usersWhoFavorited = recipe.getFavorites();
-        if (usersWhoFavorited != null) {
-            Log.d("RecipeFragment", usersWhoFavorited.toString());
-            if (usersWhoFavorited.contains(ParseUser.getCurrentUser().getObjectId())) {
-                btFavorite.setSelected(true);
-            }
+        // Checks whether the user has favorited the recipe
+        ArrayList<String> userFavorites = (ArrayList<String>) user.get("favorites");
+        if(userFavorites.contains(recipeId)) {
+            // fills in the favorite icon if the user previously favorited the recipe
+            btFavorite.setSelected(true);
         }
 
         btFavorite.setOnClickListener(new View.OnClickListener() {
@@ -95,9 +97,7 @@ public class RecipeFragment extends Fragment {
             public void onClick(View view) {
                 //Set the button's appearance
                 btFavorite.setSelected(!btFavorite.isSelected());
-                ParseUser user = ParseUser.getCurrentUser();
                 if (btFavorite.isSelected()) {
-                    recipe.addFavorite(user);
                     user.addAll(KEY_FAVORITE, Collections.singletonList(recipe.getObjectId()));
                     user.saveInBackground(new SaveCallback() {
                         @Override
@@ -106,7 +106,6 @@ public class RecipeFragment extends Fragment {
                         }
                     });
                 } else {
-                    recipe.removeFavorite(user);
                     user.removeAll(KEY_FAVORITE, Collections.singletonList(recipe.getObjectId()));
                     user.saveInBackground(new SaveCallback() {
                         @Override
@@ -133,7 +132,6 @@ public class RecipeFragment extends Fragment {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    Log.d("RecipeFragment", "RatingBar has been clicked!");
                     showRatingDialog();
                 }
                 return true;
@@ -178,6 +176,15 @@ public class RecipeFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View dialog = getLayoutInflater().inflate(R.layout.dialog_rating, null);
         final RatingBar userRating = dialog.findViewById(R.id.rbDialog);
+
+        // Creates the rating dialog box with the previously input user rating (0 if never rated)
+        HashMap<String, Float> recipesRated = (HashMap<String, Float>) user.get("recipesRated");
+        if (recipesRated != null) {
+            if (recipesRated.containsKey(recipeId)) {
+                userRating.setRating(recipesRated.get(recipeId));
+            }
+        }
+
         builder.setView(dialog);
 
         // Add cancel option and message
@@ -192,7 +199,8 @@ public class RecipeFragment extends Fragment {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog, int which) {
-                        Log.d("RecipeFragment", Float.toString(userRating.getRating()));
+                        updateRating(userRating.getRating());
+                        dialog.dismiss();
                     }
                 });
 
@@ -202,10 +210,34 @@ public class RecipeFragment extends Fragment {
                     @Override
                     public void onClick(final DialogInterface dialog, int which) {
                         dialog.dismiss();
+
                     }
                 });
 
         // Display the dialog
         alertDialog.show();
+    }
+
+    public void updateRating(float rating) {
+        // updates user's rating in recipe object
+        recipe.setUserRating(user, rating);
+
+        // updates user's rating in user object
+        HashMap<String, Float> recipesRated = (HashMap<String, Float>) user.get("recipesRated");
+        if (recipesRated == null) {
+            recipesRated = new HashMap<>();
+        }
+        recipesRated.put(recipeId, rating);
+        user.put("recipesRated", recipesRated);
+
+        // updates recipe rating
+        recipe.updateRating();
+
+        // updates recipe rating on rating bar
+        float recipeRating = (float) (double) recipe.getRating();
+        ratingBar.setRating(recipeRating);
+
+        recipe.saveInBackground();
+        user.saveInBackground();
     }
 }
