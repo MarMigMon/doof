@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +34,11 @@ public class FeedFragment extends Fragment {
     Recipe.Query recipeQuery;
     @BindView(R.id.rvRecipes) RecyclerView rvRecipes;
     @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
-    EditText search;
-    Button btSearch;
+    @BindView(R.id.search_bar) Toolbar toolbar;
+    @BindView(R.id.search) EditText search;
+    @BindView(R.id.search_btn) Button btSearch;
+    @BindView(R.id.filter_btn) Button btFilter;
+
     TextView tvViewCount;
 
     FragmentCommunication listenerFragment;
@@ -68,8 +72,6 @@ public class FeedFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
-        search = getActivity().findViewById(R.id.search);
-        btSearch = getActivity().findViewById(R.id.search_btn);
 
         recipeQuery = new Recipe.Query();
         // initialize the ArrayList (data source)
@@ -108,6 +110,18 @@ public class FeedFragment extends Fragment {
                 searchRecipes(query);
             }
         });
+
+        btFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFilterPopup(view);
+            }
+        });
+    }
+
+    // Display anchored popup menu based on view selected
+    private void showFilterPopup(View v) {
+
     }
 
     private void searchRecipes(String query) {
@@ -152,7 +166,6 @@ public class FeedFragment extends Fragment {
             recipeAdapter.addAll(newRecipes);
             // Now we call setRefreshing(false) to signal refresh has finished
             swipeContainer.setRefreshing(false);
-
         } else {
             e.printStackTrace();
         }
