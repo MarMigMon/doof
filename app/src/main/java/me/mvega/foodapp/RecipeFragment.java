@@ -162,7 +162,6 @@ public class RecipeFragment extends Fragment {
             // Add step
             instructionsLayout.addView(step);
         }
-
     }
 
     public void beginRecipe() {
