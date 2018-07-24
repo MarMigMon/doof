@@ -1,16 +1,14 @@
 package me.mvega.foodapp.model;
 
 import com.parse.ParseClassName;
-import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @ParseClassName("Recipe")
@@ -30,6 +28,7 @@ public class Recipe extends ParseObject {
     private static final String KEY_STEPS = "steps";
     private static final String KEY_OBJECT_ID = "objectId";
     private static final String KEY_VIEWS = "views";
+    private static final String KEY_USER_RATINGS = "userRatings";
 
     public List<String> getSteps() {
         return getList(KEY_STEPS);
@@ -105,8 +104,32 @@ public class Recipe extends ParseObject {
     public Double getRating() {
         return getDouble(KEY_RATING);
     }
-    public void setRating(Double rating) {
-        put(KEY_RATING, rating);
+    public void updateRating() {
+        HashMap<String, Float> userRatings = (HashMap<String, Float>) get(KEY_USER_RATINGS);
+        if (userRatings != null) {
+            float recipeRating = 0f;
+            for (float userRating : userRatings.values()) {
+                recipeRating += userRating;
+            }
+            put(KEY_RATING, recipeRating / userRatings.size());
+        }
+    }
+
+    public float getUserRating(ParseUser user) {
+        HashMap<String, Float> userRatings = (HashMap<String, Float>) get(KEY_USER_RATINGS);
+        if (userRatings == null) {
+            userRatings = new HashMap<>();
+        }
+        Float rating = userRatings.get(user.getObjectId());
+        return (rating == null) ? 0f : rating;
+    }
+    public void setUserRating(ParseUser user, float rating) {
+        HashMap<String, Float> userRatings = (HashMap<String, Float>) get(KEY_USER_RATINGS);
+        if (userRatings == null) {
+            userRatings = new HashMap<>();
+        }
+        userRatings.put(user.getObjectId(), rating);
+        put(KEY_USER_RATINGS, userRatings);
     }
 
     public ParseUser getUser() {
@@ -125,30 +148,6 @@ public class Recipe extends ParseObject {
     }
     public void setViews(Integer views) {
         put(KEY_VIEWS, views);
-    }
-
-    public void addFavorite(ParseUser user) {
-        addAll(KEY_USERS_WHO_FAVORITED, Collections.singletonList(user.getObjectId()));
-        this.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) e.printStackTrace();
-            }
-        });
-    }
-
-    public void removeFavorite(ParseUser user) {
-        removeAll(KEY_USERS_WHO_FAVORITED, Collections.singletonList(user.getObjectId()));
-        this.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) e.printStackTrace();
-            }
-        });
-    }
-
-    public ArrayList<String> getFavorites() {
-        return (ArrayList<String>) get(KEY_USERS_WHO_FAVORITED);
     }
 
     public static class Query extends ParseQuery<Recipe> {
