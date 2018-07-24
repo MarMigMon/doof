@@ -33,6 +33,8 @@
         android:layout_below="@+id/tvType"
         android:text="Recipe Description"
         android:textAppearance="@style/BodyText"
+        android:ellipsize="end"
+        android:maxLines="3"
         tools:text="Recipe Description" />
 
     <TextView

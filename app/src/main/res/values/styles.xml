@@ -3,21 +3,34 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorSecondary">@color/sunflower</item>
     </style>
 
     <style name="MyRatingBar" parent="@style/Widget.AppCompat.RatingBar.Small">
         <item name="colorControlNormal">@android:color/darker_gray</item>
-        <item name="colorControlActivated">@android:color/holo_red_light</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="android:isIndicator">true</item>
     </style>
 
-    <style name="BodyText" parent="TextAppearance.AppCompat">
+    <style name="MyBigRatingBar" parent="@style/Widget.AppCompat.RatingBar.Indicator">
+        <item name="colorControlNormal">@android:color/darker_gray</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="android:isIndicator">true</item>
     </style>
 
-    <style name="TitleText" parent="TextAppearance.AppCompat.Headline">
+    <style name="BodyText" parent="TextAppearance.AppCompat"></style>
+
+    <style name="DescriptionText" parent="TextAppearance.AppCompat">
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">3</item>
     </style>
+
+    <style name="TitleText" parent="TextAppearance.AppCompat.Headline"></style>
 
 </resources>

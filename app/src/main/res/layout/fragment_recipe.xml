@@ -15,11 +15,13 @@
 
             <RatingBar
                 android:id="@+id/ratingBar"
-                style="@style/MyRatingBar"
+                style="@style/MyBigRatingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvUsername"
                 android:layout_alignStart="@+id/tvName"
+                android:transformPivotX="0dp"
+                android:transformPivotY="0dp"
                 android:numStars="5" />
 
             <TextView

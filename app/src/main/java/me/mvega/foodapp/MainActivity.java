@@ -17,9 +17,14 @@ import android.widget.ImageView;
 
 import com.parse.ParseUser;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
 public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication, ProfileFragment.ProfileFragmentCommunication {
+
+    @BindView(R.id.navigation_bar) BottomNavigationView bottomNavigationView;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
     private ParseUser currentUser;
 
@@ -31,13 +36,13 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         // Starts activity with feed fragment displayed
         showFeed();
 
-        // Find the toolbar view inside the activity layout
-        Toolbar toolbar = findViewById(R.id.search_bar);
-        // Sets the Toolbar to act as the ActionBar for this Activity window.
-        // Make sure the toolbar exists in the activity and is not null
-        setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
 
-        final BottomNavigationView bottomNavigationView = findViewById(R.id.navigation_bar);
+//        // Sets the Toolbar to act as the ActionBar for this Activity window.
+//        // Make sure the toolbar exists in the activity and is not null
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         // handle navigation selection
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -72,10 +77,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
         return true;
-    }
-
-    public void onSpeechAction(MenuItem mi) {
-        startActivity(new Intent(MainActivity.this, SpeechActivity.class));
     }
 
     public void onLogoutAction(MenuItem mi) {

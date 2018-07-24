@@ -8,12 +8,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
@@ -28,13 +30,18 @@ import me.mvega.foodapp.model.Recipe;
 
 public class FeedFragment extends Fragment {
 
-    RecipeAdapter recipeAdapter;
+    static RecipeAdapter recipeAdapter;
+    static SwipeRefreshLayout swipeContainer;
     ArrayList<Recipe> recipes;
-    Recipe.Query recipeQuery;
+    FilterPopup filterPopup;
+    PopupWindow popup;
+
     @BindView(R.id.rvRecipes) RecyclerView rvRecipes;
-    @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
-    EditText search;
-    Button btSearch;
+    @BindView(R.id.search_bar) Toolbar toolbar;
+    @BindView(R.id.search) EditText search;
+    @BindView(R.id.search_btn) Button btSearch;
+    @BindView(R.id.filter_btn) Button btFilter;
+
     TextView tvViewCount;
 
     FragmentCommunication listenerFragment;
@@ -68,10 +75,8 @@ public class FeedFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
-        search = getActivity().findViewById(R.id.search);
-        btSearch = getActivity().findViewById(R.id.search_btn);
+        swipeContainer = view.findViewById(R.id.swipeContainer);
 
-        recipeQuery = new Recipe.Query();
         // initialize the ArrayList (data source)
         recipes = new ArrayList<>();
         // construct the adapter from this data source
@@ -108,10 +113,27 @@ public class FeedFragment extends Fragment {
                 searchRecipes(query);
             }
         });
+
+        btFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFilterPopup(view);
+            }
+        });
+    }
+
+
+    // Display anchored popup menu based on view selected
+    private void showFilterPopup(View v) {
+        popup = new PopupWindow(getContext());
+        View layout = getLayoutInflater().inflate(R.layout.popup_filter, null);
+
+        filterPopup = new FilterPopup(layout, popup, v);
     }
 
     private void searchRecipes(String query) {
-        recipeQuery.getTop().withUser().newestFirst().containsQuery(query);
+        Recipe.Query recipeQuery = new Recipe.Query();
+        recipeQuery.getTop().withUser().newestFirst().containsQuery(Recipe.KEY_NAME, query);
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
@@ -144,7 +166,7 @@ public class FeedFragment extends Fragment {
         return fragmentFeed;
     }
 
-    private void resetAdapter(List<Recipe> newRecipes, ParseException e) {
+    public static void resetAdapter(List<Recipe> newRecipes, ParseException e) {
         if (e == null) {
             // Remember to CLEAR OUT old items before appending in the new ones
             recipeAdapter.clear();
@@ -152,13 +174,13 @@ public class FeedFragment extends Fragment {
             recipeAdapter.addAll(newRecipes);
             // Now we call setRefreshing(false) to signal refresh has finished
             swipeContainer.setRefreshing(false);
-
         } else {
             e.printStackTrace();
         }
     }
 
-    private void loadTopRecipes() {
+    public static void loadTopRecipes() {
+        Recipe.Query recipeQuery = new Recipe.Query();
         recipeQuery.getTop().withUser().newestFirst();
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override

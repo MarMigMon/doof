@@ -59,6 +59,7 @@ public class AddRecipeFragment extends Fragment {
     @BindView(R.id.btImage) Button btImage;
     @BindView(R.id.btAudio) Button btAudio;
     @BindView(R.id.btAddStep) Button btAddStep;
+    @BindView(R.id.btRemoveStep) Button btRemoveStep;
     @BindView(R.id.ivPreview) ImageView ivPreview;
     @BindView(R.id.instructionsLayout) RelativeLayout instructionsLayout;
     @BindView(R.id.tvInstructions) TextView tvInstructions;
@@ -113,6 +114,21 @@ public class AddRecipeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 onAddStep();
+                // Adds the "remove step" button so the user can remove the last added step
+                if (steps.size() > 1) {
+                    btRemoveStep.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        btRemoveStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onRemoveStep();
+                // Removes "remove step" button if there is only one step left
+                if (steps.size() == 1) {
+                    btRemoveStep.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -148,6 +164,9 @@ public class AddRecipeFragment extends Fragment {
         }
     }
 
+    /**
+     * Adds a new step (EditText) to the layout for the user to input text
+     */
     private void onAddStep() {
         EditText step = new EditText(getContext());
 
@@ -167,6 +186,16 @@ public class AddRecipeFragment extends Fragment {
         // Add step
         steps.add(step);
         instructionsLayout.addView(step);
+    }
+
+    /**
+     * Removes the last added step (EditText) from the layout
+     */
+    private void onRemoveStep() {
+        EditText lastStep = steps.get(steps.size() - 1);
+        steps.remove(lastStep);
+        stepCount -= 1;
+        instructionsLayout.removeView(lastStep);
     }
 
     private void onPickAudio() {

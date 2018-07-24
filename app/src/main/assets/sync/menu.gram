@@ -2,4 +2,4 @@
 
 grammar menu;
 
-public <item> = (start | stop);
+public <final_rule> = next step | previous step | finish recipe | repeat step;

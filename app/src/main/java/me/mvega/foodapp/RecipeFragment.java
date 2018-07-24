@@ -1,10 +1,13 @@
 package me.mvega.foodapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -14,10 +17,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,10 +32,13 @@ import me.mvega.foodapp.model.Recipe;
 
 public class RecipeFragment extends Fragment {
 
+    private static final ParseUser user = ParseUser.getCurrentUser();
     Recipe recipe;
+    String recipeId;
     ImageView image;
     ArrayList<String> steps;
     int stepCount = 0;
+    private static final String KEY_FAVORITE = "favorites";
 
     @BindView(R.id.tvName) TextView tvName;
     @BindView(R.id.tvUsername) TextView tvUsername;
@@ -59,6 +69,7 @@ public class RecipeFragment extends Fragment {
 
         ButterKnife.bind(this, view);
         steps = (ArrayList<String>) recipe.getSteps();
+        recipeId = recipe.getObjectId();
 
         tvName.setText(recipe.getName());
         tvUsername.setText("@" + recipe.getUser().getUsername());
@@ -76,11 +87,11 @@ public class RecipeFragment extends Fragment {
             }
         });
 
-        ArrayList<String> usersWhoFavorited = recipe.getFavorites();
-        if (usersWhoFavorited != null) {
-            Log.d("RecipeFragment", usersWhoFavorited.toString());
-            if (usersWhoFavorited.contains(ParseUser.getCurrentUser().getObjectId())) {
-                Log.d("RecipeFragment", "We're in");
+        // Checks whether the user has favorited the recipe
+        ArrayList<String> userFavorites = (ArrayList<String>) user.get("favorites");
+        if (userFavorites != null) {
+            if (userFavorites.contains(recipeId)) {
+                // fills in the favorite icon if the user previously favorited the recipe
                 btFavorite.setSelected(true);
             }
         }
@@ -92,9 +103,21 @@ public class RecipeFragment extends Fragment {
                 btFavorite.setSelected(!btFavorite.isSelected());
 
                 if (btFavorite.isSelected()) {
-                    recipe.addFavorite(ParseUser.getCurrentUser());
+                    user.addAll(KEY_FAVORITE, Collections.singletonList(recipe.getObjectId()));
+                    user.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) e.printStackTrace();
+                        }
+                    });
                 } else {
-                    recipe.removeFavorite(ParseUser.getCurrentUser());
+                    user.removeAll(KEY_FAVORITE, Collections.singletonList(recipe.getObjectId()));
+                    user.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) e.printStackTrace();
+                        }
+                    });
                 }
             }
         });
@@ -107,8 +130,18 @@ public class RecipeFragment extends Fragment {
             Glide.with(getContext()).load(R.drawable.image_placeholder).into(ivImage);
         }
 
-        float rating = (float) (double) recipe.getRating();
+        float rating = recipe.getRating().floatValue();
         ratingBar.setRating(rating);
+
+        ratingBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    showRatingDialog();
+                }
+                return true;
+            }
+        });
     }
 
     private void setInstructions(ArrayList<String> steps) {
@@ -134,12 +167,76 @@ public class RecipeFragment extends Fragment {
             // Add step
             instructionsLayout.addView(step);
         }
-
     }
 
     public void beginRecipe() {
         Intent i = new Intent(getContext(), SpeechActivity.class);
         i.putExtra("recipe", recipe);
         startActivity(i);
+    }
+
+    public void showRatingDialog() {
+        // Create builder using dialog layout
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        View dialog = getLayoutInflater().inflate(R.layout.dialog_rating, null);
+        final RatingBar userRating = dialog.findViewById(R.id.rbDialog);
+
+        // Creates the rating dialog box with the previously input user rating (0 if never rated)
+        userRating.setRating(recipe.getUserRating(user).floatValue());
+
+        builder.setView(dialog);
+
+        // Add cancel option and message
+        builder.setCancelable(true);
+        builder.setMessage(Html.fromHtml("What would you like to rate <b>" + recipe.getName() + "</b>?"));
+
+        // Create alert dialog
+        AlertDialog alertDialog = builder.create();
+
+        // Configure dialog button (OK)
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        updateRating(userRating.getRating());
+                        dialog.dismiss();
+                    }
+                });
+
+        // Configure dialog button (CANCEL)
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+                    }
+                });
+
+        // Display the dialog
+        alertDialog.show();
+    }
+
+    public void updateRating(Number rating) {
+        // updates user's rating in recipe object
+        recipe.setUserRating(user, rating);
+
+        // updates user's rating in user object
+        HashMap<String, Number> recipesRated = (HashMap<String, Number>) user.get("recipesRated");
+        if (recipesRated == null) {
+            recipesRated = new HashMap<>();
+        }
+        recipesRated.put(recipeId, rating);
+        user.put("recipesRated", recipesRated);
+
+        // updates recipe rating
+        recipe.updateRating();
+
+        // updates recipe rating on rating bar
+        float recipeRating = recipe.getRating().floatValue();
+        ratingBar.setRating(recipeRating);
+
+        recipe.saveInBackground();
+        user.saveInBackground();
     }
 }

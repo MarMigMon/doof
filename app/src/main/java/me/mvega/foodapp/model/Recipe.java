@@ -1,34 +1,36 @@
 package me.mvega.foodapp.model;
 
+import android.widget.CheckBox;
+
 import com.parse.ParseClassName;
-import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @ParseClassName("Recipe")
 public class Recipe extends ParseObject {
-    private static final String KEY_NAME = "recipeName";
-    private static final String KEY_TYPE = "type";
+    public static final String KEY_NAME = "recipeName";
+    public static final String KEY_TYPE = "type";
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_INGREDIENTS = "ingredients";
     private static final String KEY_INSTRUCTIONS = "instructions";
     private static final String KEY_YIELD = "yield";
     private static final String KEY_IMAGE = "image";
     private static final String KEY_USER = "user";
-    private static final String KEY_RATING = "rating";
-    private static final String KEY_PREP_TIME = "prepTime";
+    public static final String KEY_RATING = "rating";
+    public static final String KEY_PREP_TIME = "prepTime";
     private static final String KEY_MEDIA = "media";
     private static final String KEY_USERS_WHO_FAVORITED = "usersWhoFavorited";
     private static final String KEY_STEPS = "steps";
+    private static final String KEY_OBJECT_ID = "objectId";
     private static final String KEY_VIEWS = "views";
+    private static final String KEY_USER_RATINGS = "userRatings";
 
     public List<String> getSteps() {
         return getList(KEY_STEPS);
@@ -36,7 +38,6 @@ public class Recipe extends ParseObject {
     public void setSteps(ArrayList<String> steps) {
         put(KEY_STEPS, steps);
     }
-
 
     public ParseFile getMedia() {
         return getParseFile(KEY_MEDIA);
@@ -101,11 +102,36 @@ public class Recipe extends ParseObject {
         put(KEY_IMAGE, image);
     }
 
-    public Double getRating() {
-        return getDouble(KEY_RATING);
+    public Number getRating() {
+        return getNumber(KEY_RATING);
     }
-    public void setRating(Double rating) {
-        put(KEY_RATING, rating);
+    public void updateRating() {
+        HashMap<String, Number> userRatings = (HashMap<String, Number>) get(KEY_USER_RATINGS);
+        if (userRatings != null) {
+            Number recipeRating = 0f;
+            for (Number userRating : userRatings.values()) {
+                recipeRating = recipeRating.doubleValue() + userRating.doubleValue();
+            }
+            recipeRating = recipeRating.doubleValue() / userRatings.size();
+            put(KEY_RATING, recipeRating);
+        }
+    }
+
+    public Number getUserRating(ParseUser user) {
+        HashMap<String, Number> userRatings = (HashMap<String, Number>) get(KEY_USER_RATINGS);
+        if (userRatings == null) {
+            userRatings = new HashMap<>();
+        }
+        Number rating = userRatings.get(user.getObjectId());
+        return (rating == null) ? 0.0 : rating;
+    }
+    public void setUserRating(ParseUser user, Number rating) {
+        HashMap<String, Number> userRatings = (HashMap<String, Number>) get(KEY_USER_RATINGS);
+        if (userRatings == null) {
+            userRatings = new HashMap<>();
+        }
+        userRatings.put(user.getObjectId(), rating);
+        put(KEY_USER_RATINGS, userRatings);
     }
 
     public ParseUser getUser() {
@@ -124,30 +150,6 @@ public class Recipe extends ParseObject {
     }
     public void setViews(Integer views) {
         put(KEY_VIEWS, views);
-    }
-
-    public void addFavorite(ParseUser user) {
-        addAll(KEY_USERS_WHO_FAVORITED, Collections.singletonList(user.getObjectId()));
-        this.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) e.printStackTrace();
-            }
-        });
-    }
-
-    public void removeFavorite(ParseUser user) {
-        removeAll(KEY_USERS_WHO_FAVORITED, Collections.singletonList(user.getObjectId()));
-        this.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) e.printStackTrace();
-            }
-        });
-    }
-
-    public ArrayList<String> getFavorites() {
-        return (ArrayList<String>) get(KEY_USERS_WHO_FAVORITED);
     }
 
     public static class Query extends ParseQuery<Recipe> {
@@ -170,8 +172,8 @@ public class Recipe extends ParseObject {
             return this;
         }
 
-        public Query containsQuery(String query) {
-            whereFullText("recipeName", query);
+        public Query containsQuery(String key, String query) {
+            whereFullText(KEY_NAME, query);
             return this;
         }
 
@@ -180,9 +182,29 @@ public class Recipe extends ParseObject {
             return this;
         }
 
-        public Query getFavorites(ParseUser user) {
-            whereContainedIn(KEY_USERS_WHO_FAVORITED, Collections.singletonList(user.getObjectId()));
+        public Query is(String objectId) {
+            whereEqualTo(KEY_OBJECT_ID, objectId);
             return this;
         }
+
+        public ArrayList<ParseQuery<Recipe>> addCheckboxQueries(String key, CheckBox[] checkBoxes) {
+            ArrayList<ParseQuery<Recipe>> queries = new ArrayList<>();
+
+            for (CheckBox item: checkBoxes) {
+                if (item.isChecked()) {
+                    ParseQuery query = new ParseQuery("Recipe");
+                    query.whereEqualTo(key, item.getText().toString());
+                    queries.add(query);
+                }
+            }
+            return queries;
+        }
+
+        public ParseQuery<Recipe> addMaxPrepTime(String maxPrepTimeEntered) {
+            ParseQuery maxPrepTimeQuery = new ParseQuery("Recipe");
+            maxPrepTimeQuery.whereFullText(Recipe.KEY_PREP_TIME, maxPrepTimeEntered);
+            return maxPrepTimeQuery;
+        }
+
     }
 }
