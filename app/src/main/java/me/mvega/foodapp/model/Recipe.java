@@ -1,5 +1,7 @@
 package me.mvega.foodapp.model;
 
+import android.widget.CheckBox;
+
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -13,16 +15,16 @@ import java.util.List;
 
 @ParseClassName("Recipe")
 public class Recipe extends ParseObject {
-    private static final String KEY_NAME = "recipeName";
-    private static final String KEY_TYPE = "type";
+    public static final String KEY_NAME = "recipeName";
+    public static final String KEY_TYPE = "type";
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_INGREDIENTS = "ingredients";
     private static final String KEY_INSTRUCTIONS = "instructions";
     private static final String KEY_YIELD = "yield";
     private static final String KEY_IMAGE = "image";
     private static final String KEY_USER = "user";
-    private static final String KEY_RATING = "rating";
-    private static final String KEY_PREP_TIME = "prepTime";
+    public static final String KEY_RATING = "rating";
+    public static final String KEY_PREP_TIME = "prepTime";
     private static final String KEY_MEDIA = "media";
     private static final String KEY_USERS_WHO_FAVORITED = "usersWhoFavorited";
     private static final String KEY_STEPS = "steps";
@@ -36,7 +38,6 @@ public class Recipe extends ParseObject {
     public void setSteps(ArrayList<String> steps) {
         put(KEY_STEPS, steps);
     }
-
 
     public ParseFile getMedia() {
         return getParseFile(KEY_MEDIA);
@@ -170,8 +171,8 @@ public class Recipe extends ParseObject {
             return this;
         }
 
-        public Query containsQuery(String query) {
-            whereFullText("recipeName", query);
+        public Query containsQuery(String key, String query) {
+            whereFullText(KEY_NAME, query);
             return this;
         }
 
@@ -184,5 +185,25 @@ public class Recipe extends ParseObject {
             whereEqualTo(KEY_OBJECT_ID, objectId);
             return this;
         }
+
+        public ArrayList<ParseQuery<Recipe>> addCheckboxQueries(String key, CheckBox[] checkBoxes) {
+            ArrayList<ParseQuery<Recipe>> queries = new ArrayList<>();
+
+            for (CheckBox item: checkBoxes) {
+                if (item.isChecked()) {
+                    ParseQuery query = new ParseQuery("Recipe");
+                    query.whereEqualTo(key, item.getText().toString());
+                    queries.add(query);
+                }
+            }
+            return queries;
+        }
+
+        public ParseQuery<Recipe> addMaxPrepTime(String maxPrepTimeEntered) {
+            ParseQuery maxPrepTimeQuery = new ParseQuery("Recipe");
+            maxPrepTimeQuery.whereFullText(Recipe.KEY_PREP_TIME, maxPrepTimeEntered);
+            return maxPrepTimeQuery;
+        }
+
     }
 }
