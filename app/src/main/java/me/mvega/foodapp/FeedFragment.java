@@ -12,9 +12,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
@@ -121,7 +123,17 @@ public class FeedFragment extends Fragment {
 
     // Display anchored popup menu based on view selected
     private void showFilterPopup(View v) {
-
+        PopupWindow popup = new PopupWindow(getContext());
+        View layout = getLayoutInflater().inflate(R.layout.popup_filter, null);
+        popup.setContentView(layout);
+        // Set content width and height
+        popup.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        popup.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+        // Closes the popup window when touch outside of it - when loses focus
+        popup.setOutsideTouchable(true);
+        popup.setFocusable(true);
+        // Show anchored to button
+        popup.showAsDropDown(v);
     }
 
     private void searchRecipes(String query) {

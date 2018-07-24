@@ -8,6 +8,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Fade;
 import android.view.Menu;
@@ -23,6 +24,7 @@ import me.mvega.foodapp.model.Recipe;
 public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication, ProfileFragment.ProfileFragmentCommunication {
 
     @BindView(R.id.navigation_bar) BottomNavigationView bottomNavigationView;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
     private ParseUser currentUser;
 
@@ -38,7 +40,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
 //        // Sets the Toolbar to act as the ActionBar for this Activity window.
 //        // Make sure the toolbar exists in the activity and is not null
-//        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // handle navigation selection
         bottomNavigationView.setOnNavigationItemSelectedListener(
