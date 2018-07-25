@@ -172,7 +172,7 @@ public class YourRecipesFragment extends Fragment {
 
     private void loadYourRecipes() {
         final Recipe.Query recipeQuery = new Recipe.Query();
-        recipeQuery.fromUser(ParseUser.getCurrentUser());
+        recipeQuery.fromUser(ParseUser.getCurrentUser()).withUser();
 
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override

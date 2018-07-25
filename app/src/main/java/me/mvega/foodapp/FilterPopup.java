@@ -151,7 +151,7 @@ public class FilterPopup {
         }
 
         if (!ratingQueries.isEmpty()) {
-            filter.getTop().newestFirst().or(ratingQueries).findInBackground(new FindCallback<Recipe>() {
+            filter.getTop().withUser().newestFirst().or(ratingQueries).findInBackground(new FindCallback<Recipe>() {
                 @Override
                 public void done(List<Recipe> newRecipes, ParseException e) {
                     lowestRating = 0;

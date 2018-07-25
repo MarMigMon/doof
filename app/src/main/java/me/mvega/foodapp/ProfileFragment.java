@@ -73,7 +73,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         tvUsername.setText(user.getUsername());
 
         final Recipe.Query recipeQuery = new Recipe.Query();
-        recipeQuery.fromUser(ParseUser.getCurrentUser());
+        recipeQuery.fromUser(ParseUser.getCurrentUser()).withUser();
         recipeQuery.countInBackground(new CountCallback() {
             @Override
             public void done(int count, ParseException e) {

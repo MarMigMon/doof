@@ -129,7 +129,7 @@ public class FavoritesFragment extends Fragment {
 
         for (int i = 0; i < userFavorites.size(); i++) {
             final Recipe.Query recipeQuery = new Recipe.Query();
-            recipeQuery.is(userFavorites.get(i));
+            recipeQuery.is(userFavorites.get(i)).withUser();
             queries.add(recipeQuery);
         }
 
