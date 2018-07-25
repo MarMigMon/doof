@@ -1,5 +1,2 @@
-#JSGF V1.0;
-
-grammar player;
-
-public <final_rule> = start | stop;
+start recipe/1e-30/
+stop recipe/1e-30/
