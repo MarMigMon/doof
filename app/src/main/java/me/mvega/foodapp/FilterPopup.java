@@ -109,7 +109,7 @@ public class FilterPopup {
 
         // Not implemented
         if (!maxPrepTimeEntered.equals("")) {
-            filter = filter.containsQuery(Recipe.KEY_PREP_TIME, maxPrepTimeEntered);
+            filter.setMaxPrepTime(Integer.valueOf(maxPrepTimeEntered));
         }
 
         if (!ratingQueries.isEmpty()) {

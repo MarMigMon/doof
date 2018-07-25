@@ -32,7 +32,8 @@ public class Recipe extends ParseObject {
     private static final String KEY_OBJECT_ID = "objectId";
     private static final String KEY_VIEWS = "views";
     private static final String KEY_USER_RATINGS = "userRatings";
-    public static int lowestRating;
+    public static int lowestRating = 0;
+    public static int maxPrepTime = Integer.MAX_VALUE;
 
     public List<String> getSteps() {
         return getList(KEY_STEPS);
@@ -90,10 +91,10 @@ public class Recipe extends ParseObject {
         put(KEY_YIELD, yield);
     }
 
-    public String getPrepTime() {
-        return getString(KEY_PREP_TIME);
+    public Number getPrepTime() {
+        return getNumber(KEY_PREP_TIME);
     }
-    public void setPrepTime(String prepTime) {
+    public void setPrepTime(Number prepTime) {
         put(KEY_PREP_TIME, prepTime);
     }
 
@@ -216,7 +217,7 @@ public class Recipe extends ParseObject {
             for (CheckBox item: checkBoxes) {
                 if (item.isChecked()) {
                     ParseQuery query = new ParseQuery("Recipe");
-                    query.whereGreaterThanOrEqualTo(KEY_RATING, lowestRating).whereEqualTo(KEY_TYPE, item.getText().toString());
+                    query.whereGreaterThanOrEqualTo(KEY_RATING, lowestRating).whereLessThanOrEqualTo(KEY_PREP_TIME, maxPrepTime).whereEqualTo(KEY_TYPE, item.getText().toString());
                     queries.add(query);
                     checked = true;
                 }
@@ -224,17 +225,15 @@ public class Recipe extends ParseObject {
 
             if (!checked) {
                 ParseQuery query = new ParseQuery("Recipe");
-                query.whereGreaterThanOrEqualTo(KEY_RATING, lowestRating);
+                query.whereGreaterThanOrEqualTo(KEY_RATING, lowestRating).whereLessThanOrEqualTo(KEY_PREP_TIME, maxPrepTime);
                 queries.add(query);
             }
 
             return queries;
         }
 
-        public ParseQuery<Recipe> addMaxPrepTime(String maxPrepTimeEntered) {
-            ParseQuery maxPrepTimeQuery = new ParseQuery("Recipe");
-            maxPrepTimeQuery.whereEqualTo(Recipe.KEY_PREP_TIME, maxPrepTimeEntered);
-            return maxPrepTimeQuery;
+        public void setMaxPrepTime(int time) {
+            maxPrepTime = time;
         }
 
     }
