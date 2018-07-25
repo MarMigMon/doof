@@ -182,7 +182,7 @@ public class SpeechActivity extends AppCompatActivity implements
         }
     }
 
-    private void speakStep( ){
+    private void speakStep(){
         if (stepCount < totalSteps) {
             currStep = instructions.get(stepCount);
             tvInstructions.setText(currStep);
@@ -342,11 +342,11 @@ public class SpeechActivity extends AppCompatActivity implements
         recognizer.addListener(this);
 
         // Create grammar-based search for selection between demos
-        File ttsGrammar = new File(assetsDir, "menu.gram");
         File playerGrammar = new File(assetsDir, "player.gram");
+        File ttsKeywords = new File(assetsDir, "keywords.gram");
 
-        recognizer.addGrammarSearch(TTS_SEARCH, ttsGrammar);
         recognizer.addGrammarSearch(PLAYER_SEARCH, playerGrammar);
+        recognizer.addKeywordSearch(TTS_SEARCH, ttsKeywords);
     }
 
     @Override
@@ -421,9 +421,9 @@ public class SpeechActivity extends AppCompatActivity implements
     // Called after recognizer is stopped
     @Override
     public void onResult(Hypothesis hypothesis) {
-
         if (hypothesis != null) {
             String text = hypothesis.getHypstr();
+            Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 
             if (audioFile != null) {
                 processPlayerResult(text);

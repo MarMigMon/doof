@@ -1,6 +1,7 @@
 package me.mvega.foodapp;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -35,6 +36,7 @@ public class FeedFragment extends Fragment {
     ArrayList<Recipe> recipes;
     FilterPopup filterPopup;
     PopupWindow popup;
+    static Context context;
 
     @BindView(R.id.rvRecipes) RecyclerView rvRecipes;
     @BindView(R.id.search_bar) Toolbar toolbar;
@@ -76,6 +78,7 @@ public class FeedFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         swipeContainer = view.findViewById(R.id.swipeContainer);
+        context = view.getContext();
 
         // initialize the ArrayList (data source)
         recipes = new ArrayList<>();
@@ -180,6 +183,8 @@ public class FeedFragment extends Fragment {
     }
 
     public static void loadTopRecipes() {
+        clearPreferences(FilterPopup.KEY_PREFERENCES);
+
         Recipe.Query recipeQuery = new Recipe.Query();
         recipeQuery.getTop().withUser().newestFirst();
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
@@ -188,6 +193,13 @@ public class FeedFragment extends Fragment {
                 resetAdapter(newRecipes, e);
             }
         });
+    }
+
+    private static void clearPreferences(String key) {
+        SharedPreferences preferences = context.getSharedPreferences(key, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.commit();
     }
 
 

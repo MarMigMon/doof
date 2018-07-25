@@ -1,6 +1,7 @@
 package me.mvega.foodapp;
 
-import android.util.Log;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -13,6 +14,7 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -25,6 +27,12 @@ public class FilterPopup {
     CheckBox[] ratings;
     PopupWindow popup;
     List<ParseQuery <Recipe>> finalQueries;
+    SharedPreferences prefs;
+    Context context;
+    public static int lowestRating = 0;
+    public static int maxPrepTime = Integer.MAX_VALUE;
+    public static final String KEY_PREFERENCES = "private";
+    public static final String KEY_MAX_PREP_TIME = "prep time";
 
     // Filter Popup
     @BindView(R.id.cbAppetizer) CheckBox cbAppetizer;
@@ -43,6 +51,8 @@ public class FilterPopup {
         ButterKnife.bind(this, layout);
 
         this.popup = popup;
+        context = button.getContext();
+        prefs = context.getSharedPreferences(KEY_PREFERENCES, Context.MODE_PRIVATE);
 
         types = new CheckBox[] {cbSnack, cbEntree, cbAppetizer, cbDessert};
         ratings = new CheckBox[] {cb5Stars, cb4Stars, cb3Stars, cb2Stars};
@@ -60,6 +70,10 @@ public class FilterPopup {
         // Show anchored to button
         popup.showAsDropDown(button);
 
+        setCheckboxes(ratings);
+        setCheckboxes(types);
+        setMaxPrepTime();
+
         btDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,6 +87,22 @@ public class FilterPopup {
                 clearFilters();
             }
         });
+    }
+
+    private void setMaxPrepTime() {
+        Integer max = prefs.getInt(KEY_MAX_PREP_TIME, 0);
+        if (max > 0) {
+            etMaxPrepTime.setText(max.toString());
+        }
+    }
+
+    private void setCheckboxes(CheckBox[] checkBoxes) {
+        for (CheckBox item : checkBoxes) {
+            boolean isChecked = prefs.getBoolean(item.getText().toString(),false);
+            if (isChecked) {
+                item.setChecked(true);
+            }
+        }
     }
 
     private void clearFilters() {
@@ -96,33 +126,85 @@ public class FilterPopup {
         }
     }
 
+    private void saveChecked(String key, Boolean checked) {
+        prefs.edit()
+                .putBoolean(key, checked)
+                .apply();
+    }
+
     private void filterRecipes() {
         popup.dismiss();
         Recipe.Query filter = new Recipe.Query();
 
         // Process checkboxes
-        ArrayList<ParseQuery<Recipe>> typeQueries = filter.addCheckboxQueries(Recipe.KEY_TYPE, types);
-        ArrayList<ParseQuery<Recipe>> ratingQueries = filter.addCheckboxQueries(Recipe.KEY_RATING, ratings);
+        findLowestRating(ratings);
+        ArrayList<ParseQuery<Recipe>> ratingQueries = addTypeQueries(types);
 
         // Process max prep time entered
         String maxPrepTimeEntered = etMaxPrepTime.getText().toString().trim();
 
         if (!maxPrepTimeEntered.equals("")) {
-            ParseQuery prepQuery = filter.addMaxPrepTime(maxPrepTimeEntered);
-            finalQueries.add(prepQuery);
+            maxPrepTime = Integer.valueOf(maxPrepTimeEntered);
+            prefs.edit()
+                    .putInt(KEY_MAX_PREP_TIME, maxPrepTime)
+                    .apply();
         }
 
-        finalQueries.addAll(ratingQueries);
-        finalQueries.addAll(typeQueries);
-
-        // If filters have been set, reload recipes
-        if (!finalQueries.isEmpty()) {
-            Recipe.Query.or(finalQueries).setLimit(20).findInBackground(new FindCallback<Recipe>() {
+        if (!ratingQueries.isEmpty()) {
+            filter.getTop().newestFirst().or(ratingQueries).findInBackground(new FindCallback<Recipe>() {
                 @Override
                 public void done(List<Recipe> newRecipes, ParseException e) {
+                    lowestRating = 0;
+                    maxPrepTime = Integer.MAX_VALUE;
                     FeedFragment.resetAdapter(newRecipes, e);
                 }
             });
         }
     }
+
+    public void findLowestRating(CheckBox[] checkBoxes) {
+        Boolean checked = false;
+        ArrayList<Integer> numbers = new ArrayList<>();
+        for (CheckBox item: checkBoxes) {
+            String name = item.getText().toString();
+            if (item.isChecked()) {
+                int value = Integer.valueOf(item.getText().toString().substring(0, 1));
+                numbers.add(value);
+                checked = true;
+                saveChecked(name, true);
+            } else {
+                saveChecked(name, false);
+            }
+        }
+        if (checked) {
+            lowestRating = Collections.min(numbers);
+        }
+    }
+
+    public ArrayList<ParseQuery<Recipe>> addTypeQueries(CheckBox[] checkBoxes) {
+        Boolean checked = false;
+        ArrayList<ParseQuery<Recipe>> queries = new ArrayList<>();
+
+        for (CheckBox item: checkBoxes) {
+            String name = item.getText().toString();
+            if (item.isChecked()) {
+                ParseQuery query = new ParseQuery("Recipe");
+                query.whereGreaterThanOrEqualTo(Recipe.KEY_RATING, lowestRating).whereLessThanOrEqualTo(Recipe.KEY_PREP_TIME, maxPrepTime).whereEqualTo(Recipe.KEY_TYPE, item.getText().toString());
+                queries.add(query);
+                checked = true;
+                saveChecked(name, true);
+            } else {
+                saveChecked(name, false);
+            }
+        }
+
+        if (!checked) {
+            ParseQuery query = new ParseQuery("Recipe");
+            query.whereGreaterThanOrEqualTo(Recipe.KEY_RATING, lowestRating).whereLessThanOrEqualTo(Recipe.KEY_PREP_TIME, maxPrepTime);
+            queries.add(query);
+        }
+
+        return queries;
+    }
+
 }

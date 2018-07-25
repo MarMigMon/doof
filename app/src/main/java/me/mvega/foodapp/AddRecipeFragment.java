@@ -238,7 +238,7 @@ public class AddRecipeFragment extends Fragment {
 
     /**
      * Request read external storage permissions to upload images and audio
-      */
+     */
 
     private void checkStoragePermissions() {
         int permissionCheck = ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE);

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.parse.FindCallback;
-import com.parse.ParseQuery;
+import com.parse.ParseFile;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -48,38 +46,69 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int i) {
         Notification notification = notifications.get(i);
 
-        ParseQuery<Notification> query = ParseQuery.getQuery("Notification");
-//        ParseUser activeUser = ParseUser.getQuery(notification.getActiveUser());
-        query.whereEqualTo("username", notification.getActiveUser());
-        query.include("username").include("image");
-        query.findInBackground(new FindCallback<Notification>() {
-            @Override
-            public void done(List<Notification> notifications, com.parse.ParseException e) {
-                if (e == null) {
-                    Log.d("Notification", "user");
-//                    notifications = new activeUser;
-                } else {
-                    e.printStackTrace();
-                }
-            }
-        });
-
+//        ArrayList<String> usersWhoFavorited = (ArrayList<String>) notification.getRecipe().getUsersWhoFavorited();
+//        ParseQuery<Recipe> query = ParseQuery.getQuery("usersWhoFavorited");
+//        query.whereEqualTo("")
 
         holder.tvActiveUser.setText(notification.getActiveUser().getUsername());
-//        holder.tvNotificationMessage.setText();
-        holder.tvRelativeTime.setText(getRelativeTimeAgo(notification.getUpdatedAt().toString()));
-        if (notification.getActiveUser().getParseFile("image") != null) {
-            Glide.with(context).load(notification.getActiveUser().getParseFile("image")).apply(RequestOptions.circleCropTransform()).into(holder.ivActiveUserImage);
-        } else {
-            holder.ivActiveUserImage.setImageResource(R.drawable.ic_profile);
+        holder.tvRelativeTime.setText(getRelativeTimeAgo(notification.getCreatedAt().toString()));
+
+        ParseFile userPicture = notification.getActiveUser().getParseFile("image");
+            if (userPicture != null) {
+                String userPictureUrl = userPicture.getUrl();
+                Glide.with(context).load(userPictureUrl).apply(RequestOptions.circleCropTransform()).into(holder.ivActiveUserImage);
+            } else {
+                holder.ivActiveUserImage.setImageResource(R.drawable.ic_profile);
+            }
+
+        ParseFile recipePicture = notification.getRecipe().getParseFile("image");
+            if (recipePicture != null) {
+                String recipePictureUrl = recipePicture.getUrl();
+                Glide.with(context).load(recipePictureUrl).into(holder.ivRecipe);
+            } else {
+                holder.ivRecipe.setImageResource(R.drawable.image_placeholder);
+            }
+
+        if (notification.getFavorite() == true) {
+            holder.tvNotificationMessage.setText("liked your recipe.");
         }
-        if (notification.getRecipe().getParseFile("image") != null) {
-            Glide.with(context).load(notification.getRecipe().getParseFile("image")).into(holder.ivRecipe);
-        } else {
-            holder.ivRecipe.setImageResource(R.drawable.image_placeholder);
+        if (notification.getRate() == true) {
+            holder.tvNotificationMessage.setText("rated your recipe.");
         }
     }
-
+    //    private void loadFavorites() {
+//        ArrayList<String> userFavorites = (ArrayList<String>) ParseUser.getCurrentUser().get("favorites");
+//        final List<ParseQuery<Recipe>> queries = new ArrayList<>();
+//
+//        for (int i = 0; i < userFavorites.size(); i++) {
+//            final Recipe.Query recipeQuery = new Recipe.Query();
+//            recipeQuery.is(userFavorites.get(i));
+//            queries.add(recipeQuery);
+//        }
+//
+//        if (!queries.isEmpty()) {
+//            ParseQuery.or(queries).findInBackground(new FindCallback<Recipe>() {
+//                @Override
+//                public void done(List<Recipe> newRecipes, ParseException e) {
+//                    if (e == null) {
+//                        // Remember to CLEAR OUT old items before appending in the new ones
+//                        profileRecipesAdapter.clear();
+//                        // ...the data has come back, add new items to your adapter...
+//                        profileRecipesAdapter.addAll(newRecipes);
+//                        // Now we call setRefreshing(false) to signal refresh has finished
+//                        swipeContainer.setRefreshing(false);
+//                    } else {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//        } else {
+//            // Remember to CLEAR OUT old items before appending in the new ones
+//            profileRecipesAdapter.clear();
+//            // Now we call setRefreshing(false) to signal refresh has finished
+//            swipeContainer.setRefreshing(false);
+//        }
+//    }
 
     @Override
     public int getItemCount() {
@@ -156,4 +185,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         notifications.addAll(list);
         notifyDataSetChanged();
     }
+
+
 }

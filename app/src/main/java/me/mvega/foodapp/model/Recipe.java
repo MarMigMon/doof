@@ -1,7 +1,5 @@
 package me.mvega.foodapp.model;
 
-import android.widget.CheckBox;
-
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -32,6 +30,7 @@ public class Recipe extends ParseObject {
     private static final String KEY_OBJECT_ID = "objectId";
     private static final String KEY_VIEWS = "views";
     private static final String KEY_USER_RATINGS = "userRatings";
+
 
     public List<String> getSteps() {
         return getList(KEY_STEPS);
@@ -190,25 +189,6 @@ public class Recipe extends ParseObject {
         public Query is(String objectId) {
             whereEqualTo(KEY_OBJECT_ID, objectId);
             return this;
-        }
-
-        public ArrayList<ParseQuery<Recipe>> addCheckboxQueries(String key, CheckBox[] checkBoxes) {
-            ArrayList<ParseQuery<Recipe>> queries = new ArrayList<>();
-
-            for (CheckBox item: checkBoxes) {
-                if (item.isChecked()) {
-                    ParseQuery query = new ParseQuery("Recipe");
-                    query.whereEqualTo(key, item.getText().toString());
-                    queries.add(query);
-                }
-            }
-            return queries;
-        }
-
-        public ParseQuery<Recipe> addMaxPrepTime(String maxPrepTimeEntered) {
-            ParseQuery maxPrepTimeQuery = new ParseQuery("Recipe");
-            maxPrepTimeQuery.whereEqualTo(Recipe.KEY_PREP_TIME, maxPrepTimeEntered);
-            return maxPrepTimeQuery;
         }
 
     }

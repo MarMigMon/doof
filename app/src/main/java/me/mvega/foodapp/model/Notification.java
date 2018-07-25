@@ -9,8 +9,9 @@ import com.parse.ParseUser;
 public class Notification extends ParseObject{
     private static final String KEY_ACTIVE_USER = "activeUser";
     private static final String KEY_RECIPE = "recipe";
-//    private static final String KEY_RECIPE_USER = "recipeUser";
-    private static final Boolean KEY_LIKE = true;
+    private static final String KEY_RECIPE_USER = "recipeUser";
+    private static final String KEY_FAVORITE = "favorite";
+    private static final String KEY_RATE = "rate";
 
     public ParseUser getActiveUser() {
         return getParseUser(KEY_ACTIVE_USER);
@@ -26,18 +27,25 @@ public class Notification extends ParseObject{
         put(KEY_RECIPE, recipe);
     }
 
-//    public ParseUser getRecipeUser() {
-//        return getParseUser(KEY_RECIPE_USER);
-//    }
-//    public void setRecipeUser(ParseUser recipeUser) {
-//        put(KEY_RECIPE_USER, recipeUser);
-//    }
-
-    public static Boolean getLike() {
-        return KEY_LIKE;
+    public ParseUser getRecipeUser() {
+        return getParseUser(KEY_RECIPE_USER);
     }
-    public void setLike(Boolean like) {
-        put(String.valueOf(KEY_LIKE), like);
+    public void setRecipeUser(ParseUser recipeUser) {
+        put(KEY_RECIPE_USER, recipeUser);
+    }
+
+    public Boolean getFavorite() {
+        return getBoolean(KEY_FAVORITE);
+    }
+    public void setFavorite(Boolean favorite) {
+        put(KEY_FAVORITE, favorite);
+    }
+
+    public Boolean getRate() {
+        return getBoolean(KEY_RATE);
+    }
+    public void setRate(Boolean rate) {
+        put(KEY_RATE, rate);
     }
 
     public static class Query extends ParseQuery<Notification> {
@@ -57,7 +65,7 @@ public class Notification extends ParseObject{
             return this;
         }
         public Query recipeUser(ParseUser user) {
-            whereEqualTo(KEY_RECIPE, user);
+            whereEqualTo(KEY_RECIPE_USER, user);
             return this;
         }
     }
