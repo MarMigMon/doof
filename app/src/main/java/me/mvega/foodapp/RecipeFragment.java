@@ -82,7 +82,7 @@ public class RecipeFragment extends Fragment {
         tvUsername.setText("@" + recipe.getUser().getUsername());
         tvType.setText(recipe.getType());
         tvDescription.setText(recipe.getDescription());
-        tvPrepTime.setText(recipe.getPrepTime().toString());
+        tvPrepTime.setText(recipe.getPrepTimeString());
         tvYield.setText(recipe.getYield());
         tvIngredients.setText(recipe.getIngredients());
         setInstructions(steps);

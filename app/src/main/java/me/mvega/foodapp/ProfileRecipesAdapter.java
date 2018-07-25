@@ -57,7 +57,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
 
         // populate the view according to this data
         holder.tvName.setText(recipe.getName()); // TODO get recipe name
-        holder.tvPrepTime.setText(recipe.getPrepTime().toString()); // TODO get recipe prep time
+        holder.tvPrepTime.setText(recipe.getPrepTimeString()); // TODO get recipe prep time
         holder.tvViewCount.setText(recipe.getViews().toString());
 
         ParseFile picture = recipe.getImage(); // TODO get recipe image
