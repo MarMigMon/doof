@@ -374,7 +374,7 @@ public class AddRecipeFragment extends Fragment {
         recipe.setName(etRecipeName.getText().toString());
         recipe.setDescription(etDescription.getText().toString());
         recipe.setIngredients(etIngredients.getText().toString());
-        recipe.setPrepTime(etPrepTime.getText().toString());
+        recipe.setPrepTime(Integer.valueOf(etPrepTime.getText().toString()));
         recipe.setYield(etYield.getText().toString());
         recipe.setType(etType.getText().toString());
 

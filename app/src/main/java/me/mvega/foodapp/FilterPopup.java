@@ -1,6 +1,5 @@
 package me.mvega.foodapp;
 
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -25,6 +24,7 @@ public class FilterPopup {
     CheckBox[] ratings;
     PopupWindow popup;
     List<ParseQuery <Recipe>> finalQueries;
+    int lowestRating = 0;
 
     // Filter Popup
     @BindView(R.id.cbAppetizer) CheckBox cbAppetizer;
@@ -101,28 +101,29 @@ public class FilterPopup {
         Recipe.Query filter = new Recipe.Query();
 
         // Process checkboxes
-        ArrayList<ParseQuery<Recipe>> typeQueries = filter.addCheckboxQueries(Recipe.KEY_TYPE, types);
-        ArrayList<ParseQuery<Recipe>> ratingQueries = filter.addCheckboxQueries(Recipe.KEY_RATING, ratings);
+        filter.findLowestRating(ratings);
+        ArrayList<ParseQuery<Recipe>> ratingQueries = filter.addTypeQueries(types);
 
         // Process max prep time entered
         String maxPrepTimeEntered = etMaxPrepTime.getText().toString().trim();
 
+        // Not implemented
         if (!maxPrepTimeEntered.equals("")) {
-            ParseQuery prepQuery = filter.addMaxPrepTime(maxPrepTimeEntered);
-            finalQueries.add(prepQuery);
+            filter.setMaxPrepTime(Integer.valueOf(maxPrepTimeEntered));
         }
 
-        finalQueries.addAll(ratingQueries);
-        finalQueries.addAll(typeQueries);
-
-        // If filters have been set, reload recipes
-        if (!finalQueries.isEmpty()) {
-            Recipe.Query.or(finalQueries).setLimit(20).findInBackground(new FindCallback<Recipe>() {
+        if (!ratingQueries.isEmpty()) {
+            filter.or(ratingQueries).findInBackground(new FindCallback<Recipe>() {
                 @Override
                 public void done(List<Recipe> newRecipes, ParseException e) {
+                    Recipe.lowestRating = 0;
                     FeedFragment.resetAdapter(newRecipes, e);
                 }
             });
         }
     }
+
+
+
+
 }
