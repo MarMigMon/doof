@@ -63,7 +63,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         holder.tvName.setText(recipe.getName()); // TODO get recipe name
         holder.tvType.setText(recipe.getType()); // TODO get recipe type
         holder.tvDescription.setText(recipe.getDescription()); // TODO get recipe description
-        holder.tvPrepTime.setText(recipe.getPrepTime().toString() + " minutes"); // TODO get recipe prep time
+        holder.tvPrepTime.setText(recipe.getPrepTime().toString()); // TODO get recipe prep time
         holder.tvViewCount.setText(recipe.getViews().toString());
 
         ParseFile picture = recipe.getImage(); // TODO get recipe image
@@ -72,8 +72,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             Glide.with(context).load(imageUrl).into(holder.ivRecipe);
         } else holder.ivRecipe.setImageResource(R.drawable.image_placeholder);
 
-        float rating = recipe.getRating().floatValue(); // TODO get recipe rating
-        holder.ratingBar.setRating(rating);
+        if (recipe.getRating() != null) {
+            holder.ratingBar.setRating(recipe.getRating().floatValue());
+        } else {
+            holder.ratingBar.setRating(0);
+        }
     }
 
     @Override
