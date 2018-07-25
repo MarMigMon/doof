@@ -24,4 +24,19 @@
     <string name="current_step_label">Current Step</string>
     <string name="next_step_label">Next Step</string>
     <string name="prev_step">Previous Step</string>
+
+    <!--Drop down list arrays-->
+    <string-array name="prep_time_array">
+        <item>minutes</item>
+        <item>hours</item>
+    </string-array>
+
+    <string-array name="type_array">
+        <item>Type</item>
+        <item>Appetizer</item>
+        <item>Dessert</item>
+        <item>Entree</item>
+        <item>Snack</item>
+    </string-array>
+
 </resources>

@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -19,6 +21,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,7 +62,8 @@ public class AddRecipeFragment extends Fragment {
     @BindView(R.id.etIngredients) EditText etIngredients;
     @BindView(R.id.etYield) EditText etYield;
     @BindView(R.id.etPrepTime) EditText etPrepTime;
-    @BindView(R.id.etType) EditText etType;
+    @BindView(R.id.spType) Spinner spType;
+    @BindView(R.id.spPrepTime) Spinner spPrepTime;
     @BindView(R.id.btAdd) Button btAdd;
     @BindView(R.id.btImage) Button btImage;
     @BindView(R.id.btAudio) Button btAudio;
@@ -76,6 +82,10 @@ public class AddRecipeFragment extends Fragment {
     private final static int PICK_AUDIO_CODE = 1;
     private int stepCount = 1;
     private ArrayList<EditText> steps;
+
+    private String typeText = ""; // TODO bring up warning if addRecipe() is called when this is empty
+    private String prepTimeText = ""; // TODO bring up warning if addRecipe() is called when this is empty
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -133,6 +143,93 @@ public class AddRecipeFragment extends Fragment {
                     btRemoveStep.setVisibility(View.GONE);
                 }
                 scrollToButtonLayout(true);
+            }
+        });
+
+        /*--------------*\
+        |    Spinners    |
+        \*--------------*/
+
+        //////////////////
+        // Type Spinner //
+        //////////////////
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        String[] typeArray = getResources().getStringArray(R.array.type_array);
+        final ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(getContext(), R.layout.item_spinner, typeArray){
+            @Override
+            public boolean isEnabled(int position) { // First item will be used as a hint
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0) {
+                    tv.setTextColor(Color.GRAY); // Sets the hint's text color to gray
+                } else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                view.setPadding(0,0,0,0);
+                return view;
+            }
+        };
+        // Specify the layout to use when the list of choices appears
+        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spType.setAdapter(typeAdapter);
+        // Listens for when the user makes a selection
+        spType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                String item = (String) adapterView.getItemAtPosition(position);
+                if (position > 0) {
+                    typeText = item;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        ///////////////////////
+        // Prep Time Spinner //
+        ///////////////////////
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        String[] prepTimeArray = getResources().getStringArray(R.array.prep_time_array);
+        final ArrayAdapter<String> prepTimeAdapter = new ArrayAdapter<String>(getContext(), R.layout.item_spinner, prepTimeArray) {
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                view.setPadding(0,0,0,0);
+                return view;
+            }
+        };
+        // Specify the layout to use when the list of choices appears
+        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spPrepTime.setAdapter(prepTimeAdapter);
+        // Listens for when the user makes a selection
+        spPrepTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                prepTimeText = (String) adapterView.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
@@ -374,9 +471,10 @@ public class AddRecipeFragment extends Fragment {
         recipe.setName(etRecipeName.getText().toString());
         recipe.setDescription(etDescription.getText().toString());
         recipe.setIngredients(etIngredients.getText().toString());
-        recipe.setPrepTime(etPrepTime.getText().toString());
-        recipe.setYield(etYield.getText().toString());
-        recipe.setType(etType.getText().toString());
+        recipe.setPrepTime(Integer.parseInt(etPrepTime.getText().toString()));
+        recipe.setPrepTimePeriod(prepTimeText);
+        recipe.setYield(etYield.getText().toString() + " servings");
+        recipe.setType(typeText);
 
         if (recipeImage != null) {
             recipe.setImage(prepareImage(recipeImage));

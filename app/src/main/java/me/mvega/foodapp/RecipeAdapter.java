@@ -72,8 +72,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             Glide.with(context).load(imageUrl).into(holder.ivRecipe);
         } else holder.ivRecipe.setImageResource(R.drawable.image_placeholder);
 
-        float rating = recipe.getRating().floatValue(); // TODO get recipe rating
-        holder.ratingBar.setRating(rating);
+        if (recipe.getRating() != null) {
+            holder.ratingBar.setRating(recipe.getRating().floatValue());
+        } else {
+            holder.ratingBar.setRating(0);
+        }
     }
 
     @Override
