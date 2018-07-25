@@ -202,7 +202,7 @@ public class Recipe extends ParseObject {
 
         public ParseQuery<Recipe> addMaxPrepTime(String maxPrepTimeEntered) {
             ParseQuery maxPrepTimeQuery = new ParseQuery("Recipe");
-            maxPrepTimeQuery.whereFullText(Recipe.KEY_PREP_TIME, maxPrepTimeEntered);
+            maxPrepTimeQuery.whereEqualTo(Recipe.KEY_PREP_TIME, maxPrepTimeEntered);
             return maxPrepTimeQuery;
         }
 

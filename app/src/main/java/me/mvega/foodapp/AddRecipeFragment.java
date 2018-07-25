@@ -22,8 +22,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +50,7 @@ public class AddRecipeFragment extends Fragment {
     /* Used to handle permission request */
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 399;
 
+    @BindView(R.id.scrollView) ScrollView scrollView;
     @BindView(R.id.pbLoading) ProgressBar pbLoading;
     @BindView(R.id.etRecipeName) EditText etRecipeName;
     @BindView(R.id.etDescription) EditText etDescription;
@@ -58,6 +61,7 @@ public class AddRecipeFragment extends Fragment {
     @BindView(R.id.btAdd) Button btAdd;
     @BindView(R.id.btImage) Button btImage;
     @BindView(R.id.btAudio) Button btAudio;
+    @BindView(R.id.buttonLayout) LinearLayout buttonLayout;
     @BindView(R.id.btAddStep) Button btAddStep;
     @BindView(R.id.btRemoveStep) Button btRemoveStep;
     @BindView(R.id.ivPreview) ImageView ivPreview;
@@ -115,9 +119,8 @@ public class AddRecipeFragment extends Fragment {
             public void onClick(View view) {
                 onAddStep();
                 // Adds the "remove step" button so the user can remove the last added step
-                if (steps.size() > 1) {
-                    btRemoveStep.setVisibility(View.VISIBLE);
-                }
+                btRemoveStep.setVisibility(View.VISIBLE);
+                scrollToButtonLayout(false);
             }
         });
 
@@ -129,6 +132,7 @@ public class AddRecipeFragment extends Fragment {
                 if (steps.size() == 1) {
                     btRemoveStep.setVisibility(View.GONE);
                 }
+                scrollToButtonLayout(true);
             }
         });
 
@@ -196,6 +200,17 @@ public class AddRecipeFragment extends Fragment {
         steps.remove(lastStep);
         stepCount -= 1;
         instructionsLayout.removeView(lastStep);
+    }
+
+    /**
+     * Scrolls scrollview to the top of the LinearLayout containing the Add Step and Remove Step buttons
+     */
+    private void scrollToButtonLayout(boolean reverse) {
+        if (reverse) {
+            scrollView.scrollBy(0, -step1.getHeight());
+        } else {
+            scrollView.scrollBy(0, step1.getHeight());
+        }
     }
 
     private void onPickAudio() {

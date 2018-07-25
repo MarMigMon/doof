@@ -107,11 +107,9 @@ public class FilterPopup {
         // Process max prep time entered
         String maxPrepTimeEntered = etMaxPrepTime.getText().toString().trim();
 
-        Log.i("filter", maxPrepTimeEntered);
-
         if (!maxPrepTimeEntered.equals("")) {
-            Log.i("filter", "Searching for max prep time");
-            finalQueries.add(filter.addMaxPrepTime(maxPrepTimeEntered));
+            ParseQuery prepQuery = filter.addMaxPrepTime(maxPrepTimeEntered);
+            finalQueries.add(prepQuery);
         }
 
         finalQueries.addAll(ratingQueries);
