@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,35 +50,14 @@ public class NotificationFragment extends Fragment {
         rvNotifications.setLayoutManager(linearLayoutManager);
         rvNotifications.setAdapter(notificationAdapter);
 
-//        notificationAdapter.setListener(new NotificationAdapter().AdapterCommunication() {
-//            @Override
-//            public void respond(Recipe recipe) {
-//                listenerFragment.respond(recipe);
-//            }
-//
-//            @Override
-//            public void respond(Recipe recipe, ImageView image) {
-//                listenerFragment.respond(recipe, image);
-//            }
-//        });
-
         RecyclerView.ItemDecoration itemDecoration = new
                 DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         rvNotifications.addItemDecoration(itemDecoration);
 
-        loadTopNotifications();
+        loadYourNotifications();
         setSwipeContainer();
     }
 
-//    private void searchRecipes(String query) {
-//        recipeQuery.getTop().withUser().newestFirst().containsQuery(query);
-//        recipeQuery.findInBackground(new FindCallback<Recipe>() {
-//            @Override
-//            public void done(List<Recipe> newRecipes, ParseException e) {
-//                resetAdapter(newRecipes, e);
-//            }
-//        });
-//    }
 
     public void setSwipeContainer() {
         // Setup refresh listener which triggers new data loading
@@ -87,7 +67,7 @@ public class NotificationFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                loadTopNotifications();
+                loadYourNotifications();
             }
         });
         // Configure the refreshing colors
@@ -103,13 +83,16 @@ public class NotificationFragment extends Fragment {
         return fragmentNotification;
     }
 
-    private void loadTopNotifications() {
+    private void loadYourNotifications() {
         final Notification.Query notificationQuery = new Notification.Query();
+        notificationQuery.recipeUser(ParseUser.getCurrentUser());
         notificationQuery.getTop().newestFirst();
         notificationQuery.include("activeUser.username")
                 .include("activeUser.image")
                 .include("recipe.user")
-                .include("recipe.image");
+                .include("recipe.image")
+                .include("favorite")
+                .include("rate");
         notificationQuery.findInBackground(new FindCallback<Notification>() {
             @Override
             public void done(List<Notification> newNotification, ParseException e) {
@@ -123,4 +106,6 @@ public class NotificationFragment extends Fragment {
             }
         });
     }
+
+
 }

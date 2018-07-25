@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,22 +18,28 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.mvega.foodapp.model.Notification;
 import me.mvega.foodapp.model.Recipe;
 
 public class RecipeFragment extends Fragment {
 
     private static final ParseUser user = ParseUser.getCurrentUser();
+    Notification notification;
     Recipe recipe;
     String recipeId;
     ImageView image;
@@ -110,12 +117,43 @@ public class RecipeFragment extends Fragment {
                             if (e != null) e.printStackTrace();
                         }
                     });
+
+                    Notification likeNotification = new Notification();
+                    likeNotification.put("activeUser", user);
+                    likeNotification.put("recipe", recipe);
+                    likeNotification.put("recipeUser", recipe.getUser());
+                    likeNotification.put("favorite", true);
+                    likeNotification.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Log.d("Notification", "created!");
+                            } else {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
                 } else {
                     user.removeAll(KEY_FAVORITE, Collections.singletonList(recipe.getObjectId()));
                     user.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
                             if (e != null) e.printStackTrace();
+                        }
+                    });
+
+                    final ParseQuery<ParseObject> query = ParseQuery.getQuery("Notification");
+                    query.whereEqualTo("recipe", recipe);
+                    query.findInBackground(new FindCallback<ParseObject>() {
+                        @Override
+                        public void done(List<ParseObject> notifications, ParseException e) {
+                            if (e == null) {
+                                for (ParseObject notification : notifications) {
+                                    notification.deleteInBackground();
+                                }
+                            } else {
+                                e.printStackTrace();
+                            }
                         }
                     });
                 }
@@ -138,6 +176,21 @@ public class RecipeFragment extends Fragment {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     showRatingDialog();
+                    Notification rateNotification = new Notification();
+                    rateNotification.put("activeUser", user);
+                    rateNotification.put("recipe", recipe);
+                    rateNotification.put("recipeUser", recipe.getUser());
+                    rateNotification.put("rate", true);
+                    rateNotification.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Log.d("Notification", "created!");
+                            } else {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
                 }
                 return true;
             }
