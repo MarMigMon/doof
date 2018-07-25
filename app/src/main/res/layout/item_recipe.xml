@@ -46,7 +46,8 @@
         android:layout_marginStart="15dp"
         android:layout_marginTop="10dp"
         android:textAppearance="@style/BodyText"
-        android:text="Recipe Name" />
+        android:text="Recipe Name"
+        android:textStyle="bold" />
 
     <RatingBar
         android:id="@+id/ratingBar"
@@ -71,14 +72,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/ivRecipe"
-        android:layout_alignStart="@+id/ratingBar"
-        android:text="Views:" />
+        android:layout_toLeftOf="@id/tvViewCount"
+        android:text="Views:"
+        android:layout_marginRight="5dp"/>
 
     <TextView
         android:id="@+id/tvViewCount"
-        android:layout_width="34dp"
-        android:layout_height="16dp"
-        android:layout_alignBottom="@+id/ivRecipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ratingBar"
         android:layout_alignEnd="@+id/ratingBar"
-        android:layout_alignTop="@+id/tvViews" />
+        android:layout_alignTop="@+id/tvViews"
+        android:layout_alignBottom="@+id/tvViews" />
 </RelativeLayout>

@@ -18,8 +18,8 @@
                 style="@style/MyBigRatingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/tvUsername"
                 android:layout_alignStart="@+id/tvName"
-                android:layout_below="@+id/tvName"
                 android:transformPivotX="0dp"
                 android:transformPivotY="0dp"
                 android:numStars="5" />
@@ -33,6 +33,14 @@
                 android:text="Recipe Name"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvUsername"
+                android:layout_width="177dp"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/tvName"
+                android:layout_below="@+id/tvName"
+                android:text="User handle" />
 
             <TextView
                 android:id="@+id/tvDescription"

@@ -41,6 +41,7 @@ public class RecipeFragment extends Fragment {
     private static final String KEY_FAVORITE = "favorites";
 
     @BindView(R.id.tvName) TextView tvName;
+    @BindView(R.id.tvUsername) TextView tvUsername;
     @BindView(R.id.ratingBar) RatingBar ratingBar;
     @BindView(R.id.tvType) TextView tvType;
     @BindView(R.id.tvDescription) TextView tvDescription;
@@ -71,6 +72,7 @@ public class RecipeFragment extends Fragment {
         recipeId = recipe.getObjectId();
 
         tvName.setText(recipe.getName());
+        tvUsername.setText("@" + recipe.getUser().getUsername());
         tvType.setText(recipe.getType());
         tvDescription.setText(recipe.getDescription());
         tvPrepTime.setText(recipe.getPrepTime());
@@ -99,6 +101,7 @@ public class RecipeFragment extends Fragment {
             public void onClick(View view) {
                 //Set the button's appearance
                 btFavorite.setSelected(!btFavorite.isSelected());
+
                 if (btFavorite.isSelected()) {
                     user.addAll(KEY_FAVORITE, Collections.singletonList(recipe.getObjectId()));
                     user.saveInBackground(new SaveCallback() {
