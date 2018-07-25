@@ -64,6 +64,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         holder.tvType.setText(recipe.getType()); // TODO get recipe type
         holder.tvDescription.setText(recipe.getDescription()); // TODO get recipe description
         holder.tvPrepTime.setText(recipe.getPrepTime().toString()); // TODO get recipe prep time
+        holder.tvPrepTime.setText(recipe.getPrepTimeString()); // TODO get recipe prep time
         holder.tvViewCount.setText(recipe.getViews().toString());
 
         ParseFile picture = recipe.getImage(); // TODO get recipe image

@@ -17,7 +17,6 @@ public class Recipe extends ParseObject {
     public static final String KEY_TYPE = "type";
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_INGREDIENTS = "ingredients";
-    private static final String KEY_INSTRUCTIONS = "instructions";
     private static final String KEY_YIELD = "yield";
     private static final String KEY_IMAGE = "image";
     private static final String KEY_USER = "user";
@@ -74,13 +73,6 @@ public class Recipe extends ParseObject {
         put(KEY_INGREDIENTS, ingredients);
     }
 
-    public String getInstructions() {
-        return getString(KEY_INSTRUCTIONS);
-    }
-    public void setInstructions(String instructions) {
-        put(KEY_INSTRUCTIONS, instructions);
-    }
-
     public String getYield() {
         return getString(KEY_YIELD);
     }
@@ -88,15 +80,17 @@ public class Recipe extends ParseObject {
         put(KEY_YIELD, yield);
     }
 
-    public String getPrepTime() {
-        return getNumber(KEY_PREP_TIME).toString() + " " + getString(KEY_PREP_TIME_PERIOD);
+    public Number getPrepTime() {
+        return getNumber(KEY_PREP_TIME);
     }
     public void setPrepTime(Number prepTime) {
         put(KEY_PREP_TIME, prepTime);
     }
-
     public void setPrepTimePeriod(String prepTimePeriod) {
         put(KEY_PREP_TIME_PERIOD, prepTimePeriod);
+    }
+    public String getPrepTimeString() {
+        return getNumber(KEY_PREP_TIME).toString() + " " + getString(KEY_PREP_TIME_PERIOD);
     }
 
     public ParseFile getImage() {
