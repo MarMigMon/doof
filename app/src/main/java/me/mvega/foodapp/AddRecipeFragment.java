@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.BufferedInputStream;
@@ -475,6 +476,7 @@ public class AddRecipeFragment extends Fragment {
         recipe.setPrepTimePeriod(prepTimeText);
         recipe.setYield(etYield.getText().toString() + " servings");
         recipe.setType(typeText);
+        recipe.setUser(ParseUser.getCurrentUser());
 
         if (recipeImage != null) {
             recipe.setImage(prepareImage(recipeImage));
