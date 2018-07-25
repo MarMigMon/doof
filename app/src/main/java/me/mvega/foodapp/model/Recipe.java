@@ -100,6 +100,10 @@ public class Recipe extends ParseObject {
         put(KEY_IMAGE, image);
     }
 
+    public void setRating(Number rating) {
+        put(KEY_RATING, rating);
+    }
+
     public Number getRating() {
         return getNumber(KEY_RATING);
     }

@@ -342,10 +342,10 @@ public class SpeechActivity extends AppCompatActivity implements
         recognizer.addListener(this);
 
         // Create grammar-based search for selection between demos
-        File playerGrammar = new File(assetsDir, "player.gram");
+        File playerKeywords = new File(assetsDir, "player.gram");
         File ttsKeywords = new File(assetsDir, "keywords.gram");
 
-        recognizer.addGrammarSearch(PLAYER_SEARCH, playerGrammar);
+        recognizer.addKeywordSearch(PLAYER_SEARCH, playerKeywords);
         recognizer.addKeywordSearch(TTS_SEARCH, ttsKeywords);
     }
 
