@@ -66,7 +66,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
             Glide.with(context).load(imageUrl).into(holder.ivRecipe);
         } else holder.ivRecipe.setImageResource(R.drawable.image_placeholder);
 
-        float rating = (float) (double) recipe.getRating(); // TODO get recipe rating
+        float rating = recipe.getRating().floatValue(); // TODO get recipe rating
         holder.ratingBar.setRating(rating);
     }
 
