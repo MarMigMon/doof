@@ -9,6 +9,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ public class Recipe extends ParseObject {
     private static final String KEY_OBJECT_ID = "objectId";
     private static final String KEY_VIEWS = "views";
     private static final String KEY_USER_RATINGS = "userRatings";
+    public static int lowestRating;
 
     public List<String> getSteps() {
         return getList(KEY_STEPS);
@@ -187,16 +189,45 @@ public class Recipe extends ParseObject {
             return this;
         }
 
-        public ArrayList<ParseQuery<Recipe>> addCheckboxQueries(String key, CheckBox[] checkBoxes) {
+        public Query runOrQueries(List<ParseQuery<Recipe>> queries) {
+            or(queries);
+            return this;
+        }
+
+        public void findLowestRating(CheckBox[] checkBoxes) {
+            Boolean checked = false;
+            ArrayList<Integer> numbers = new ArrayList<>();
+            for (CheckBox item: checkBoxes) {
+                if (item.isChecked()) {
+                    int value = Integer.valueOf(item.getText().toString().substring(0, 1));
+                    numbers.add(value);
+                    checked = true;
+                }
+            }
+            if (checked) {
+                lowestRating = Collections.min(numbers);
+            }
+        }
+
+        public ArrayList<ParseQuery<Recipe>> addTypeQueries(CheckBox[] checkBoxes) {
+            Boolean checked = false;
             ArrayList<ParseQuery<Recipe>> queries = new ArrayList<>();
 
             for (CheckBox item: checkBoxes) {
                 if (item.isChecked()) {
                     ParseQuery query = new ParseQuery("Recipe");
-                    query.whereEqualTo(key, item.getText().toString());
+                    query.whereGreaterThanOrEqualTo(KEY_RATING, lowestRating).whereEqualTo(KEY_TYPE, item.getText().toString());
                     queries.add(query);
+                    checked = true;
                 }
             }
+
+            if (!checked) {
+                ParseQuery query = new ParseQuery("Recipe");
+                query.whereGreaterThanOrEqualTo(KEY_RATING, lowestRating);
+                queries.add(query);
+            }
+
             return queries;
         }
 
