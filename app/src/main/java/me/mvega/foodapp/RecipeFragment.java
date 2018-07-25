@@ -87,9 +87,11 @@ public class RecipeFragment extends Fragment {
 
         // Checks whether the user has favorited the recipe
         ArrayList<String> userFavorites = (ArrayList<String>) user.get("favorites");
-        if(userFavorites.contains(recipeId)) {
-            // fills in the favorite icon if the user previously favorited the recipe
-            btFavorite.setSelected(true);
+        if (userFavorites != null) {
+            if (userFavorites.contains(recipeId)) {
+                // fills in the favorite icon if the user previously favorited the recipe
+                btFavorite.setSelected(true);
+            }
         }
 
         btFavorite.setOnClickListener(new View.OnClickListener() {

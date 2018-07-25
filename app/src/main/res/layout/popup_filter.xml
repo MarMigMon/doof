@@ -104,22 +104,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cbDessert" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInputLayout"
+        <EditText
+            android:id="@+id/etMaxPrepTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
+            android:hint="Time in minutes"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvMaxPrepTime">
-
-            <android.support.design.widget.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Time in minutes"
-                android:textSize="12sp" />
-        </android.support.design.widget.TextInputLayout>
+            app:layout_constraintTop_toBottomOf="@+id/tvMaxPrepTime"/>
 
 
         <TextView
@@ -132,7 +127,7 @@
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/etMaxPrepTime" />
 
         <CheckBox
             android:id="@+id/cb5Stars"
@@ -156,7 +151,7 @@
             app:layout_constraintTop_toBottomOf="@+id/cb5Stars" />
 
         <CheckBox
-            android:id="@+id/checkBox7"
+            android:id="@+id/cb3Stars"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -166,14 +161,14 @@
             app:layout_constraintTop_toBottomOf="@+id/cb4Stars" />
 
         <CheckBox
-            android:id="@+id/checkBox8"
+            android:id="@+id/cb2Stars"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="2+ stars"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/checkBox7" />
+            app:layout_constraintTop_toBottomOf="@+id/cb3Stars" />
 
         <Button
             android:id="@+id/btDone"
@@ -187,7 +182,7 @@
             android:padding="5dp"
             android:text="Done"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/checkBox8" />
+            app:layout_constraintTop_toBottomOf="@+id/cb2Stars" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
