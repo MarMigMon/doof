@@ -135,7 +135,7 @@ public class FavoritesFragment extends Fragment {
         }
 
         if (!queries.isEmpty()) {
-            faveQuery.addOrQuery(queries).withUser().findInBackground(new FindCallback<Recipe>() {
+            faveQuery.or(queries).include("user.username").findInBackground(new FindCallback<Recipe>() {
                 @Override
                 public void done(List<Recipe> newRecipes, ParseException e) {
                     if (e == null) {

@@ -141,7 +141,7 @@ public class RecipeFragment extends Fragment {
                         }
                     });
 
-                    final ParseQuery<ParseObject> query = ParseQuery.getQuery("Notification");
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Notification");
                     query.whereEqualTo("recipe", recipe);
                     query.whereEqualTo("favorite", true);
                     query.whereEqualTo("activeUser", user);
