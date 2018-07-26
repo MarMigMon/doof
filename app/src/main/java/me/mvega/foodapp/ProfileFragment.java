@@ -70,6 +70,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
 
         ButterKnife.bind(this, view);
 
+        // gets user's name
         String userName = (String) ParseUser.getCurrentUser().get("Name");
         tvUsername.setText(userName);
 
@@ -86,6 +87,8 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
                 }
             }
         });
+//
+//        String recipesReviewed = ParseUser
         tvCompleted.setText("0"); // TODO get user's # of completed recipes
         tvReviewed.setText("0"); // TODO get user's # of reviewed recipes
 

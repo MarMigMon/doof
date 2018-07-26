@@ -19,6 +19,7 @@ public class SignupActivity extends AppCompatActivity {
     @BindView(R.id.etNewUser) EditText etNewUser;
     @BindView(R.id.etNewPass) EditText etNewPass;
     @BindView(R.id.btCreateUser) Button btCreateUser;
+    @BindView(R.id.etFullName) EditText etFullName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class SignupActivity extends AppCompatActivity {
                 ParseUser user = new ParseUser();
                 user.setUsername(etNewUser.getText().toString());
                 user.setPassword(etNewPass.getText().toString());
+                user.put("Name", etFullName.getText().toString());
 
                 user.signUpInBackground(new SignUpCallback() {
                     public void done(ParseException e) {

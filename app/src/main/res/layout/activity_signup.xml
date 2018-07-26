@@ -10,6 +10,15 @@
         android:id="@+id/tvUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="123dp"
+        android:text="Full Name:" />
+
+    <TextView
+        android:id="@+id/tvFullName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/etNewUser"
         android:layout_alignStart="@+id/tvPassword"
         android:text="Username:" />
@@ -27,22 +36,38 @@
         android:id="@+id/etNewUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/etFullName"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/btCreateUser"
-        android:layout_marginTop="173dp"
+        android:layout_marginTop="234dp"
         android:ems="10"
+        android:hint="Enter new username"
         android:inputType="textPersonName"
-        android:hint="Enter new username" />
+        android:textStyle="italic" />
+
+    <EditText
+        android:id="@+id/etFullName"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
+        android:ems="10"
+        android:hint="Enter your full name"
+        android:inputType="textPersonName"
+        android:textAlignment="center"
+        android:textStyle="italic" />
 
     <EditText
         android:id="@+id/etNewPass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/etNewUser"
-        android:layout_centerVertical="true"
+        android:layout_marginBottom="203dp"
         android:ems="10"
+        android:hint="Enter new password"
         android:inputType="textPersonName"
-        android:hint="Enter new password"/>
+        android:textStyle="italic" />
 
     <Button
         android:id="@+id/btCreateUser"
