@@ -16,7 +16,7 @@
         app:contentInsetLeft="0dp"
         app:contentInsetRight="0dp"
         app:contentInsetStart="0dp"
-        android:background="@color/colorPrimary" >
+        android:background="@color/colorPrimaryDark" >
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"

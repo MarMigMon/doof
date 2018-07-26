@@ -3,12 +3,12 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="10dp"
         tools:context="me.mvega.foodapp.RecipeFragment">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <!-- TODO: Update blank fragment layout -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -22,6 +22,8 @@
                 android:layout_alignStart="@+id/tvName"
                 android:transformPivotX="0dp"
                 android:transformPivotY="0dp"
+                android:scaleX=".7"
+                android:scaleY=".7"
                 android:numStars="5" />
 
             <TextView
@@ -30,8 +32,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:text="Recipe Name"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -40,6 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/tvName"
                 android:layout_below="@+id/tvName"
+                android:layout_marginBottom="10dp"
                 android:text="User handle" />
 
             <TextView
@@ -65,10 +69,11 @@
                 android:layout_alignBottom="@+id/tvYield"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
-                android:transitionName="image"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/image_placeholder" />
+                android:scaleType="fitCenter"
+                android:src="@drawable/image_placeholder"
+                android:transitionName="image" />
 
             <TextView
                 android:id="@+id/tvYield"
