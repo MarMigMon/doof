@@ -189,5 +189,10 @@ public class Recipe extends ParseObject {
             return this;
         }
 
+        public Query addOrQuery(List<ParseQuery<Recipe>> queries) {
+            or(queries);
+            return this;
+        }
+
     }
 }

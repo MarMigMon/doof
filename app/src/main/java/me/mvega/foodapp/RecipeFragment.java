@@ -39,7 +39,6 @@ import me.mvega.foodapp.model.Recipe;
 public class RecipeFragment extends Fragment {
 
     private static final ParseUser user = ParseUser.getCurrentUser();
-    Notification notification;
     Recipe recipe;
     String recipeId;
     ImageView image;
@@ -82,7 +81,7 @@ public class RecipeFragment extends Fragment {
         tvUsername.setText("@" + recipe.getUser().getUsername());
         tvType.setText(recipe.getType());
         tvDescription.setText(recipe.getDescription());
-        tvPrepTime.setText(recipe.getPrepTime().toString());
+        tvPrepTime.setText(recipe.getPrepTimeString());
         tvYield.setText(recipe.getYield());
         tvIngredients.setText(recipe.getIngredients());
         setInstructions(steps);
@@ -144,6 +143,8 @@ public class RecipeFragment extends Fragment {
 
                     final ParseQuery<ParseObject> query = ParseQuery.getQuery("Notification");
                     query.whereEqualTo("recipe", recipe);
+                    query.whereEqualTo("favorite", true);
+                    query.whereEqualTo("activeUser", user);
                     query.findInBackground(new FindCallback<ParseObject>() {
                         @Override
                         public void done(List<ParseObject> notifications, ParseException e) {
