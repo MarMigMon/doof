@@ -474,10 +474,11 @@ public class AddRecipeFragment extends Fragment {
         recipe.setIngredients(etIngredients.getText().toString());
         if (!etPrepTime.getText().toString().trim().equals("")){
             recipe.setPrepTime(Integer.valueOf(etPrepTime.getText().toString()));
+        } else {
+            recipe.setPrepTime(0);
         }
         recipe.setYield(etYield.getText().toString());
         recipe.setRating(0);
-        recipe.setPrepTime(Integer.parseInt(etPrepTime.getText().toString()));
         recipe.setPrepTimePeriod(prepTimeText);
         recipe.setYield(etYield.getText().toString() + " servings");
         recipe.setType(typeText);
