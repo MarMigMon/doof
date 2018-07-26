@@ -90,9 +90,7 @@ public class NotificationFragment extends Fragment {
         notificationQuery.include("activeUser.username")
                 .include("activeUser.image")
                 .include("recipe.user")
-                .include("recipe.image")
-                .include("favorite")
-                .include("rate");
+                .include("recipe.image");
         notificationQuery.findInBackground(new FindCallback<Notification>() {
             @Override
             public void done(List<Notification> newNotification, ParseException e) {

@@ -126,15 +126,16 @@ public class FavoritesFragment extends Fragment {
     private void loadFavorites() {
         ArrayList<String> userFavorites = (ArrayList<String>) ParseUser.getCurrentUser().get("favorites");
         final List<ParseQuery<Recipe>> queries = new ArrayList<>();
+        Recipe.Query faveQuery = new Recipe.Query();
 
         for (int i = 0; i < userFavorites.size(); i++) {
             final Recipe.Query recipeQuery = new Recipe.Query();
-            recipeQuery.is(userFavorites.get(i)).withUser();
+            recipeQuery.is(userFavorites.get(i));
             queries.add(recipeQuery);
         }
 
         if (!queries.isEmpty()) {
-            ParseQuery.or(queries).findInBackground(new FindCallback<Recipe>() {
+            faveQuery.addOrQuery(queries).withUser().findInBackground(new FindCallback<Recipe>() {
                 @Override
                 public void done(List<Recipe> newRecipes, ParseException e) {
                     if (e == null) {

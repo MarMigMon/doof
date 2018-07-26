@@ -46,10 +46,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int i) {
         Notification notification = notifications.get(i);
 
-//        ArrayList<String> usersWhoFavorited = (ArrayList<String>) notification.getRecipe().getUsersWhoFavorited();
-//        ParseQuery<Recipe> query = ParseQuery.getQuery("usersWhoFavorited");
-//        query.whereEqualTo("")
-
         holder.tvActiveUser.setText(notification.getActiveUser().getUsername());
         holder.tvRelativeTime.setText(getRelativeTimeAgo(notification.getCreatedAt().toString()));
 
@@ -76,39 +72,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             holder.tvNotificationMessage.setText("rated your recipe.");
         }
     }
-    //    private void loadFavorites() {
-//        ArrayList<String> userFavorites = (ArrayList<String>) ParseUser.getCurrentUser().get("favorites");
-//        final List<ParseQuery<Recipe>> queries = new ArrayList<>();
-//
-//        for (int i = 0; i < userFavorites.size(); i++) {
-//            final Recipe.Query recipeQuery = new Recipe.Query();
-//            recipeQuery.is(userFavorites.get(i));
-//            queries.add(recipeQuery);
-//        }
-//
-//        if (!queries.isEmpty()) {
-//            ParseQuery.or(queries).findInBackground(new FindCallback<Recipe>() {
-//                @Override
-//                public void done(List<Recipe> newRecipes, ParseException e) {
-//                    if (e == null) {
-//                        // Remember to CLEAR OUT old items before appending in the new ones
-//                        profileRecipesAdapter.clear();
-//                        // ...the data has come back, add new items to your adapter...
-//                        profileRecipesAdapter.addAll(newRecipes);
-//                        // Now we call setRefreshing(false) to signal refresh has finished
-//                        swipeContainer.setRefreshing(false);
-//                    } else {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//        } else {
-//            // Remember to CLEAR OUT old items before appending in the new ones
-//            profileRecipesAdapter.clear();
-//            // Now we call setRefreshing(false) to signal refresh has finished
-//            swipeContainer.setRefreshing(false);
-//        }
-//    }
+
 
     @Override
     public int getItemCount() {

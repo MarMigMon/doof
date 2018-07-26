@@ -37,7 +37,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
     }
 
     public void setProfileListener(ProfileAdapterCommunication profileListener) {
-        this.nCommunication = (ProfileAdapterCommunication) profileListener;
+        this.nCommunication = profileListener;
     }
 
     // for each row, inflate the layout and cache references into ViewHolder
@@ -53,7 +53,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
     // bind the values on the position of the element
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // get the data according to position
-        Recipe recipe = (Recipe) recipes.get(position);
+        Recipe recipe = recipes.get(position);
 
         // populate the view according to this data
         holder.tvName.setText(recipe.getName()); // TODO get recipe name
