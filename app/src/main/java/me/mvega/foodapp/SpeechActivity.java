@@ -41,6 +41,7 @@ public class SpeechActivity extends AppCompatActivity implements
 
     private static final String TTS_SEARCH = "Text to speech";
     private static final String PLAYER_SEARCH = "Player";
+    private static final String KEY_STEP_COUNT = "Step count";
 
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
@@ -53,6 +54,7 @@ public class SpeechActivity extends AppCompatActivity implements
     private MediaPlayer player;
     private Boolean isPaused = false;
     private Boolean initializedTts;
+    private Boolean resumedRecipe = false;
     private int stepCount = 0;
     private int totalSteps;
     private String currStep;
@@ -79,6 +81,11 @@ public class SpeechActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            stepCount = savedInstanceState.getInt(KEY_STEP_COUNT);
+            resumedRecipe = true;
+        }
+
         setContentView(R.layout.activity_speech);
 
         ButterKnife.bind(this);
@@ -142,6 +149,14 @@ public class SpeechActivity extends AppCompatActivity implements
         setTextToSpeech();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save custom values into the bundle
+        savedInstanceState.putInt(KEY_STEP_COUNT, stepCount - 1);
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
     private void setTextToSpeech() {
         tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -149,6 +164,10 @@ public class SpeechActivity extends AppCompatActivity implements
                 if(status != TextToSpeech.ERROR) {
                     tts.setLanguage(Locale.US);
                     tts.setSpeechRate(0.9f);
+
+                    if (resumedRecipe) {
+                        beginRecipe();
+                    }
                 }
             }
         });
@@ -174,10 +193,9 @@ public class SpeechActivity extends AppCompatActivity implements
             initializedTts = true;
             startRecognition(TTS_SEARCH);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Toast.makeText(SpeechActivity.this, "Custom audio file not found, playing instructions", Toast.LENGTH_SHORT).show();
                 speakStep();
             } else {
-                Toast.makeText(SpeechActivity.this, "Custom audio file not found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SpeechActivity.this, "Failed to play audio. Minimum API requirements not met", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -189,6 +207,7 @@ public class SpeechActivity extends AppCompatActivity implements
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 tts.speak(currStep, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
             }
+
             stepCount += 1;
 
             // Check if next step exists, then set text for next step
@@ -359,10 +378,10 @@ public class SpeechActivity extends AppCompatActivity implements
         int length = player.getCurrentPosition();
         isPaused = !player.isPlaying() && length > 1;
 
-        if (text.equals("start") && isPaused) {
+        if (text.equals("start recipe") && isPaused) {
             player.seekTo(length);
             player.start();
-        } else if (text.equals("stop") && !isPaused) {
+        } else if (text.equals("stop recipe") && !isPaused) {
             player.pause();
         }
     }
