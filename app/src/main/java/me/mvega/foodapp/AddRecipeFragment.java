@@ -84,8 +84,8 @@ public class AddRecipeFragment extends Fragment {
     private int stepCount = 1;
     private ArrayList<EditText> steps;
 
-    private String typeText = ""; // TODO bring up warning if addRecipe() is called when this is empty
-    private String prepTimeText = ""; // TODO bring up warning if addRecipe() is called when this is empty
+    private String typeText = "";
+    private String prepTimeText = "minutes"; // Automatically recognizes the prep-time time period as minutes
 
 
     @Override
@@ -107,7 +107,11 @@ public class AddRecipeFragment extends Fragment {
         btAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addRecipe();
+                try {
+                    addRecipe();
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -464,26 +468,61 @@ public class AddRecipeFragment extends Fragment {
         return stepStrings;
     }
 
-    private void addRecipe() {
-        pbLoading.setVisibility(ProgressBar.VISIBLE);
+    private void addRecipe() throws IllegalArgumentException {
         final Recipe recipe = new Recipe();
 
-        recipe.setSteps(parseInstructions());
-        recipe.setName(etRecipeName.getText().toString());
-        recipe.setDescription(etDescription.getText().toString());
-        recipe.setIngredients(etIngredients.getText().toString());
-        if (!etPrepTime.getText().toString().trim().equals("")){
-            recipe.setPrepTime(Integer.valueOf(etPrepTime.getText().toString()));
-        } else {
-            recipe.setPrepTime(0);
-        }
-        recipe.setYield(etYield.getText().toString());
-        recipe.setRating(0);
-        recipe.setPrepTimePeriod(prepTimeText);
-        recipe.setYield(etYield.getText().toString() + " servings");
-        recipe.setType(typeText);
-        recipe.setUser(ParseUser.getCurrentUser());
+        ArrayList<String> steps = parseInstructions();
+        String name = etRecipeName.getText().toString();
+        String description = etDescription.getText().toString();
+        String ingredients = etIngredients.getText().toString();
 
+
+        // Checks to ensure every required field is filled out
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException("Please enter a name for your recipe.");
+        } else {
+            recipe.setName(name);
+        }
+        if (description.isEmpty()) {
+            throw new IllegalArgumentException("Please enter a description for your recipe.");
+        } else {
+            recipe.setDescription(description);
+        }
+        try {
+            Number yieldNumber = Integer.valueOf(etYield.getText().toString());
+            String yield = String.valueOf(yieldNumber) + " servings";
+            recipe.setYield(yield);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Please enter a number of servings for your recipe.");
+        }
+        try {
+            Number prepTime = Integer.valueOf(etPrepTime.getText().toString());
+            recipe.setPrepTime(prepTime);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Please enter an amount of time for your recipe.");
+        }
+        recipe.setPrepTimePeriod(prepTimeText);
+        if (typeText.isEmpty()) {
+            throw new IllegalArgumentException("Please select a type from the type drop-down.");
+        } else {
+            recipe.setType(typeText);
+        }
+        if (ingredients.isEmpty()) {
+            throw new IllegalArgumentException("Please enter some ingredients for your recipe.");
+        } else {
+            recipe.setIngredients(ingredients);
+        }
+        if (steps.isEmpty()) {
+            throw new IllegalArgumentException("Please enter some instructions for your recipe.");
+        } else {
+            recipe.setSteps(steps);
+        }
+
+        // Recipe user and rating are automatically filled in Parse
+        recipe.setUser(ParseUser.getCurrentUser());
+        recipe.setRating(0);
+
+        // Empty images and audio are permissible
         if (recipeImage != null) {
             recipe.setImage(prepareImage(recipeImage));
         }
@@ -491,6 +530,7 @@ public class AddRecipeFragment extends Fragment {
             recipe.setMedia(prepareAudio(audioUri));
         }
 
+        pbLoading.setVisibility(ProgressBar.VISIBLE);
         recipe.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
