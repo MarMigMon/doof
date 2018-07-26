@@ -193,6 +193,5 @@ public class Recipe extends ParseObject {
             or(queries);
             return this;
         }
-
     }
 }

@@ -125,6 +125,9 @@ public class FavoritesFragment extends Fragment {
 
     private void loadFavorites() {
         ArrayList<String> userFavorites = (ArrayList<String>) ParseUser.getCurrentUser().get("favorites");
+        if (userFavorites == null) {
+            userFavorites = new ArrayList<>();
+        }
         final List<ParseQuery<Recipe>> queries = new ArrayList<>();
         Recipe.Query faveQuery = new Recipe.Query();
 
