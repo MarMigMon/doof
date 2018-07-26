@@ -40,7 +40,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/tvName"
                 android:layout_below="@+id/tvName"
-                android:text="User handle" />
+                android:text="User handle"
+                android:clickable="true"
+                android:focusable="true" />
 
             <TextView
                 android:id="@+id/tvDescription"
