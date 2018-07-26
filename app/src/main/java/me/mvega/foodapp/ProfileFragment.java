@@ -19,6 +19,8 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
+import java.util.HashMap;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
@@ -75,7 +77,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         tvUsername.setText(userName);
 
         final Recipe.Query recipeQuery = new Recipe.Query();
-        recipeQuery.fromUser(ParseUser.getCurrentUser()).withUser();
+        recipeQuery.fromUser(ParseUser.getCurrentUser()).withUser().include("recipesRated");
         recipeQuery.countInBackground(new CountCallback() {
             @Override
             public void done(int count, ParseException e) {
@@ -87,10 +89,15 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
                 }
             }
         });
-//
-//        String recipesReviewed = ParseUser
+
+        HashMap<String, Number> recipesRated = (HashMap<String, Number>) ParseUser.getCurrentUser().get("recipesRated");
+        if (recipesRated == null) {
+            recipesRated = new HashMap<>();
+        }
+        tvReviewed.setText(Integer.toString(recipesRated.size()));
+
         tvCompleted.setText("0"); // TODO get user's # of completed recipes
-        tvReviewed.setText("0"); // TODO get user's # of reviewed recipes
+
 
         ParseFile profileImage = user.getParseFile("image");
         if (profileImage != null) {
