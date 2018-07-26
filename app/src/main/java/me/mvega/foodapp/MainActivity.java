@@ -89,6 +89,10 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         }
     }
 
+    public void onEditProfileAction(MenuItem mi) {
+        replaceFragment(new EditProfileFragment());
+    }
+
     public void showFeed() {
         replaceFragment(FeedFragment.newInstance());
     }
