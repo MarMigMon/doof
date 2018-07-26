@@ -42,6 +42,7 @@ public class SpeechActivity extends AppCompatActivity implements
     private static final String TTS_SEARCH = "Text to speech";
     private static final String PLAYER_SEARCH = "Player";
     private static final String KEY_STEP_COUNT = "Step count";
+    private static final String KEY_RESUMED_RECIPE = "Resumed";
 
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
@@ -75,7 +76,9 @@ public class SpeechActivity extends AppCompatActivity implements
     @BindView(R.id.tvNext) TextView tvNext;
     @BindView(R.id.tvNextStepLabel) TextView tvNextStepLabel;
     @BindView(R.id.tvCurrentStepLabel) TextView tvCurrentStepLabel;
+    @BindView(R.id.tvStepCount) TextView tvStepCount;
 
+    @BindView(R.id.dbProgress) ProgressBar dbProgress;
     @BindView(R.id.pbLoading) ProgressBar pbLoading;
 
     @Override
@@ -83,7 +86,7 @@ public class SpeechActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             stepCount = savedInstanceState.getInt(KEY_STEP_COUNT);
-            resumedRecipe = true;
+            resumedRecipe = savedInstanceState.getBoolean(KEY_RESUMED_RECIPE);
         }
 
         setContentView(R.layout.activity_speech);
@@ -102,14 +105,9 @@ public class SpeechActivity extends AppCompatActivity implements
         tvIngredients.setText(recipe.getIngredients());
 
         instructions = (ArrayList<String>) recipe.getSteps();
-        totalSteps = instructions.size();
 
-        btStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                beginRecipe();
-            }
-        });
+        totalSteps = instructions.size();
+        tvStepCount.setText("Step " + stepCount + "/" + totalSteps);
 
         btStop.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,7 +150,13 @@ public class SpeechActivity extends AppCompatActivity implements
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         // Save custom values into the bundle
-        savedInstanceState.putInt(KEY_STEP_COUNT, stepCount - 1);
+        if (stepCount > 0) {
+            savedInstanceState.putInt(KEY_STEP_COUNT, stepCount - 1);
+            savedInstanceState.putBoolean(KEY_RESUMED_RECIPE, true);
+        } else {
+            savedInstanceState.putInt(KEY_STEP_COUNT, 0);
+            savedInstanceState.putBoolean(KEY_RESUMED_RECIPE, false);
+        }
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -164,10 +168,16 @@ public class SpeechActivity extends AppCompatActivity implements
                 if(status != TextToSpeech.ERROR) {
                     tts.setLanguage(Locale.US);
                     tts.setSpeechRate(0.9f);
-
                     if (resumedRecipe) {
                         beginRecipe();
                     }
+
+                    btStart.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            beginRecipe();
+                        }
+                    });
                 }
             }
         });
@@ -201,14 +211,15 @@ public class SpeechActivity extends AppCompatActivity implements
     }
 
     private void speakStep(){
-        if (stepCount < totalSteps) {
+        if (stepCount < totalSteps && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             currStep = instructions.get(stepCount);
             tvInstructions.setText(currStep);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                tts.speak(currStep, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
-            }
+            tts.speak(currStep, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
 
             stepCount += 1;
+            tvStepCount.setText("Step " + stepCount + "/" + totalSteps);
+            int progress = (int) (stepCount * 1.0 / totalSteps * 100);
+            dbProgress.setProgress(progress);
 
             // Check if next step exists, then set text for next step
             if (stepCount < totalSteps) {
@@ -231,9 +242,11 @@ public class SpeechActivity extends AppCompatActivity implements
         }
         if (initializedTts) {
             stepCount = 0;
-            tvInstructions.setText(R.string.before_start_recipe_caption);
             tts.stop();
         }
+
+        tvInstructions.setText(R.string.before_start_recipe_caption);
+        dbProgress.setProgress(0);
 
         // Toggle views
         btStart.setVisibility(View.VISIBLE);
