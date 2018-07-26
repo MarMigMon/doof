@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.SaveCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -24,8 +28,17 @@ import me.mvega.foodapp.model.Notification;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
+    private NotificationAdapterCommunication nCommunication;
     private List<Notification> notifications;
     Context context;
+
+    // notification listener
+    public interface NotificationAdapterCommunication {
+        void respond(ParseObject notificationRecipe);
+    }
+    public void setNotificationListener(NotificationAdapterCommunication notificationListener) {
+        this.nCommunication = notificationListener;
+    }
 
     // pass in the Notifications array in the constructor
     public NotificationAdapter(List<Notification> notifications) {
@@ -93,31 +106,43 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
             // add this as the itemView's OnClickListener
             itemView.setOnClickListener(this);
-
+            ivRecipe.setOnClickListener(this);
+            tvActiveUser.setOnClickListener(this);
         }
 
         // when the user clicks on a row, show details for the selected recipe
         @Override
         public void onClick(View v) {
-            // gets item position
-            int position = getAdapterPosition();
-            // make sure the position is valid, i.e. actually exists in the view
-            if (position != RecyclerView.NO_POSITION) {
-                // get the recipe at the position, this won't work if the class is static
-                final Notification notification = notifications.get(position);
-                // update view count when recipe is clicked
-//                recipe.put("views", recipe.getViews()+1);
-//                recipe.saveInBackground(new SaveCallback() {
-//                    @Override
-//                    public void done(ParseException e) {
-//                        if (e == null) {
-//                            Log.d("Recipe", "Saved");
-//                        } else {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
+            if (v.getId() == ivRecipe.getId()) {
+                int position = getAdapterPosition();
+                // make sure the position is valid, i.e. actually exists in the view
+                if (position != RecyclerView.NO_POSITION) {
+                    // get the recipe at the position, this won't work if the class is static
+                    final Notification notification = notifications.get(position);
+                    ParseObject notificationRecipe = notification.getRecipe();
+                    // update view count when recipe is clicked
+                    notificationRecipe.put("views", notificationRecipe.getInt("views") + 1);
+                    notificationRecipe.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Log.d("Recipe", "Saved");
+                            } else {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    nCommunication.respond(notificationRecipe);
+                }
             }
+//            if (v.getId() == tvActiveUser.getId()) {
+//                int position = getAdapterPosition();
+//                // make sure the position is valid, i.e. actually exists in the view
+//                if (position != RecyclerView.NO_POSITION) {
+//                    // get the recipe at the position, this won't work if the class is static
+//                    final Notification otherUser = notifications.get(position);
+//                }
+//            }
         }
     }
 
@@ -134,7 +159,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         } catch (java.text.ParseException e) {
             e.printStackTrace();
         }
-
         return relativeDate;
     }
 

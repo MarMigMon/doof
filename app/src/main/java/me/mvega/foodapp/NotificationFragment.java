@@ -1,9 +1,11 @@
 package me.mvega.foodapp;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -26,6 +29,12 @@ public class NotificationFragment extends Fragment {
     private RecyclerView rvNotifications;
     ArrayList<Notification> notifications;
     private NotificationAdapter notificationAdapter;
+    NotificationFragmentCommunication notificationListenerFragment;
+
+    // implement listener interface
+    public interface NotificationFragmentCommunication {
+        void respond(ParseObject notificationRecipe);
+    }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -33,6 +42,16 @@ public class NotificationFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_notification, parent, false);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof NotificationFragmentCommunication) {
+            notificationListenerFragment = (NotificationFragmentCommunication) context;
+        } else {
+            throw new ClassCastException(context.toString() + " must implement NotificationFragmentCommunication");
+        }
     }
 
     // This event is triggered soon after onCreateView().
@@ -48,6 +67,17 @@ public class NotificationFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvNotifications.setLayoutManager(linearLayoutManager);
         rvNotifications.setAdapter(notificationAdapter);
+
+        notificationAdapter.setNotificationListener(new NotificationAdapter.NotificationAdapterCommunication() {
+            @Override
+            public void respond(ParseObject notificationRecipe) {
+                notificationListenerFragment.respond(notificationRecipe);
+            }
+        });
+
+        RecyclerView.ItemDecoration itemDecoration = new
+                DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        rvNotifications.addItemDecoration(itemDecoration);
 
         loadYourNotifications();
         setSwipeContainer();
@@ -85,7 +115,8 @@ public class NotificationFragment extends Fragment {
         notificationQuery.include("activeUser.username")
                 .include("activeUser.image")
                 .include("recipe.user")
-                .include("recipe.image");
+                .include("recipe.image")
+                .include("recipe.views");
         notificationQuery.findInBackground(new FindCallback<Notification>() {
             @Override
             public void done(List<Notification> newNotification, ParseException e) {
@@ -99,6 +130,5 @@ public class NotificationFragment extends Fragment {
             }
         });
     }
-
 
 }

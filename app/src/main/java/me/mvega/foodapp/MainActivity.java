@@ -15,13 +15,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
-public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication, ProfileFragment.ProfileFragmentCommunication {
+public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication, ProfileFragment.ProfileFragmentCommunication, NotificationFragment.NotificationFragmentCommunication {
 
     @BindView(R.id.navigation_bar) BottomNavigationView bottomNavigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -143,6 +144,13 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     public void respond(Recipe recipe) {
         RecipeFragment recipeFragment = new RecipeFragment();
         recipeFragment.recipe = recipe;
+        replaceFragment(recipeFragment);
+    }
+
+    @Override
+    public void respond(ParseObject notificationRecipe) {
+        RecipeFragment recipeFragment = new RecipeFragment();
+        recipeFragment.recipe = (Recipe) notificationRecipe;
         replaceFragment(recipeFragment);
     }
 }
