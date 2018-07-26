@@ -40,9 +40,13 @@ public class EditProfileFragment extends Fragment {
     @BindView(R.id.ivProfile) ImageView ivProfile;
     @BindView(R.id.btChangeProfilePic) Button btChangeProfilePic;
     @BindView(R.id.btSave) Button btSave;
+    @BindView(R.id.tvDescription) TextView tvDescription;
+    @BindView(R.id.etDescription) EditText etDescription;
+    @BindView(R.id.btSaveDescription) Button btSaveDescription;
 
     ParseUser user = ParseUser.getCurrentUser();
     final String name = (String) user.get("Name");
+    final String description = (String) user.get("description");
 
 
     @Override
@@ -56,6 +60,13 @@ public class EditProfileFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         tvName.setText(name);
+
+        if (description != null) {
+            tvDescription.setText(description);
+        } else {
+            tvDescription.setText("Hello there!");
+        }
+
 
         ParseFile profileImage = user.getParseFile("image");
         if (profileImage != null) {
@@ -73,6 +84,16 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
+        tvDescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                etDescription.setText(description);
+                etDescription.setVisibility(View.VISIBLE);
+                tvDescription.setVisibility(View.INVISIBLE);
+                btSaveDescription.setVisibility(View.VISIBLE);
+            }
+        });
+
         btSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,6 +108,32 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
+        btSaveDescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeDescription();
+            }
+        });
+
+    }
+
+    private void changeDescription() {
+        final String newDescription = etDescription.getText().toString().trim();
+        user.put("description", newDescription);
+        user.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
+                    tvDescription.setText(newDescription);
+                    tvDescription.setVisibility(View.VISIBLE);
+                    etDescription.setVisibility(View.INVISIBLE);
+                    btSaveDescription.setVisibility(View.INVISIBLE);
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void changeProfilePic() {

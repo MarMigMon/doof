@@ -27,18 +27,13 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
 
     ProfileFragmentCommunication yourRecipesListenerFragment;
     ParseUser user = ParseUser.getCurrentUser();
-    @BindView(R.id.ivProfile)
-    ImageView ivProfile;
-    @BindView(R.id.tvUsername)
-    TextView tvUsername;
-    @BindView(R.id.tvContributed)
-    TextView tvContributed;
-    @BindView(R.id.tvCompleted)
-    TextView tvCompleted;
-    @BindView(R.id.tvReviewed)
-    TextView tvReviewed;
-    @BindView(R.id.profileTabs)
-    TabLayout tabLayout;
+    @BindView(R.id.ivProfile) ImageView ivProfile;
+    @BindView(R.id.tvUsername) TextView tvUsername;
+    @BindView(R.id.tvContributed) TextView tvContributed;
+    @BindView(R.id.tvCompleted) TextView tvCompleted;
+    @BindView(R.id.tvReviewed) TextView tvReviewed;
+    @BindView(R.id.profileTabs) TabLayout tabLayout;
+    @BindView(R.id.tvDescription) TextView tvDescription;
 
     public interface ProfileFragmentCommunication {
         void respond(Recipe recipe);
@@ -71,8 +66,16 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         ButterKnife.bind(this, view);
 
         // gets user's name
-        String userName = (String) ParseUser.getCurrentUser().get("Name");
+        String userName = (String) user.get("Name");
         tvUsername.setText(userName);
+
+        // get user description
+        String userDescription = (String) user.get("description");
+        if (userDescription != null) {
+            tvDescription.setText(userDescription);
+        } else {
+            tvDescription.setText("Hello there!");
+        }
 
         final Recipe.Query recipeQuery = new Recipe.Query();
         recipeQuery.fromUser(ParseUser.getCurrentUser()).withUser();
