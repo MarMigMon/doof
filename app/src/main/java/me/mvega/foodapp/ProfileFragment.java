@@ -70,7 +70,8 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
 
         ButterKnife.bind(this, view);
 
-        tvUsername.setText(user.getUsername());
+        String userName = (String) ParseUser.getCurrentUser().get("Name");
+        tvUsername.setText(userName);
 
         final Recipe.Query recipeQuery = new Recipe.Query();
         recipeQuery.fromUser(ParseUser.getCurrentUser()).withUser();
