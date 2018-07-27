@@ -29,6 +29,7 @@ public class FilterPopup {
     List<ParseQuery <Recipe>> finalQueries;
     SharedPreferences prefs;
     Context context;
+    FeedFragment feedFragment;
     public static int lowestRating = 0;
     public static int maxPrepTime = Integer.MAX_VALUE;
     public static final String KEY_PREFERENCES = "private";
@@ -57,6 +58,7 @@ public class FilterPopup {
         types = new CheckBox[] {cbSnack, cbEntree, cbAppetizer, cbDessert};
         ratings = new CheckBox[] {cb5Stars, cb4Stars, cb3Stars, cb2Stars};
         finalQueries = new ArrayList<>();
+        feedFragment = new FeedFragment();
 
         // Set up popup window
         popup.setContentView(layout);
@@ -117,7 +119,7 @@ public class FilterPopup {
         }
 
         etMaxPrepTime.setText("");
-        FeedFragment.loadTopRecipes();
+        feedFragment.loadTopRecipes();
     }
 
     private void toggleChecked(CheckBox checkbox) {

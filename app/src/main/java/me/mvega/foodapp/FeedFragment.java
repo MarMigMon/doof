@@ -9,11 +9,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -33,13 +36,15 @@ public class FeedFragment extends Fragment {
     static RecipeAdapter recipeAdapter;
     static SwipeRefreshLayout swipeContainer;
     ArrayList<Recipe> recipes;
+    ArrayList<String> recipeNames;
     FilterPopup filterPopup;
     PopupWindow popup;
     static Context context;
+    ArrayAdapter<String> searchAdapter;
 
     @BindView(R.id.rvRecipes) RecyclerView rvRecipes;
     @BindView(R.id.search_bar) Toolbar toolbar;
-    @BindView(R.id.search) EditText search;
+    @BindView(R.id.search) AutoCompleteTextView search;
     @BindView(R.id.search_btn) Button btSearch;
     @BindView(R.id.filter_btn) Button btFilter;
 
@@ -79,14 +84,28 @@ public class FeedFragment extends Fragment {
         swipeContainer = view.findViewById(R.id.swipeContainer);
         context = view.getContext();
 
+        initializeAdapter();
+        loadTopRecipes();
+        setSwipeContainer();
+
+        btFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFilterPopup(view);
+            }
+        });
+    }
+
+    private void initializeAdapter() {
         // initialize the ArrayList (data source)
         recipes = new ArrayList<>();
-        // construct the adapter from this data source
         recipeAdapter = new RecipeAdapter(recipes);
-        // RecyclerView setup (layout manager, use adapter)
+
+        // Layout Manager
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvRecipes.setLayoutManager(linearLayoutManager);
-        //set the adapter
+
+        // Set adapter
         rvRecipes.setAdapter(recipeAdapter);
 
         recipeAdapter.setListener(new RecipeAdapter.AdapterCommunication() {
@@ -100,9 +119,12 @@ public class FeedFragment extends Fragment {
                 listenerFragment.respond(recipe, image);
             }
         });
+    }
 
-        loadTopRecipes();
-        setSwipeContainer();
+    private void initializeSearch() {
+        searchAdapter = new ArrayAdapter<String>(getContext(), R.layout.autocomplete_dropdown, recipeNames);
+        search.setThreshold(1);
+        search.setAdapter(searchAdapter);
 
         btSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,14 +134,29 @@ public class FeedFragment extends Fragment {
             }
         });
 
-        btFilter.setOnClickListener(new View.OnClickListener() {
+        search.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View view) {
-                showFilterPopup(view);
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String query = search.getText().toString().trim();
+                if (!query.equals("")) {
+                    searchRecipes(query);
+                } else {
+                    loadTopRecipes();
+                }
+
             }
         });
     }
-
 
     // Display anchored popup menu based on view selected
     private void showFilterPopup(View v) {
@@ -177,7 +214,7 @@ public class FeedFragment extends Fragment {
         }
     }
 
-    public static void loadTopRecipes() {
+    public void loadTopRecipes() {
         clearPreferences(FilterPopup.KEY_PREFERENCES);
 
         Recipe.Query recipeQuery = new Recipe.Query();
@@ -185,7 +222,12 @@ public class FeedFragment extends Fragment {
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
+                recipeNames = new ArrayList<>();
+                for (Recipe recipe : newRecipes) {
+                    recipeNames.add(recipe.getName());
+                }
                 resetAdapter(newRecipes, e);
+                initializeSearch();
             }
         });
     }
