@@ -23,7 +23,8 @@
         android:layout_marginTop="10dp"
         android:src="@drawable/image_placeholder"
         android:scaleType="centerCrop"
-        android:clickable="true"/>
+        android:clickable="true"
+        android:focusable="true" />
 
     <TextView
         android:id="@+id/tvActiveUser"
@@ -35,7 +36,8 @@
         android:layout_marginLeft="10dp"
         android:text="username"
         android:textStyle="bold"
-        android:clickable="true"/>
+        android:clickable="true"
+        android:focusable="true" />
 
     <TextView
         android:id="@+id/tvRelativeTime"

@@ -143,6 +143,8 @@ public class YourRecipesFragment extends Fragment {
             }
         });
 
+
+
         loadYourRecipes();
 
         // Lookup the swipe container view

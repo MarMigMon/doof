@@ -22,7 +22,7 @@ import me.mvega.foodapp.model.Recipe;
 
 public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAdapter.ViewHolder> {
 
-    private ProfileAdapterCommunication nCommunication;
+    private ProfileAdapterCommunication pCommunication;
     private List<Recipe> recipes;
     Context context;
 
@@ -37,7 +37,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
     }
 
     public void setProfileListener(ProfileAdapterCommunication profileListener) {
-        this.nCommunication = profileListener;
+        this.pCommunication = profileListener;
     }
 
     // for each row, inflate the layout and cache references into ViewHolder
@@ -118,7 +118,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
                         }
                     }
                 });
-                nCommunication.respond(recipe);
+                pCommunication.respond(recipe);
             }
         }
 
@@ -131,7 +131,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
             if (position != RecyclerView.NO_POSITION) {
                 // get the recipe at the position, this won't work if the class is static
                 final Recipe recipe = recipes.get(position);
-                nCommunication.showDeleteDialog(recipe);
+                pCommunication.showDeleteDialog(recipe);
                 return true;
             }
             return false;

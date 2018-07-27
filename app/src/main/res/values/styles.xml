@@ -24,11 +24,18 @@
         <item name="android:isIndicator">true</item>
     </style>
 
-    <style name="BodyText" parent="TextAppearance.AppCompat"></style>
+    <style name="BodyText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="HeaderText" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">14sp</item>
+    </style>
 
     <style name="DescriptionText" parent="TextAppearance.AppCompat">
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">3</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="TitleText" parent="TextAppearance.AppCompat.Headline"></style>
