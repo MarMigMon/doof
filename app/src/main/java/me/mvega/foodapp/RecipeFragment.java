@@ -1,11 +1,13 @@
 package me.mvega.foodapp;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -13,11 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -64,8 +68,22 @@ public class RecipeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // Defines the xml file for the fragment
-        return inflater.inflate(R.layout.fragment_recipe, parent, false);
+        View mainView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe, null, false);
+        PullToZoomScrollViewEx pullToZoom = mainView.findViewById(R.id.pullToZoomScroll);
+        View zoomView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_image, null, false);
+        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_content, null, false);
+        pullToZoom.setHeaderView(new View(getContext()));
+        pullToZoom.setZoomView(zoomView);
+        pullToZoom.setScrollContentView(contentView);
+        DisplayMetrics localDisplayMetrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
+        int mScreenHeight = localDisplayMetrics.heightPixels;
+        int mScreenWidth = localDisplayMetrics.widthPixels;
+        LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenWidth / 16.0F)));
+        pullToZoom.setHeaderLayoutParams(localObject);
+        return mainView;
     }
 
     // This event is triggered soon after onCreateView().
@@ -74,6 +92,7 @@ public class RecipeFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
         ButterKnife.bind(this, view);
+
         steps = (ArrayList<String>) recipe.getSteps();
         recipeId = recipe.getObjectId();
 

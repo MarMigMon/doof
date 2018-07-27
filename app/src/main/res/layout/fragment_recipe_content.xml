@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dataLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="143dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Recipe Name"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <ImageButton
+        android:id="@+id/btFavorite"
+        app:srcCompat="@drawable/ufi_heart_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@id/tvName"
+        android:background="@android:color/transparent"
+        android:padding="5dp"
+        android:scaleType="fitCenter" />
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        style="@style/MyRatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tvName"
+        android:layout_below="@+id/tvUsername"
+        android:numStars="5"
+        android:transformPivotX="0dp"
+        android:transformPivotY="0dp" />
+
+
+    <TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="177dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tvName"
+        android:layout_below="@+id/tvName"
+        android:text="User handle" />
+
+    <TextView
+        android:id="@+id/tvDescription"
+        android:layout_width="177dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tvName"
+        android:layout_below="@+id/tvType"
+        android:text="Recipe Description" />
+
+    <TextView
+        android:id="@+id/tvPrepTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tvName"
+        android:layout_below="@+id/tvDescription"
+        android:text="Prep Time" />
+
+
+    <TextView
+        android:id="@+id/tvYield"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tvName"
+        android:layout_below="@+id/tvPrepTime"
+        android:text="Recipe Yield" />
+
+    <TextView
+        android:id="@+id/tvIngredients"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tvName"
+        android:layout_below="@+id/btPlay"
+        android:layout_marginTop="25dp"
+        android:text="Ingredients" />
+
+    <TextView
+        android:id="@+id/tvInstructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tvName"
+        android:layout_below="@+id/tvIngredients"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:text="Instructions"
+        android:textSize="20sp" />
+
+    <RelativeLayout
+        android:id="@+id/instructionsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvInstructions"
+        android:layout_margin="10dp">
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tvName"
+        android:layout_below="@+id/ratingBar"
+        android:text="Recipe Type" />
+
+    <ImageButton
+        android:id="@+id/btPlay"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignStart="@+id/tvYield"
+        android:layout_below="@id/tvYield"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/circle_button"
+        android:src="@android:drawable/ic_media_play" />
+
+</RelativeLayout>
