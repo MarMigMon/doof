@@ -212,12 +212,25 @@ public class RecipeFragment extends Fragment {
         float rating = recipe.getRating().floatValue();
         recipeRating.setRating(rating);
 
-        tvNumRatings.setText(Integer.toString(recipe.getNumRatings()) + " Ratings");
+        int numRatings = recipe.getNumRatings();
+        if (numRatings == 1) {
+            tvNumRatings.setText(Integer.toString(numRatings) + " Rating");
+        } else {
+            tvNumRatings.setText(Integer.toString(numRatings) + " Ratings");
+        }
+
 
         yourRating.setRating(recipe.getUserRating(user).floatValue());
-        Number userRating = ((HashMap<String, Number>) recipe.get(Recipe.KEY_USER_RATINGS)).get(user.getObjectId());
-        if (userRating != null) {
-            userRatingMessage.setText("You rated this recipe " + userRating.toString() + " stars!");
+        HashMap<String, Number> userRatings = (HashMap<String, Number>) recipe.get(Recipe.KEY_USER_RATINGS);
+        if (userRatings != null) {
+            Number userRating = userRatings.get(user.getObjectId());
+            if (userRating != null) {
+                if (userRating.doubleValue() == 1) {
+                    userRatingMessage.setText("You rated this recipe " + userRating.toString() + " star!");
+                } else {
+                    userRatingMessage.setText("You rated this recipe " + userRating.toString() + " stars!");
+                }
+            }
         }
 
         yourRating.setOnTouchListener(new View.OnTouchListener() {
@@ -340,8 +353,16 @@ public class RecipeFragment extends Fragment {
         // updates recipe rating on rating bars
         recipeRating.setRating(recipe.getRating().floatValue());
         yourRating.setRating(rating.floatValue());
-        tvNumRatings.setText(Integer.toString(recipe.getNumRatings()) + " Ratings");
-        userRatingMessage.setText("You rated this recipe " + rating.toString() + " stars!");
-
+        int numRatings = recipe.getNumRatings();
+        if (numRatings == 1) {
+            tvNumRatings.setText(Integer.toString(numRatings) + " Rating");
+        } else {
+            tvNumRatings.setText(Integer.toString(numRatings) + " Ratings");
+        }
+        if (rating.doubleValue() == 1) {
+            userRatingMessage.setText("You rated this recipe " + rating.toString() + " star!");
+        } else {
+            userRatingMessage.setText("You rated this recipe " + rating.toString() + " stars!");
+        }
     }
 }

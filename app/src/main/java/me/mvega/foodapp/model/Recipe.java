@@ -120,7 +120,7 @@ public class Recipe extends ParseObject {
     }
     public int getNumRatings() {
         HashMap<String, Number> userRatings = (HashMap<String, Number>) get(KEY_USER_RATINGS);
-        return userRatings.size();
+        return (userRatings == null) ? 0 : userRatings.size();
     }
 
     public Number getUserRating(ParseUser user) {
