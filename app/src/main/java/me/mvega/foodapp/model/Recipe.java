@@ -29,7 +29,7 @@ public class Recipe extends ParseObject {
     private static final String KEY_OBJECT_ID = "objectId";
     private static final String KEY_VIEWS = "views";
     private static final String KEY_USER_RATINGS = "userRatings";
-
+    private static final int RECIPES_PER_PAGE = 20;
 
     public List<String> getSteps() {
         return getList(KEY_STEPS);
@@ -165,12 +165,17 @@ public class Recipe extends ParseObject {
         }
 
         public Query getTop() {
-            setLimit(20);
+            setLimit(RECIPES_PER_PAGE);
             return this;
         }
 
         public Query withUser() {
             include("user");
+            return this;
+        }
+
+        public Query skipToPage(int page) {
+            setSkip(RECIPES_PER_PAGE * page);
             return this;
         }
 

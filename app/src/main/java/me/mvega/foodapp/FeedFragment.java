@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,8 @@ public class FeedFragment extends Fragment {
 
     static RecipeAdapter recipeAdapter;
     static SwipeRefreshLayout swipeContainer;
+    static EndlessRecyclerViewScrollListener scrollListener;
+    LinearLayoutManager linearLayoutManager;
     ArrayList<Recipe> recipes;
     ArrayList<String> recipeNames;
     FilterPopup filterPopup;
@@ -85,6 +88,7 @@ public class FeedFragment extends Fragment {
         context = view.getContext();
 
         initializeAdapter();
+        initializeEndlessScrolling();
         loadTopRecipes();
         setSwipeContainer();
 
@@ -96,13 +100,44 @@ public class FeedFragment extends Fragment {
         });
     }
 
+    private void initializeEndlessScrolling() {
+        // Retain an instance so that you can call `resetState()` for fresh searches
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view, String query) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadNextDataFromApi(page, query);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        rvRecipes.addOnScrollListener(scrollListener);
+    }
+
+    private void loadNextDataFromApi(int page, String query) {
+        Recipe.Query recipeQuery = new Recipe.Query();
+        if (query.equals("")) {
+            recipeQuery.newestFirst().getTop().withUser().skipToPage(page);
+        } else {
+            recipeQuery.newestFirst().getTop().withUser().containsQuery(Recipe.KEY_NAME, query).skipToPage(page);
+        }
+
+        recipeQuery.findInBackground(new FindCallback<Recipe>() {
+            @Override
+            public void done(List<Recipe> newRecipes, ParseException e) {
+                Log.i("Infinite scrolling", "Loaded " + newRecipes.size());
+                recipeAdapter.addAll(newRecipes);
+            }
+        });
+    }
+
     private void initializeAdapter() {
         // initialize the ArrayList (data source)
         recipes = new ArrayList<>();
         recipeAdapter = new RecipeAdapter(recipes);
 
         // Layout Manager
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager = new LinearLayoutManager(getContext());
         rvRecipes.setLayoutManager(linearLayoutManager);
 
         // Set adapter
@@ -123,6 +158,8 @@ public class FeedFragment extends Fragment {
 
     private void initializeSearch() {
         searchAdapter = new ArrayAdapter<String>(getContext(), R.layout.autocomplete_dropdown, recipeNames);
+
+        // Will start suggesting searches after one character is typed
         search.setThreshold(1);
         search.setAdapter(searchAdapter);
 
@@ -169,6 +206,7 @@ public class FeedFragment extends Fragment {
     private void searchRecipes(String query) {
         Recipe.Query recipeQuery = new Recipe.Query();
         recipeQuery.getTop().withUser().newestFirst().containsQuery(Recipe.KEY_NAME, query);
+        EndlessRecyclerViewScrollListener.query = query;
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
@@ -203,11 +241,10 @@ public class FeedFragment extends Fragment {
 
     public static void resetAdapter(List<Recipe> newRecipes, ParseException e) {
         if (e == null) {
-            // Remember to CLEAR OUT old items before appending in the new ones
             recipeAdapter.clear();
             // ...the data has come back, add new items to your adapter...
             recipeAdapter.addAll(newRecipes);
-            // Now we call setRefreshing(false) to signal refresh has finished
+            scrollListener.resetState();
             swipeContainer.setRefreshing(false);
         } else {
             e.printStackTrace();
@@ -216,6 +253,7 @@ public class FeedFragment extends Fragment {
 
     public void loadTopRecipes() {
         clearPreferences(FilterPopup.KEY_PREFERENCES);
+        EndlessRecyclerViewScrollListener.query = "";
 
         Recipe.Query recipeQuery = new Recipe.Query();
         recipeQuery.getTop().withUser().newestFirst();
