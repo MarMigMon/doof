@@ -45,7 +45,6 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     // either dynamically or via XML layout inflation.
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_profile, parent, false);
     }
 
@@ -62,25 +61,22 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        // Setup any handles to view objects here
-        // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
-
         ButterKnife.bind(this, view);
 
-        // gets user's name
-        String userName = (String) user.get("Name");
-        tvUsername.setText(userName);
+        setUserName();
+        setUserDescription();
+        setUserContributions();
+        setUserReviewed();
 
-        // get user description
-        String userDescription = (String) user.get("description");
-        if (userDescription != null) {
-            tvDescription.setText(userDescription);
-        } else {
-            tvDescription.setText("Hello there!");
-        }
+        tvCompleted.setText("0"); // TODO get user's # of completed recipes
 
+        setProfileImage();
+        setTabs();
+    }
+
+    private void setUserContributions() {
         final Recipe.Query recipeQuery = new Recipe.Query();
-        recipeQuery.fromUser(ParseUser.getCurrentUser()).withUser().include("recipesRated");
+        recipeQuery.fromUser(user).withUser().include("recipesRated");
         recipeQuery.countInBackground(new CountCallback() {
             @Override
             public void done(int count, ParseException e) {
@@ -92,24 +88,39 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
                 }
             }
         });
+    }
 
-        HashMap<String, Number> recipesRated = (HashMap<String, Number>) ParseUser.getCurrentUser().get("recipesRated");
+    private void setUserReviewed() {
+        HashMap<String, Number> recipesRated = (HashMap<String, Number>) user.get("recipesRated");
         if (recipesRated == null) {
             recipesRated = new HashMap<>();
         }
         tvReviewed.setText(Integer.toString(recipesRated.size()));
+    }
 
-        tvCompleted.setText("0"); // TODO get user's # of completed recipes
+    private void setUserName() {
+        String userName = (String) user.get("Name");
+        tvUsername.setText(userName);
+    }
 
+    private void setUserDescription() {
+        String userDescription = (String) user.get("description");
+        if (userDescription != null) {
+            tvDescription.setText(userDescription);
+        } else {
+            tvDescription.setText("Hello there!");
+        }
+    }
 
+    private void setProfileImage() {
         ParseFile profileImage = user.getParseFile("image");
         if (profileImage != null) {
             String imageUrl = profileImage.getUrl();
             Glide.with(getContext()).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(ivProfile);
         } else Glide.with(getContext()).load(R.drawable.image_placeholder).apply(RequestOptions.circleCropTransform()).into(ivProfile);
+    }
 
-
-
+    private void setTabs() {
         showYourRecipes(); // Automatically selects Your Recipes tab to start profile screen
 
         final TabLayout.Tab yourRecipes = tabLayout.newTab().setText("Your Recipes");
@@ -145,11 +156,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     }
 
     public void respond(Recipe recipe) {
-//        FragmentManager fragmentManager = getChildFragmentManager();
-//        YourRecipesFragment yourRecipesFragment = (YourRecipesFragment) fragmentManager.findFragmentByTag("YourRecipes");
-//        if (yourRecipesFragment != null) {
-            yourRecipesListenerFragment.respond(recipe);
-//        }
+        yourRecipesListenerFragment.respond(recipe);
     }
 
     public void showFavorites() {
@@ -163,9 +170,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     }
 
     public void replaceFragment(Fragment f) {
-        // Begin the transaction
         final FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
-        // Replace the contents of the container with the new fragment and complete the changes added above
         fragmentTransaction.replace(R.id.userRecipes, f).commit();
     }
 }
