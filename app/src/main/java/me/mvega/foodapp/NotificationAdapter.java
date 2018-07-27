@@ -118,6 +118,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             itemView.setOnClickListener(this);
             ivRecipe.setOnClickListener(this);
             tvActiveUser.setOnClickListener(this);
+            ivActiveUserImage.setOnClickListener(this);
         }
 
         // when the user clicks on a row, show details for the selected recipe

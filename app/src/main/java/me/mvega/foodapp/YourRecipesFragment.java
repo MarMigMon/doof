@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -122,6 +124,20 @@ public class YourRecipesFragment extends Fragment {
                                             loadYourRecipes();
                                             reduceContributed();
                                             dialog.dismiss();
+                                        } else {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                                ParseQuery<ParseObject> query = ParseQuery.getQuery("Notification");
+                                query.whereEqualTo("recipe", recipe);
+                                query.findInBackground(new FindCallback<ParseObject>() {
+                                    @Override
+                                    public void done(List<ParseObject> notifications, ParseException e) {
+                                        if (e == null) {
+                                            for (ParseObject notification : notifications) {
+                                                notification.deleteInBackground();
+                                            }
                                         } else {
                                             e.printStackTrace();
                                         }

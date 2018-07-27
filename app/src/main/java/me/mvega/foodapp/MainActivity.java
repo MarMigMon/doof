@@ -161,11 +161,18 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     }
 
     @Override
-    public void respond(ParseUser notificationUser) {
+    public void respond(ParseUser notificationUser ) {
         ProfileFragment profileFragment = new ProfileFragment();
         profileFragment.user = notificationUser;
         replaceFragment(profileFragment);
     }
+
+//    @Override
+//    public void respond(ParseUser recipeUser) {
+//        ProfileFragment profileFragment = new ProfileFragment();
+//        profileFragment.user = recipeUser;
+//        replaceFragment(profileFragment);
+
 }
 //
 //

@@ -41,8 +41,8 @@ import me.mvega.foodapp.model.Notification;
 import me.mvega.foodapp.model.Recipe;
 
 public class RecipeFragment extends Fragment {
-
     private static final ParseUser user = ParseUser.getCurrentUser();
+    RecipeUserCommunication recipeUserListener;
     Recipe recipe;
     String recipeId;
     ImageView image;
@@ -64,6 +64,20 @@ public class RecipeFragment extends Fragment {
     @BindView(R.id.btPlay) ImageButton btPlay;
     @BindView(R.id.btFavorite) ImageButton btFavorite;
 
+    // implement interface
+    public interface RecipeUserCommunication {
+        void respond(ParseUser recipeUser);
+    }
+
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//        if (context instanceof RecipeUserCommunication) {
+//            recipeUserListener = (RecipeUserCommunication) context;
+//        } else {
+//            throw new ClassCastException(context.toString() + " must implement RecipeFragment.RecipeUserCommunication");
+//        }
+//    }
     // The onCreateView method is called when Fragment should create its View object hierarchy either dynamically or via XML layout inflation.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -215,6 +229,14 @@ public class RecipeFragment extends Fragment {
                 return true;
             }
         });
+
+//        tvUsername.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ParseUser recipeUser = recipe.getUser();
+//                recipeUserListener.respond(recipeUser);
+//            }
+//        });
     }
 
     private void setInstructions(ArrayList<String> steps) {

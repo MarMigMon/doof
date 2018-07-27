@@ -11,7 +11,9 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:src="@drawable/ic_profile" />
+        android:src="@drawable/ic_profile"
+        android:clickable="true"
+        android:focusable="true" />
 
     <ImageView
         android:id="@+id/ivRecipe"
