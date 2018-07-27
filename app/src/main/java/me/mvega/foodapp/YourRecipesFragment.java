@@ -53,7 +53,7 @@ public class YourRecipesFragment extends Fragment {
         super.onCreate(savedInstanceState);
         onAttachToParentFragment(getParentFragment());
         // Defines the xml file for the fragment
-        return inflater.inflate(R.layout.fragment_feed, parent, false);
+        return inflater.inflate(R.layout.tab_profile, parent, false);
     }
 
     public void onAttachToParentFragment(Fragment childFragment) {
