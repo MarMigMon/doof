@@ -1,6 +1,6 @@
 # FoodApp
 
-___________ [Insert app name here] is an app that provides the user with a list of recipes catered to their needs. It will offer the unique feature of a hands-free cooking experience through voice controlled, step by step audio feedback to complete the recipe.
+___________ [Insert app name here] is an app that offers the unique feature of a hands-free cooking experience through voice controlled, step by step audio feedback to complete the recipe. It allows users to upload their own recipes and interact with recipes created by other users, which enhance the cooking experience by incorporating this social aspect.
 
 Time spent: [__] hours spent in total
 
@@ -8,23 +8,51 @@ Time spent: [__] hours spent in total
 
 The following **required** functionality is completed:
 
-* [ ] The recipe will be read aloud
-* [ ] The user will be able to scroll through a list of recipes
-* [ ] The recipes will produce a detail screen when clicked
-* [ ] The app will be able to register when the user says commands such as "start", "pause", "repeat", and "stop", and respond accordingly
+* [x] The recipe will be read aloud
+* [x] The user will be able to scroll through a list of recipes
+* [x] The recipes will produce a detail screen when clicked
+* [x] The app will be able to register when the user says commands such as "Next Step", "Previous Step", "Repeat Step", and respond accordingly
 
 
 The following **optional** features are implemented:
 
-* [ ] There will be a search function to narrow the list of recipes
-  * [ ] Options for prep time, price, ingredients, difficulty
-* [ ] Additional activity for nutritional information
-* [ ] Ability for the user to add/import their own saved recipes into the app database
-* [ ] Filter recipes by meal time/type and view keywords on detail page
+* [x] Users can log in and log out of their accounts
+* [x] CurrentUser is persisted across sessions (closing and resuming the app)
+* [x] New users can be created through sign up
+* [x] There will be a search function and a filter to narrow the list of recipes.
+  * [x] Options for prep time, price, ingredients, and food type.
+  * [x] Filter is persisted through opening and closing the filter window
+* [x] Users have a profile page.
+  * [x] Within the profile page there are nested fragments for their own recipes, and one for their favorited recipes.
+  * [x] Profile page keeps track of recipes contributed (by that user), recipes reviewed (rated), and recipes completed.
+  * [x] Users are able to edit their profile page, such as adding a description and changing their profile picture.
+* [x] Users receive notifications when other users interact with their recipes.
+  * [x] Other users' profiles can be accessed through the notification.
+  * [x] The recipe details can be accessed through the notification.
+* [x] Ability for the user to add/import their own saved recipes into the app database.
+  * [x] Users are prohibited from leaving fields blank
+  * [x] Drop down options for category constraints
+  * [x] Users can upload a photo for each recipe
+  * [ ] Users can record each step themselves to upload audio.
+  * [x] Users can add as many steps as they require for the recipe (addStep button)
+  * [x] Add and Remove steps buttons autoscroll the screen as they are clicked
+* [x] While recipe is being played, there is a user progress bar.
+* [x] Main feed features infinite scrolling.
+* [x] Search bar automatically filters recipes as user types, and displays options for autocompletion.
+* [x] Each recipe displays a view count
+* [x] Transition animations between fragments
+* [x] Recipe details page displays full recipe information
+  * [x] Recipe photo features pull to zoom
+  * [x] Users can rate each recipe, and the overall rating for that recipe is an average of all users' input.
+  * [x] Users can "favorite" recipes, and that recipe will appear on their favorites tab (on the profile)
+  * [x] Speech activity is launched from this page
+  * [x] Profile page (including their recipes) of user who contributed that recipe can be accessed by clicking their handle
+  
 
 
 The following **stretch goals** are implemented:
 
+* [ ] Push Notifications!
 * [ ] An automatic timer that starts when a timed instruction is read (e.g. baking time, thawing time, etc.)
 
 
