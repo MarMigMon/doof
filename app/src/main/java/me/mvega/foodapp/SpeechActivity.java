@@ -247,6 +247,7 @@ public class SpeechActivity extends AppCompatActivity implements
 
         tvInstructions.setText(R.string.before_start_recipe_caption);
         dbProgress.setProgress(0);
+        tvStepCount.setText("Step " + stepCount + "/" + totalSteps);
 
         // Toggle views
         btStart.setVisibility(View.VISIBLE);

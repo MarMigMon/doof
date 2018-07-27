@@ -24,6 +24,7 @@ import me.mvega.foodapp.model.Recipe;
 
 public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication, ProfileFragment.ProfileFragmentCommunication, NotificationFragment.NotificationRecipeFragmentCommunication, NotificationFragment.NotificationUserFragmentCommunication {
 
+    private static final String KEY_FRAGMENT = "main";
     @BindView(R.id.navigation_bar) BottomNavigationView bottomNavigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
 
@@ -35,12 +36,15 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         setContentView(R.layout.activity_main);
 
         // Starts activity with feed fragment displayed
-        showFeed();
+        if (savedInstanceState == null) {
+            showFeed();
+        } else {
+            Fragment f = getSupportFragmentManager().findFragmentByTag(KEY_FRAGMENT);
+             replaceFragment(f);
+        }
 
         ButterKnife.bind(this);
 
-//        // Sets the Toolbar to act as the ActionBar for this Activity window.
-//        // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -116,8 +120,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         // Begin the transaction
         final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         // Replace the contents of the container with the new fragment and complete the changes added above
-        fragmentTransaction.addToBackStack("main");
-        fragmentTransaction.replace(R.id.frameLayout, f).commit();
+        fragmentTransaction.addToBackStack(KEY_FRAGMENT);
+        fragmentTransaction.replace(R.id.frameLayout, f, KEY_FRAGMENT).commit();
     }
 
     @Override
@@ -136,9 +140,9 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         // Begin the transaction
         final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         // Replace the contents of the container with the new fragment and complete the changes added above
-        fragmentTransaction.addToBackStack("main");
+        fragmentTransaction.addToBackStack(KEY_FRAGMENT);
         fragmentTransaction.addSharedElement(image, "image");
-        fragmentTransaction.replace(R.id.frameLayout, recipeFragment).commit();
+        fragmentTransaction.replace(R.id.frameLayout, recipeFragment, KEY_FRAGMENT).commit();
 
     }
 

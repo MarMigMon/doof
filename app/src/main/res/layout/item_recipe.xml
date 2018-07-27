@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:padding="5dp"
-        app:cardElevation="7dp">
+        app:cardElevation="5dp">
 
         <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -43,9 +43,9 @@
                 android:id="@+id/tvDescription"
                 style="@style/DescriptionText"
                 android:layout_width="205dp"
-                android:layout_height="50dp"
+                android:layout_height="55dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="16dp"
                 android:text="Recipe Description"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
