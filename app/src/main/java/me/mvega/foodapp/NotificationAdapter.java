@@ -16,6 +16,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.text.SimpleDateFormat;
@@ -28,16 +29,25 @@ import me.mvega.foodapp.model.Notification;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
-    private NotificationAdapterCommunication nCommunication;
+    private NotificationAdapterRecipeCommunication nrCommunication;
+    private NotificationAdapterUserCommunication nuCommunication;
     private List<Notification> notifications;
     Context context;
 
-    // notification listener
-    public interface NotificationAdapterCommunication {
+    // notification recipe listener
+    public interface NotificationAdapterRecipeCommunication {
         void respond(ParseObject notificationRecipe);
     }
-    public void setNotificationListener(NotificationAdapterCommunication notificationListener) {
-        this.nCommunication = notificationListener;
+    public void setNotificationRecipeListener(NotificationAdapterRecipeCommunication notificationRecipeListener) {
+        this.nrCommunication = notificationRecipeListener;
+    }
+
+    // notification user listener
+    public interface NotificationAdapterUserCommunication {
+        void respond(ParseUser notificationUser);
+    }
+    public void setNotificationUserListener(NotificationAdapterUserCommunication notificationUserListener) {
+        this.nuCommunication = notificationUserListener;
     }
 
     // pass in the Notifications array in the constructor
@@ -78,10 +88,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 holder.ivRecipe.setImageResource(R.drawable.image_placeholder);
             }
 
-        if (notification.getFavorite() == true) {
+        if (notification.getFavorite()) {
             holder.tvNotificationMessage.setText("liked your recipe.");
         }
-        if (notification.getRate() == true) {
+        if (notification.getRate()) {
             holder.tvNotificationMessage.setText("rated your recipe.");
         }
     }
@@ -132,17 +142,19 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                             }
                         }
                     });
-                    nCommunication.respond(notificationRecipe);
+                    nrCommunication.respond(notificationRecipe);
                 }
             }
-//            if (v.getId() == tvActiveUser.getId()) {
-//                int position = getAdapterPosition();
-//                // make sure the position is valid, i.e. actually exists in the view
-//                if (position != RecyclerView.NO_POSITION) {
-//                    // get the recipe at the position, this won't work if the class is static
-//                    final Notification otherUser = notifications.get(position);
-//                }
-//            }
+            if (v.getId() == tvActiveUser.getId()) {
+                int position = getAdapterPosition();
+                // make sure the position is valid, i.e. actually exists in the view
+                if (position != RecyclerView.NO_POSITION) {
+                    // get the recipe at the position, this won't work if the class is static
+                    final Notification notification = notifications.get(position);
+                    ParseUser notificationUser = notification.getActiveUser();
+                    nuCommunication.respond(notificationUser);
+                }
+            }
         }
     }
 

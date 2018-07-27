@@ -34,6 +34,7 @@ public class YourRecipesFragment extends Fragment {
     ArrayList<Recipe> recipes;
     RecyclerView rvRecipes;
     private SwipeRefreshLayout swipeContainer;
+    ParseUser user;
 
     // implement interface
     public interface YourRecipesFragmentCommunication {
@@ -174,7 +175,7 @@ public class YourRecipesFragment extends Fragment {
 
     private void loadYourRecipes() {
         final Recipe.Query recipeQuery = new Recipe.Query();
-        recipeQuery.fromUser(ParseUser.getCurrentUser()).withUser();
+        recipeQuery.fromUser(user).withUser();
 
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override

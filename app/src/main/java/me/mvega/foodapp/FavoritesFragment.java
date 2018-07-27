@@ -30,6 +30,7 @@ public class FavoritesFragment extends Fragment {
     ArrayList<Recipe> recipes;
     RecyclerView rvRecipes;
     private SwipeRefreshLayout swipeContainer;
+    ParseUser user;
 
     // implement interface
     public interface YourRecipesFragmentCommunication {
@@ -124,7 +125,7 @@ public class FavoritesFragment extends Fragment {
     }
 
     private void loadFavorites() {
-        ArrayList<String> userFavorites = (ArrayList<String>) ParseUser.getCurrentUser().get("favorites");
+        ArrayList<String> userFavorites = (ArrayList<String>) user.get("favorites");
         if (userFavorites == null) {
             userFavorites = new ArrayList<>();
         }
