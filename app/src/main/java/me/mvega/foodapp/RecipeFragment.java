@@ -41,7 +41,6 @@ import me.mvega.foodapp.model.Notification;
 import me.mvega.foodapp.model.Recipe;
 
 public class RecipeFragment extends Fragment {
-    private static final ParseUser user = ParseUser.getCurrentUser();
     RecipeUserCommunication recipeUserListener;
 
     private ParseUser user;
