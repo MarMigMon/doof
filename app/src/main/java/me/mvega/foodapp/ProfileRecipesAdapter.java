@@ -89,7 +89,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
             ivRecipe = itemView.findViewById(R.id.ivRecipe);
             tvName = itemView.findViewById(R.id.tvName);
             tvPrepTime = itemView.findViewById(R.id.tvPrepTime);
-            ratingBar = itemView.findViewById(R.id.ratingBar);
+            ratingBar = itemView.findViewById(R.id.recipeRatingBar);
             tvViewCount = itemView.findViewById(R.id.tvViewCount);
 
             // add this as the itemView's OnClickListener

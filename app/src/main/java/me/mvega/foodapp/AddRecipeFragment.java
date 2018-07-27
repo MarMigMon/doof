@@ -490,18 +490,28 @@ public class AddRecipeFragment extends Fragment {
         }
         try {
             Number yieldNumber = Integer.valueOf(etYield.getText().toString());
-            String yield = String.valueOf(yieldNumber) + " servings";
-            recipe.setYield(yield);
+            if (yieldNumber.doubleValue() == 1) {
+                String yield = String.valueOf(yieldNumber) + " serving";
+                recipe.setYield(yield);
+            } else {
+                String yield = String.valueOf(yieldNumber) + " servings";
+                recipe.setYield(yield);
+            }
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Please enter a number of servings for your recipe.");
         }
         try {
             Number prepTime = Integer.valueOf(etPrepTime.getText().toString());
             recipe.setPrepTime(prepTime);
+            if (prepTime.doubleValue() == 1) {
+                recipe.setPrepTimePeriod(prepTimeText.substring(0, prepTimeText.length() - 1));
+            } else {
+                recipe.setPrepTimePeriod(prepTimeText);
+            }
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Please enter an amount of time for your recipe.");
         }
-        recipe.setPrepTimePeriod(prepTimeText);
+
         if (typeText.isEmpty()) {
             throw new IllegalArgumentException("Please select a type from the type drop-down.");
         } else {

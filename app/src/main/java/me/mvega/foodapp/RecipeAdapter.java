@@ -92,7 +92,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         @BindView(R.id.tvType) TextView tvType;
         @BindView(R.id.tvDescription) TextView tvDescription;
         @BindView(R.id.tvPrepTime) TextView tvPrepTime;
-        @BindView(R.id.ratingBar) RatingBar ratingBar;
+        @BindView(R.id.recipeRatingBar) RatingBar ratingBar;
         @BindView(R.id.tvViewCount) TextView tvViewCount;
 
         public ViewHolder(View itemView) {

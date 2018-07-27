@@ -43,6 +43,8 @@ import me.mvega.foodapp.model.Recipe;
 public class RecipeFragment extends Fragment {
     private static final ParseUser user = ParseUser.getCurrentUser();
     RecipeUserCommunication recipeUserListener;
+
+    private ParseUser user;
     Recipe recipe;
     String recipeId;
     ImageView image;
@@ -50,19 +52,38 @@ public class RecipeFragment extends Fragment {
     int stepCount = 0;
     private static final String KEY_FAVORITE = "favorites";
 
-    @BindView(R.id.tvName) TextView tvName;
-    @BindView(R.id.tvUsername) TextView tvUsername;
-    @BindView(R.id.ratingBar) RatingBar ratingBar;
-    @BindView(R.id.tvType) TextView tvType;
-    @BindView(R.id.tvDescription) TextView tvDescription;
-    @BindView(R.id.tvPrepTime) TextView tvPrepTime;
-    @BindView(R.id.tvYield) TextView tvYield;
-    @BindView(R.id.tvIngredients) TextView tvIngredients;
-    @BindView(R.id.tvInstructions) TextView tvInstructions;
-    @BindView(R.id.instructionsLayout) RelativeLayout instructionsLayout;
-    @BindView(R.id.ivImage) ImageView ivImage;
-    @BindView(R.id.btPlay) ImageButton btPlay;
-    @BindView(R.id.btFavorite) ImageButton btFavorite;
+    @BindView(R.id.tvName)
+    TextView tvName;
+    @BindView(R.id.tvUsername)
+    TextView tvUsername;
+    @BindView(R.id.recipeRatingBar)
+    RatingBar recipeRating;
+    @BindView(R.id.userRatingBar)
+    RatingBar yourRating;
+    @BindView(R.id.userRatingMessage)
+    TextView userRatingMessage;
+    @BindView(R.id.tvNumRatings)
+    TextView tvNumRatings;
+    @BindView(R.id.tvType)
+    TextView tvType;
+    @BindView(R.id.tvDescription)
+    TextView tvDescription;
+    @BindView(R.id.tvPrepTime)
+    TextView tvPrepTime;
+    @BindView(R.id.tvYield)
+    TextView tvYield;
+    @BindView(R.id.tvIngredients)
+    TextView tvIngredients;
+    @BindView(R.id.tvInstructions)
+    TextView tvInstructions;
+    @BindView(R.id.instructionsLayout)
+    RelativeLayout instructionsLayout;
+    @BindView(R.id.ivImage)
+    ImageView ivImage;
+    @BindView(R.id.btPlay)
+    ImageButton btPlay;
+    @BindView(R.id.btFavorite)
+    ImageButton btFavorite;
 
     // implement interface
     public interface RecipeUserCommunication {
@@ -104,6 +125,8 @@ public class RecipeFragment extends Fragment {
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
+        user = ParseUser.getCurrentUser();
 
         ButterKnife.bind(this, view);
 
@@ -203,9 +226,30 @@ public class RecipeFragment extends Fragment {
         }
 
         float rating = recipe.getRating().floatValue();
-        ratingBar.setRating(rating);
+        recipeRating.setRating(rating);
 
-        ratingBar.setOnTouchListener(new View.OnTouchListener() {
+        int numRatings = recipe.getNumRatings();
+        if (numRatings == 1) {
+            tvNumRatings.setText(Integer.toString(numRatings) + " Rating");
+        } else {
+            tvNumRatings.setText(Integer.toString(numRatings) + " Ratings");
+        }
+
+
+        yourRating.setRating(recipe.getUserRating(user).floatValue());
+        HashMap<String, Number> userRatings = (HashMap<String, Number>) recipe.get(Recipe.KEY_USER_RATINGS);
+        if (userRatings != null) {
+            Number userRating = userRatings.get(user.getObjectId());
+            if (userRating != null) {
+                if (userRating.doubleValue() == 1) {
+                    userRatingMessage.setText("You rated this recipe " + userRating.toString() + " star!");
+                } else {
+                    userRatingMessage.setText("You rated this recipe " + userRating.toString() + " stars!");
+                }
+            }
+        }
+
+        yourRating.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
@@ -246,7 +290,7 @@ public class RecipeFragment extends Fragment {
 
             if (stepCount > 0) {
                 // Set layout params
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams (
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.WRAP_CONTENT,
                         RelativeLayout.LayoutParams.WRAP_CONTENT);
                 params.addRule(RelativeLayout.BELOW, stepCount);
@@ -327,11 +371,22 @@ public class RecipeFragment extends Fragment {
         // updates recipe rating
         recipe.updateRating();
 
-        // updates recipe rating on rating bar
-        float recipeRating = recipe.getRating().floatValue();
-        ratingBar.setRating(recipeRating);
-
         recipe.saveInBackground();
         user.saveInBackground();
+
+        // updates recipe rating on rating bars
+        recipeRating.setRating(recipe.getRating().floatValue());
+        yourRating.setRating(rating.floatValue());
+        int numRatings = recipe.getNumRatings();
+        if (numRatings == 1) {
+            tvNumRatings.setText(Integer.toString(numRatings) + " Rating");
+        } else {
+            tvNumRatings.setText(Integer.toString(numRatings) + " Ratings");
+        }
+        if (rating.doubleValue() == 1) {
+            userRatingMessage.setText("You rated this recipe " + rating.toString() + " star!");
+        } else {
+            userRatingMessage.setText("You rated this recipe " + rating.toString() + " stars!");
+        }
     }
 }
