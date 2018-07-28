@@ -371,5 +371,20 @@ public class RecipeFragment extends Fragment {
 
         recipe.saveInBackground();
         user.saveInBackground();
+
+        // updates recipe rating on rating bars
+        recipeRating.setRating(recipe.getRating().floatValue());
+        yourRating.setRating(rating.floatValue());
+        int numRatings = recipe.getNumRatings();
+        if (numRatings == 1) {
+            tvNumRatings.setText(Integer.toString(numRatings) + " Rating");
+        } else {
+            tvNumRatings.setText(Integer.toString(numRatings) + " Ratings");
+        }
+        if (rating.doubleValue() == 1) {
+            userRatingMessage.setText("You rated this recipe " + rating.toString() + " star!");
+        } else {
+            userRatingMessage.setText("You rated this recipe " + rating.toString() + " stars!");
+        }
     }
 }
