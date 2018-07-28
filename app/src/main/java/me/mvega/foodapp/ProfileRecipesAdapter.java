@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import me.mvega.foodapp.model.Recipe;
 
 public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAdapter.ViewHolder> {
 
+    ParseUser user;
     private ProfileAdapterCommunication pCommunication;
     private List<Recipe> recipes;
     Context context;

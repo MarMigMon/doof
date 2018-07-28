@@ -106,57 +106,73 @@ public class YourRecipesFragment extends Fragment {
             public void showDeleteDialog(final Recipe recipe) {
                 // Create alert dialog
                 final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                // Show error when userProfile is not the currentUser's profile
+                if (user == ParseUser.getCurrentUser()) {
+                    // Add cancel option and message
+                    alertDialog.setCancelable(true);
+                    alertDialog.setMessage(Html.fromHtml("Are you sure you want to delete <b>" + recipe.getName() + "</b>?"));
 
-                // Add cancel option and message
-                alertDialog.setCancelable(true);
-                alertDialog.setMessage(Html.fromHtml("Are you sure you want to delete <b>" + recipe.getName() + "</b>?"));
-
-                // Configure dialog button (OK)
-                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(final DialogInterface dialog, int which) {
-                                // Delete recipe
-                                recipe.deleteInBackground(new DeleteCallback() {
-                                    @Override
-                                    public void done(ParseException e) {
-                                        if (e == null) {
-                                            loadYourRecipes();
-                                            reduceContributed();
-                                            dialog.dismiss();
-                                        } else {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-                                ParseQuery<ParseObject> query = ParseQuery.getQuery("Notification");
-                                query.whereEqualTo("recipe", recipe);
-                                query.findInBackground(new FindCallback<ParseObject>() {
-                                    @Override
-                                    public void done(List<ParseObject> notifications, ParseException e) {
-                                        if (e == null) {
-                                            for (ParseObject notification : notifications) {
-                                                notification.deleteInBackground();
+                    // Configure dialog button (OK)
+                    alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(final DialogInterface dialog, int which) {
+                                    // Delete recipe
+                                    recipe.deleteInBackground(new DeleteCallback() {
+                                        @Override
+                                        public void done(ParseException e) {
+                                            if (e == null) {
+                                                loadYourRecipes();
+                                                reduceContributed();
+                                                dialog.dismiss();
+                                            } else {
+                                                e.printStackTrace();
                                             }
-                                        } else {
-                                            e.printStackTrace();
                                         }
-                                    }
-                                });
-                            }
-                        });
+                                    });
+                                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Notification");
+                                    query.whereEqualTo("recipe", recipe);
+                                    query.findInBackground(new FindCallback<ParseObject>() {
+                                        @Override
+                                        public void done(List<ParseObject> notifications, ParseException e) {
+                                            if (e == null) {
+                                                for (ParseObject notification : notifications) {
+                                                    notification.deleteInBackground();
+                                                }
+                                            } else {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
+                                }
+                            });
 
-                // Configure dialog button (CANCEL)
-                alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(final DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
+                    // Configure dialog button (CANCEL)
+                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(final DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
 
-                // Display the dialog
-                alertDialog.show();
+                    // Display the dialog
+                    alertDialog.show();
+                } else {
+                    alertDialog.setCancelable(true);
+                    alertDialog.setMessage(Html.fromHtml("You can't delete <b>" + recipe.getUser().get("Name") + "</b>'s recipe!"));
+                    // Configure dialog button (OOPS)
+                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "OOPS!",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(final DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+
+                    // Display the dialog
+                    alertDialog.show();
+                }
             }
         });
 
