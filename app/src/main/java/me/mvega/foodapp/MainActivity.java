@@ -22,7 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
-public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication, ProfileFragment.ProfileFragmentCommunication, NotificationFragment.NotificationRecipeFragmentCommunication, NotificationFragment.NotificationUserFragmentCommunication {
+public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication, ProfileFragment.ProfileFragmentCommunication, NotificationFragment.NotificationRecipeFragmentCommunication, NotificationFragment.NotificationUserFragmentCommunication, RecipeFragment.RecipeUserCommunication {
 
     private static final String KEY_FRAGMENT = "main";
     @BindView(R.id.navigation_bar) BottomNavigationView bottomNavigationView;
@@ -174,5 +174,3 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 //        replaceFragment(profileFragment);
 
 }
-//
-//
