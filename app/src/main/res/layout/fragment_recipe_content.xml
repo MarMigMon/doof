@@ -10,11 +10,11 @@
         android:id="@+id/mainInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
-        android:paddingTop="10dp"
+        android:background="@android:color/background_light"
         android:paddingBottom="10dp"
-        android:background="@android:color/background_light">
+        android:paddingEnd="15dp"
+        android:paddingStart="15dp"
+        android:paddingTop="10dp">
 
         <TextView
             android:id="@+id/tvName"
@@ -125,10 +125,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/mainInfo"
         android:layout_marginTop="15dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:background="@android:color/background_light"
         android:gravity="center"
-        android:background="@android:color/background_light">
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
         <TextView
             android:id="@+id/userRatingMessage"
@@ -154,11 +154,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/userRating"
         android:layout_marginTop="15dp"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
-        android:paddingTop="10dp"
+        android:background="@android:color/background_light"
         android:paddingBottom="10dp"
-        android:background="@android:color/background_light">
+        android:paddingEnd="15dp"
+        android:paddingStart="15dp"
+        android:paddingTop="10dp">
 
         <TextView
             android:id="@+id/tvIngredients"

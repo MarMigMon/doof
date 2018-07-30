@@ -2,7 +2,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/editRecipe"
-        android:title="Edit Recipe"
-        android:onClick="onEditRecipeAction"
-        />
+        android:title="Edit Recipe" />
 </menu>

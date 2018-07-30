@@ -7,10 +7,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
@@ -106,20 +109,41 @@ public class RecipeFragment extends Fragment {
 
         // Defines the xml file for the fragment
         View mainView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe, null, false);
+
+        // Sets up the "PullToZoom" views
         PullToZoomScrollViewEx pullToZoom = mainView.findViewById(R.id.pullToZoomScroll);
         View zoomView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_image, null, false);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_content, null, false);
         View headView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_head, null, false);
+
+        // Adds toolbar to headView
+        Toolbar editBar = headView.findViewById(R.id.editRecipeBar);
+        editBar.inflateMenu(R.menu.menu_edit_recipe);
+        editBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.editRecipe) {
+                    // TODO if the user owns the recipe, allow them to modify its contents
+                    Toast.makeText(getContext(), "You just clicked Edit Recipe!", Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        // Adds "PullToZoom" views to the main view
         pullToZoom.setHeaderView(headView);
-        headView.se
         pullToZoom.setZoomView(zoomView);
         pullToZoom.setScrollContentView(contentView);
+
+        // Sets zoom display metrics
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
         int mScreenHeight = localDisplayMetrics.heightPixels;
         int mScreenWidth = localDisplayMetrics.widthPixels;
         LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenWidth / 16.0F)));
         pullToZoom.setHeaderLayoutParams(localObject);
+
         return mainView;
     }
 
