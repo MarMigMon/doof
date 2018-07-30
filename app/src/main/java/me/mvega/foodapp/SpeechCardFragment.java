@@ -25,6 +25,7 @@ public class SpeechCardFragment extends Fragment {
     // implement interface
     public interface SpeechFragmentCommunication {
         void startRecipe();
+        void finishRecipe();
     }
 
     @Override
