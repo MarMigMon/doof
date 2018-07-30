@@ -34,6 +34,7 @@ public class Recipe extends ParseObject {
     public List<String> getSteps() {
         return getList(KEY_STEPS);
     }
+
     public void setSteps(ArrayList<String> steps) {
         put(KEY_STEPS, steps);
     }
@@ -41,6 +42,7 @@ public class Recipe extends ParseObject {
     public ParseFile getMedia() {
         return getParseFile(KEY_MEDIA);
     }
+
     public void setMedia(ParseFile media) {
         put(KEY_MEDIA, media);
     }
@@ -48,6 +50,7 @@ public class Recipe extends ParseObject {
     public String getName() {
         return getString(KEY_NAME);
     }
+
     public void setName(String name) {
         put(KEY_NAME, name);
     }
@@ -55,6 +58,7 @@ public class Recipe extends ParseObject {
     public String getType() {
         return getString(KEY_TYPE);
     }
+
     public void setType(String type) {
         put(KEY_TYPE, type);
     }
@@ -62,6 +66,7 @@ public class Recipe extends ParseObject {
     public String getDescription() {
         return getString(KEY_DESCRIPTION);
     }
+
     public void setDescription(String description) {
         put(KEY_DESCRIPTION, description);
     }
@@ -69,6 +74,7 @@ public class Recipe extends ParseObject {
     public String getIngredients() {
         return getString(KEY_INGREDIENTS);
     }
+
     public void setIngredients(String ingredients) {
         put(KEY_INGREDIENTS, ingredients);
     }
@@ -76,6 +82,7 @@ public class Recipe extends ParseObject {
     public String getYield() {
         return getString(KEY_YIELD);
     }
+
     public void setYield(String yield) {
         put(KEY_YIELD, yield);
     }
@@ -83,12 +90,15 @@ public class Recipe extends ParseObject {
     public Number getPrepTime() {
         return getNumber(KEY_PREP_TIME);
     }
+
     public void setPrepTime(Number prepTime) {
         put(KEY_PREP_TIME, prepTime);
     }
+
     public void setPrepTimePeriod(String prepTimePeriod) {
         put(KEY_PREP_TIME_PERIOD, prepTimePeriod);
     }
+
     public String getPrepTimeString() {
         return getNumber(KEY_PREP_TIME).toString() + " " + getString(KEY_PREP_TIME_PERIOD);
     }
@@ -96,6 +106,7 @@ public class Recipe extends ParseObject {
     public ParseFile getImage() {
         return getParseFile(KEY_IMAGE);
     }
+
     public void setImage(ParseFile image) {
         put(KEY_IMAGE, image);
     }
@@ -107,6 +118,7 @@ public class Recipe extends ParseObject {
     public Number getRating() {
         return getNumber(KEY_RATING);
     }
+
     public void updateRating() {
         HashMap<String, Number> userRatings = (HashMap<String, Number>) get(KEY_USER_RATINGS);
         if (userRatings != null) {
@@ -118,6 +130,7 @@ public class Recipe extends ParseObject {
             put(KEY_RATING, recipeRating);
         }
     }
+
     public int getNumRatings() {
         HashMap<String, Number> userRatings = (HashMap<String, Number>) get(KEY_USER_RATINGS);
         return (userRatings == null) ? 0 : userRatings.size();
@@ -131,6 +144,7 @@ public class Recipe extends ParseObject {
         Number rating = userRatings.get(user.getObjectId());
         return (rating == null) ? 0.0 : rating;
     }
+
     public void setUserRating(ParseUser user, Number rating) {
         HashMap<String, Number> userRatings = (HashMap<String, Number>) get(KEY_USER_RATINGS);
         if (userRatings == null) {
@@ -143,6 +157,7 @@ public class Recipe extends ParseObject {
     public ParseUser getUser() {
         return getParseUser(KEY_USER);
     }
+
     public void setUser(ParseUser user) {
         put(KEY_USER, user);
     }
@@ -154,6 +169,7 @@ public class Recipe extends ParseObject {
     public Integer getViews() {
         return getInt(KEY_VIEWS);
     }
+
     public void setViews(Integer views) {
         put(KEY_VIEWS, views);
     }

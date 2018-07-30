@@ -64,26 +64,46 @@ public class AddRecipeFragment extends Fragment {
     /* Used to handle permission request */
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 399;
 
-    @BindView(R.id.scrollView) ScrollView scrollView;
-    @BindView(R.id.pbLoading) ProgressBar pbLoading;
-    @BindView(R.id.etRecipeName) EditText etRecipeName;
-    @BindView(R.id.etDescription) EditText etDescription;
-    @BindView(R.id.etIngredients) EditText etIngredients;
-    @BindView(R.id.etYield) EditText etYield;
-    @BindView(R.id.etPrepTime) EditText etPrepTime;
-    @BindView(R.id.spType) Spinner spType;
-    @BindView(R.id.spPrepTime) Spinner spPrepTime;
-    @BindView(R.id.btAdd) Button btAdd;
-    @BindView(R.id.btImage) Button btImage;
-    @BindView(R.id.btAudio) Button btAudio;
-    @BindView(R.id.buttonLayout) LinearLayout buttonLayout;
-    @BindView(R.id.btAddStep) Button btAddStep;
-    @BindView(R.id.btRemoveStep) Button btRemoveStep;
-    @BindView(R.id.ivPreview) ImageView ivPreview;
-    @BindView(R.id.instructionsLayout) RelativeLayout instructionsLayout;
-    @BindView(R.id.tvInstructions) TextView tvInstructions;
-    @BindView(R.id.step1) EditText step1;
-    @BindView(R.id.tvRecipeTitle) TextView title;
+    @BindView(R.id.scrollView)
+    ScrollView scrollView;
+    @BindView(R.id.pbLoading)
+    ProgressBar pbLoading;
+    @BindView(R.id.etRecipeName)
+    EditText etRecipeName;
+    @BindView(R.id.etDescription)
+    EditText etDescription;
+    @BindView(R.id.etIngredients)
+    EditText etIngredients;
+    @BindView(R.id.etYield)
+    EditText etYield;
+    @BindView(R.id.etPrepTime)
+    EditText etPrepTime;
+    @BindView(R.id.spType)
+    Spinner spType;
+    @BindView(R.id.spPrepTime)
+    Spinner spPrepTime;
+    @BindView(R.id.btAdd)
+    Button btAdd;
+    @BindView(R.id.btImage)
+    Button btImage;
+    @BindView(R.id.btAudio)
+    Button btAudio;
+    @BindView(R.id.buttonLayout)
+    LinearLayout buttonLayout;
+    @BindView(R.id.btAddStep)
+    Button btAddStep;
+    @BindView(R.id.btRemoveStep)
+    Button btRemoveStep;
+    @BindView(R.id.ivPreview)
+    ImageView ivPreview;
+    @BindView(R.id.instructionsLayout)
+    RelativeLayout instructionsLayout;
+    @BindView(R.id.tvInstructions)
+    TextView tvInstructions;
+    @BindView(R.id.step1)
+    EditText step1;
+    @BindView(R.id.tvRecipeTitle)
+    TextView title;
 
     private Bitmap recipeImage;
     private Uri audioUri;
@@ -194,7 +214,7 @@ public class AddRecipeFragment extends Fragment {
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         String[] typeArray = getResources().getStringArray(R.array.type_array);
-        final ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(getContext(), R.layout.item_spinner, typeArray){
+        final ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(getContext(), R.layout.item_spinner, typeArray) {
             @Override
             public boolean isEnabled(int position) { // First item will be used as a hint
                 return position != 0;
@@ -211,11 +231,12 @@ public class AddRecipeFragment extends Fragment {
                 }
                 return view;
             }
+
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
-                view.setPadding(0,0,0,0);
+                view.setPadding(0, 0, 0, 0);
                 return view;
             }
         };
@@ -250,7 +271,7 @@ public class AddRecipeFragment extends Fragment {
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
-                view.setPadding(0,0,0,0);
+                view.setPadding(0, 0, 0, 0);
                 return view;
             }
         };
@@ -289,7 +310,7 @@ public class AddRecipeFragment extends Fragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions, @NonNull  int[] grantResults) {
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
@@ -305,6 +326,7 @@ public class AddRecipeFragment extends Fragment {
 
     /**
      * Pre-fills the fragment's instructions with the given list
+     *
      * @param instructions steps for recipe
      */
     private void addSteps(List<String> instructions) {
@@ -322,7 +344,7 @@ public class AddRecipeFragment extends Fragment {
         EditText step = new EditText(getContext());
 
         // Set layout params
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams (
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.BELOW, stepCount);
@@ -361,7 +383,7 @@ public class AddRecipeFragment extends Fragment {
     }
 
     private void onPickAudio() {
-        Intent intent_upload = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+        Intent intent_upload = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
         if (intent_upload.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(intent_upload, PICK_AUDIO_CODE);
         }
@@ -468,7 +490,7 @@ public class AddRecipeFragment extends Fragment {
                 return;
             }
         } else if (requestCode == PICK_AUDIO_CODE) {
-            if (data != null && resultCode == RESULT_OK){
+            if (data != null && resultCode == RESULT_OK) {
                 //the selected audio.
                 audioUri = data.getData();
                 audioName = getFileName(audioUri);
@@ -543,7 +565,7 @@ public class AddRecipeFragment extends Fragment {
                 if (out != null) { //out could not be resolved...
                     out.close();
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -686,6 +708,7 @@ public class AddRecipeFragment extends Fragment {
 
     /**
      * Utilizes the Add Recipe Fragment to edit recipes
+     *
      * @param recipe the recipe the user wants to edit
      */
     public void setupEdit(final Recipe recipe) {

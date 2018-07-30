@@ -157,7 +157,7 @@ public class FeedFragment extends Fragment {
     }
 
     private void initializeSearch() {
-        searchAdapter = new ArrayAdapter<String>(getContext(), R.layout.autocomplete_dropdown, recipeNames);
+        searchAdapter = new ArrayAdapter<>(getContext(), R.layout.autocomplete_dropdown, recipeNames);
 
         // Will start suggesting searches after one character is typed
         search.setThreshold(1);

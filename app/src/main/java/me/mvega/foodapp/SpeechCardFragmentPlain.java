@@ -17,6 +17,8 @@ public class SpeechCardFragmentPlain extends Fragment {
     private static final String KEY_STEP = "step";
     private static final String KEY_STEP_COUNT = "step count";
     @BindView(R.id.tvInstructions) TextView tvInstructions;
+    @BindView(R.id.tvStepCount) TextView tvStepCount;
+    @BindView(R.id.tvStepLabel) TextView tvStepLabel;
 
     public static SpeechCardFragmentPlain newInstance(String step, int stepCount) {
         Bundle args = new Bundle();
@@ -39,7 +41,9 @@ public class SpeechCardFragmentPlain extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
+        Integer stepCount = getArguments().getInt(KEY_STEP_COUNT);
         String currStep = getArguments().getString(KEY_STEP, "");
         tvInstructions.setText(currStep);
+        tvStepCount.setText(stepCount.toString());
     }
 }
