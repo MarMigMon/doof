@@ -1,172 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_height="match_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Recipe Name"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvIngredients"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvName"
+        android:layout_marginTop="32dp"
+        android:text="Ingredients"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vpSteps" />
+
+    <ImageView
+        android:id="@+id/ivStop"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignTop="@+id/tvName"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@+id/tvName"
+        android:background="@drawable/ic_stop"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/ivResume"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivPause"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignTop="@+id/tvName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/ic_pause_circle_outline_black_24dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivResume"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignTop="@+id/tvName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/ic_play_circle_outline_black_24dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vpSteps"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp" >
+        android:layout_height="400dp"
+        android:layout_marginTop="64dp"
+        android:clipToPadding="false"
+        android:paddingEnd="30dp"
+        android:paddingStart="40dp"
+        app:layout_constraintEnd_toStartOf="@+id/ivStop"
+        app:layout_constraintStart_toEndOf="@+id/tvIngredients"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvName"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:text="Recipe Name"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+    <ProgressBar
+        android:id="@+id/dbProgress"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="100dp"
+        android:layout_height="10dp"
+        android:layout_alignEnd="@+id/tvStepCount"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="16dp"
+        android:progress="0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/tvIngredients"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvName"
-            android:layout_marginTop="15dp"
-            android:text="Ingredients"/>
+    <TextView
+        android:id="@+id/tvStepCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:text="Step 0/8"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/dbProgress" />
 
-        <TextView
-            android:id="@+id/tvCurrentStepLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="10dp"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/tvIngredients"
-            android:textStyle="italic"
-            android:text="@string/current_step_label"/>
+    <ProgressBar
+        android:id="@+id/pbLoading"
+        android:layout_width="49dp"
+        android:layout_height="52dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/tvInstructions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvCurrentStepLabel"
-            android:layout_margin="15dp"
-            android:layout_centerHorizontal="true"
-            android:textSize="40sp"
-            android:textAlignment="center"
-            android:text="@string/before_start_recipe_caption"/>
-
-        <TextView
-            android:id="@+id/tvNextStepLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/tvInstructions"
-            android:visibility="invisible"
-            android:textStyle="italic"
-            android:text="@string/next_step_label"/>
-
-        <TextView
-            android:id="@+id/tvNext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvNextStepLabel"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="15dp"
-            android:textSize="15sp"
-            android:textAlignment="center"
-            android:visibility="invisible"/>
-
-        <Button
-            android:id="@+id/btStart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvNext"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="30dp"
-            android:visibility="visible"
-            android:text="Begin" />
-
-        <RelativeLayout
-            android:id="@+id/prevNextLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvNext"
-            android:layout_centerHorizontal="true"
-            android:visibility="invisible">
-
-            <Button
-                android:id="@+id/btPrevious"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="@string/prev_step" />
-
-            <Button
-                android:id="@+id/btNext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_toRightOf="@+id/btPrevious"
-                android:layout_marginLeft="15dp"
-                android:text="@string/next_step" />
-
-        </RelativeLayout>
-
-
-        <Button
-            android:id="@+id/btPause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/prevNextLayout"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:visibility="invisible"
-            android:text="Pause" />
-
-        <Button
-            android:id="@+id/btResume"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/prevNextLayout"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:visibility="invisible"
-            android:text="Resume" />
-
-        <Button
-            android:id="@+id/btStop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btPause"
-            android:layout_centerHorizontal="true"
-            android:visibility="invisible"
-            android:layout_marginTop="15dp"
-            android:text="@string/finish_recipe" />
-
-        <ProgressBar
-            android:id="@+id/pbLoading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:layout_marginBottom="20dp"
-            android:visibility="invisible"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"/>
-
-        <ProgressBar
-            android:id="@+id/dbProgress"
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_width="100dp"
-            android:layout_height="10dp"
-            android:layout_alignEnd="@+id/tvStepCount"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="8dp"
-            android:progress="0" />
-
-        <TextView
-            android:id="@+id/tvStepCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="25dp"
-            android:text="Step 0/8"
-            android:textSize="12sp" />
-
-    </RelativeLayout>
-
-</ScrollView>
+</android.support.constraint.ConstraintLayout>
