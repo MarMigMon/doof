@@ -6,13 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
@@ -116,20 +114,24 @@ public class RecipeFragment extends Fragment {
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_content, null, false);
         View headView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_head, null, false);
 
-        // Adds toolbar to headView
-        Toolbar editBar = headView.findViewById(R.id.editRecipeBar);
-        editBar.inflateMenu(R.menu.menu_edit_recipe);
-        editBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                if (menuItem.getItemId() == R.id.editRecipe) {
-                    // TODO if the user owns the recipe, allow them to modify its contents
-                    Toast.makeText(getContext(), "You just clicked Edit Recipe!", Toast.LENGTH_LONG).show();
-                    return true;
+        // Adds toolbar to headView if the user owns the recipe
+        if (recipe.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
+            TextView btnEditRecipe = headView.findViewById(R.id.btnEditRecipe);
+            btnEditRecipe.setVisibility(View.VISIBLE);
+            btnEditRecipe.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Switch fragment to edit recipe and then return to this fragment with the edited recipe
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    AddRecipeFragment fragment = new AddRecipeFragment();
+                    ft.replace(R.id.frameLayout, fragment).commit();
+                    getActivity().getSupportFragmentManager().executePendingTransactions();
+                    fragment.setupEdit(recipe);
                 }
-                return false;
-            }
-        });
+            });
+        } else {
+            headView.findViewById(R.id.btnEditRecipe).setVisibility(View.INVISIBLE);
+        }
 
         // Adds "PullToZoom" views to the main view
         pullToZoom.setHeaderView(headView);

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -45,6 +47,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,6 +78,7 @@ public class AddRecipeFragment extends Fragment {
     @BindView(R.id.instructionsLayout) RelativeLayout instructionsLayout;
     @BindView(R.id.tvInstructions) TextView tvInstructions;
     @BindView(R.id.step1) EditText step1;
+    @BindView(R.id.tvRecipeTitle) TextView title;
 
     private Bitmap recipeImage;
     private Uri audioUri;
@@ -108,7 +112,7 @@ public class AddRecipeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 try {
-                    addRecipe();
+                    addRecipe(null);
                 } catch (IllegalArgumentException e) {
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -267,6 +271,18 @@ public class AddRecipeFragment extends Fragment {
             } else {
                 Toast.makeText(getContext(), "Accept permissions to enable adding recipes", Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    /**
+     * Pre-fills the fragment's instructions with the given list
+     * @param instructions steps for recipe
+     */
+    private void addSteps(List<String> instructions) {
+        step1.setText(instructions.get(0));
+        for (String instruction : instructions.subList(1, instructions.size())) {
+            onAddStep();
+            steps.get(stepCount - 1).setText(instruction);
         }
     }
 
@@ -468,8 +484,17 @@ public class AddRecipeFragment extends Fragment {
         return stepStrings;
     }
 
-    private void addRecipe() throws IllegalArgumentException {
-        final Recipe recipe = new Recipe();
+    private void addRecipe(Recipe oldRecipe) throws IllegalArgumentException {
+        final Recipe recipe;
+        boolean newRecipe = false;
+
+        // checks if this is submission is an edit or a new recipe
+        if (oldRecipe == null) {
+            recipe = new Recipe();
+            newRecipe = true;
+        } else {
+            recipe = oldRecipe;
+        }
 
         ArrayList<String> steps = parseInstructions();
         String name = etRecipeName.getText().toString();
@@ -528,10 +553,6 @@ public class AddRecipeFragment extends Fragment {
             recipe.setSteps(steps);
         }
 
-        // Recipe user and rating are automatically filled in Parse
-        recipe.setUser(ParseUser.getCurrentUser());
-        recipe.setRating(0);
-
         // Empty images and audio are permissible
         if (recipeImage != null) {
             recipe.setImage(prepareImage(recipeImage));
@@ -541,17 +562,93 @@ public class AddRecipeFragment extends Fragment {
         }
 
         pbLoading.setVisibility(ProgressBar.VISIBLE);
-        recipe.saveInBackground(new SaveCallback() {
+
+        if (newRecipe) {
+            // Recipe user and rating are automatically filled in Parse
+            recipe.setUser(ParseUser.getCurrentUser());
+            recipe.setRating(0);
+            recipe.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Toast.makeText(getContext(), "Recipe successfully created!", Toast.LENGTH_LONG).show();
+                        pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        ft.replace(R.id.frameLayout, new FeedFragment());
+                        ft.commit();
+                    } else {
+                        Toast.makeText(getContext(), "Recipe creation failed!", Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } else {
+            recipe.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Toast.makeText(getContext(), "Recipe successfully edited!", Toast.LENGTH_LONG).show();
+                        pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        RecipeFragment recipeFragment = new RecipeFragment();
+                        recipeFragment.recipe = recipe;
+                        ft.replace(R.id.frameLayout, recipeFragment);
+                        ft.commit();
+                    } else {
+                        Toast.makeText(getContext(), "Recipe edit failed!", Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * Utilizes the Add Recipe Fragment to edit recipes
+     * @param recipe the recipe the user wants to edit
+     */
+    public void setupEdit(final Recipe recipe) {
+
+        title.setText("Edit Recipe"); // This special fragment says "Edit Recipe" rather than New Recipe
+
+        // Ensures that when a recipe is submitted
+        btAdd.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Toast.makeText(getContext(),"Create recipe success!", Toast.LENGTH_LONG).show();
-                    pbLoading.setVisibility(ProgressBar.INVISIBLE);
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.frameLayout, new FeedFragment());
-                    ft.commit();
-                } else {
-                    e.printStackTrace();
+            public void onClick(View view) {
+                try {
+                    addRecipe(recipe);
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        String name = recipe.getName();
+        String description = recipe.getDescription();
+        String yieldText = recipe.getYield();
+        Number yield = Integer.parseInt(yieldText.substring(0, yieldText.indexOf(' ')));
+        Number prepTime = recipe.getPrepTime();
+        String prepTimeString = recipe.getPrepTimeString();
+        prepTimeText = prepTimeString.substring(prepTimeString.indexOf(' ') + 1);
+        Log.d("AddRecipeFragment", prepTimeText);
+        typeText = recipe.getType();
+        String ingredients = recipe.getIngredients();
+
+        etRecipeName.setText(name);
+        etDescription.setText(description);
+        etYield.setText(yield.toString());
+        etPrepTime.setText(prepTime.toString());
+        spPrepTime.setSelection(((ArrayAdapter<String>) spPrepTime.getAdapter()).getPosition(prepTimeText));
+        spType.setSelection(((ArrayAdapter<String>) spType.getAdapter()).getPosition(typeText));
+        etIngredients.setText(ingredients);
+
+        addSteps(recipe.getSteps());
+
+        recipe.getImage().getDataInBackground(new GetDataCallback() {
+            @Override
+            public void done(byte[] data, ParseException e) {
+                if (data != null) {
+                    ivPreview.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
                 }
             }
         });
