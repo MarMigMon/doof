@@ -135,7 +135,7 @@ public class AddRecipeFragment extends Fragment {
             public void onClick(View view) {
                 final AlertDialog addPhotoDialog = new AlertDialog.Builder(getActivity()).create();
                 addPhotoDialog.setCancelable(true);
-//                addPhotoDialog.setMessage(Html.fromHtml("Choose ));
+                addPhotoDialog.setCanceledOnTouchOutside(true);
 
                 addPhotoDialog.setButton(DialogInterface.BUTTON_POSITIVE, "TAKE PHOTO",
                         new DialogInterface.OnClickListener() {
@@ -144,18 +144,11 @@ public class AddRecipeFragment extends Fragment {
                                 onLaunchCamera();
                             }
                         });
-                addPhotoDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "CHOOSE EXISTING PHOTO",
+                addPhotoDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "CHOOSE PHOTO",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 onPickPhoto();
-                            }
-                        });
-                addPhotoDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
                             }
                         });
                 addPhotoDialog.show();
@@ -484,7 +477,6 @@ public class AddRecipeFragment extends Fragment {
             } else {
                 return;
             }
-
         }
     }
 

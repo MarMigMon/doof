@@ -1,11 +1,16 @@
 package me.mvega.foodapp;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +28,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
 import butterknife.BindView;
@@ -47,6 +53,12 @@ public class EditProfileFragment extends Fragment {
     ParseUser user = ParseUser.getCurrentUser();
     final String name = (String) user.get("Name");
     final String description = (String) user.get("description");
+
+    public final String APP_TAG = "FoodApp";
+    public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
+    public String photoFileName = "photo.jpg";
+    File photoFile;
+    private File selectedPhotoFile;
 
 
     @Override
@@ -104,7 +116,25 @@ public class EditProfileFragment extends Fragment {
         btChangeProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeProfilePic();
+                final AlertDialog editProfilePicDialog = new AlertDialog.Builder(getActivity()).create();
+                editProfilePicDialog.setCancelable(true);
+                editProfilePicDialog.setCanceledOnTouchOutside(true);
+
+                editProfilePicDialog.setButton(DialogInterface.BUTTON_POSITIVE, "TAKE PHOTO",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                onLaunchCamera();
+                            }
+                        });
+                editProfilePicDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "CHOOSE PHOTO",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                changeProfilePic();
+                            }
+                        });
+                editProfilePicDialog.show();
             }
         });
 
@@ -154,6 +184,41 @@ public class EditProfileFragment extends Fragment {
         } else {
             return null;
         }
+    }
+
+    // Returns the File for a photo stored on disk given the fileName
+    public void onLaunchCamera() {
+        // create Intent to take a picture and return control to the calling application
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Create a File reference to access to future access
+        photoFile = getPhotoFileUri(photoFileName);
+
+        // wrap File object into a content provider
+        Uri fileProvider = FileProvider.getUriForFile(getContext(), "me.mvega.fileprovider", photoFile);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
+
+        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
+        // So as long as the result is not null, it's safe to use the intent.
+        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+            // Start the image capture intent to take photo
+            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+        }
+    }
+    public File getPhotoFileUri(String fileName) {
+        // Get safe storage directory for photos
+        // Use `getExternalFilesDir` on Context to access package-specific directories.
+        // This way, we don't need to request external read/write runtime permissions.
+        File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), APP_TAG);
+
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
+            Log.d(APP_TAG, "failed to create directory");
+        }
+
+        // Return the file target for the photo based on filename
+        File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
+
+        return file;
     }
 
     @Override
