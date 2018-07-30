@@ -116,7 +116,7 @@ public class RecipeFragment extends Fragment {
 
         // Adds toolbar to headView if the user owns the recipe
         if (recipe.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
-            TextView btnEditRecipe = headView.findViewById(R.id.btnEditRecipe);
+            TextView btnEditRecipe = contentView.findViewById(R.id.btnEditRecipe);
             btnEditRecipe.setVisibility(View.VISIBLE);
             btnEditRecipe.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -130,7 +130,7 @@ public class RecipeFragment extends Fragment {
                 }
             });
         } else {
-            headView.findViewById(R.id.btnEditRecipe).setVisibility(View.INVISIBLE);
+            contentView.findViewById(R.id.btnEditRecipe).setVisibility(View.GONE);
         }
 
         // Adds "PullToZoom" views to the main view
