@@ -8,10 +8,10 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:minHeight="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryDark"
+        android:minHeight="?attr/actionBarSize"
         app:contentInsetLeft="10dp"
         app:contentInsetStart="10dp">
 
@@ -25,7 +25,6 @@
             android:textStyle="bold" />
 
     </android.support.v7.widget.Toolbar>
-
 
 
 </RelativeLayout>

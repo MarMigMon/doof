@@ -10,12 +10,12 @@ import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +37,7 @@ import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 import me.mvega.foodapp.model.Recipe;
 
 public class SpeechActivity extends AppCompatActivity implements
-        RecognitionListener {
+        RecognitionListener, SpeechCardFragment.SpeechFragmentCommunication {
 
     private static final String TTS_SEARCH = "Text to speech";
     private static final String PLAYER_SEARCH = "Player";
@@ -55,39 +55,32 @@ public class SpeechActivity extends AppCompatActivity implements
     private MediaPlayer player;
     private Boolean isPaused = false;
     private Boolean initializedTts;
-    private Boolean resumedRecipe = false;
+    public static Boolean startedRecipe = false;
     private int stepCount = 0;
     private int totalSteps;
     private String currStep;
 
     // Buttons
-    @BindView(R.id.btStart) Button btStart;
-    @BindView(R.id.btStop) Button btStop;
-    @BindView(R.id.btNext) Button btNext;
-    @BindView(R.id.btPause) Button btPause;
-    @BindView(R.id.btResume) Button btResume;
-    @BindView(R.id.btPrevious) Button btPrevious;
-    @BindView(R.id.prevNextLayout) RelativeLayout prevNextLayout;
+    @BindView(R.id.ivStop) ImageView ivStop;
+    @BindView(R.id.ivPause) ImageView ivPause;
+    @BindView(R.id.ivResume) ImageView ivResume;
 
     // Text views
     @BindView(R.id.tvName) TextView tvName;
-    @BindView(R.id.tvInstructions) TextView tvInstructions;
     @BindView(R.id.tvIngredients) TextView tvIngredients;
-    @BindView(R.id.tvNext) TextView tvNext;
-    @BindView(R.id.tvNextStepLabel) TextView tvNextStepLabel;
-    @BindView(R.id.tvCurrentStepLabel) TextView tvCurrentStepLabel;
     @BindView(R.id.tvStepCount) TextView tvStepCount;
 
+    // Progress bars
     @BindView(R.id.dbProgress) ProgressBar dbProgress;
     @BindView(R.id.pbLoading) ProgressBar pbLoading;
+
+    // View Pager
+    @BindView(R.id.vpSteps) ViewPager vpSteps;
+    SpeechCardAdapter speechCardAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            stepCount = savedInstanceState.getInt(KEY_STEP_COUNT);
-            resumedRecipe = savedInstanceState.getBoolean(KEY_RESUMED_RECIPE);
-        }
 
         setContentView(R.layout.activity_speech);
 
@@ -104,47 +97,88 @@ public class SpeechActivity extends AppCompatActivity implements
         tvName.setText(recipe.getName());
         tvIngredients.setText(recipe.getIngredients());
 
-        instructions = (ArrayList<String>) recipe.getSteps();
+        instructions = new ArrayList<String>();
+        instructions.add(getResources().getString(R.string.before_start_recipe_caption));
+        instructions.addAll(recipe.getSteps());
 
-        totalSteps = instructions.size();
+        totalSteps = instructions.size() - 1;
         tvStepCount.setText("Step " + stepCount + "/" + totalSteps);
 
-        btStop.setOnClickListener(new View.OnClickListener() {
+        setSpeechCardAdapter(instructions);
+
+        ivStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finishRecipe();
             }
         });
 
-        btNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                speakStep();
-            }
-        });
-
-        btPause.setOnClickListener(new View.OnClickListener() {
+        ivPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 pauseTts();
             }
         });
 
-        btResume.setOnClickListener(new View.OnClickListener() {
+        ivResume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 resumeTts();
             }
         });
 
-        btPrevious.setOnClickListener(new View.OnClickListener() {
+        setTextToSpeech();
+
+        if (savedInstanceState != null) {
+            stepCount = savedInstanceState.getInt(KEY_STEP_COUNT);
+            startedRecipe = savedInstanceState.getBoolean(KEY_RESUMED_RECIPE);
+            vpSteps.setCurrentItem(stepCount);
+        }
+    }
+
+    private void setSpeechCardAdapter(ArrayList<String> instructions) {
+        speechCardAdapter = new SpeechCardAdapter(getSupportFragmentManager(), instructions);
+        vpSteps.setAdapter(speechCardAdapter);
+        vpSteps.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            // This method will be invoked when a new page becomes selected.
             @Override
-            public void onClick(View view) {
-                previousTts();
+            public void onPageSelected(int step) {
+                stepCount = step;
+                updateProgressBar(step);
+                if (step > 0) {
+                    speakStep(step);
+                } else if (step == 0) {
+                    if (startedRecipe) {
+                        finishRecipe();
+                    }
+                }
+            }
+
+            // This method will be invoked when the current page is scrolled
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                // Code goes here
+            }
+
+            // Called when the scroll state changes:
+            // SCROLL_STATE_IDLE, SCROLL_STATE_DRAGGING, SCROLL_STATE_SETTLING
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                // Code goes here
             }
         });
+    }
 
-        setTextToSpeech();
+    @Override
+    public void startRecipe() {
+        stepCount = 1;
+        vpSteps.setCurrentItem(1);
+        beginRecipe();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            speakStep(1);
+        } else {
+            Toast.makeText(SpeechActivity.this, "Failed to play audio. Minimum API requirements not met", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -168,29 +202,21 @@ public class SpeechActivity extends AppCompatActivity implements
                 if(status != TextToSpeech.ERROR) {
                     tts.setLanguage(Locale.US);
                     tts.setSpeechRate(0.9f);
-                    if (resumedRecipe) {
+                    if (startedRecipe) {
                         beginRecipe();
+                        speakStep(stepCount);
                     }
-
-                    btStart.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            beginRecipe();
-                        }
-                    });
                 }
             }
         });
     }
 
-    private void beginRecipe() {
+    public void beginRecipe() {
+        startedRecipe = true;
+
         // Toggle views
-        btStart.setVisibility(View.INVISIBLE);
-        prevNextLayout.setVisibility(View.VISIBLE);
-        btStop.setVisibility(View.VISIBLE);
-        btPause.setVisibility(View.VISIBLE);
-        tvNext.setVisibility(View.VISIBLE);
-        tvNextStepLabel.setVisibility(View.VISIBLE);
+        ivStop.setVisibility(View.VISIBLE);
+        ivPause.setVisibility(View.VISIBLE);
 
         // If audio file exists, start player
         if (audioFile != null) {
@@ -202,39 +228,27 @@ public class SpeechActivity extends AppCompatActivity implements
         } else {
             initializedTts = true;
             startRecognition(TTS_SEARCH);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                speakStep();
-            } else {
-                Toast.makeText(SpeechActivity.this, "Failed to play audio. Minimum API requirements not met", Toast.LENGTH_SHORT).show();
-            }
         }
     }
 
-    private void speakStep(){
-        if (stepCount < totalSteps && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            currStep = instructions.get(stepCount);
-            tvInstructions.setText(currStep);
+    public void speakStep(int step) {
+        if (step < speechCardAdapter.getCount() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            currStep = instructions.get(step);
             tts.speak(currStep, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
-
-            stepCount += 1;
-            tvStepCount.setText("Step " + stepCount + "/" + totalSteps);
-            int progress = (int) (stepCount * 1.0 / totalSteps * 100);
-            dbProgress.setProgress(progress);
-
-            // Check if next step exists, then set text for next step
-            if (stepCount < totalSteps) {
-                currStep = instructions.get(stepCount);
-                tvNext.setText(currStep);
-            } else {
-                tvNext.setText(R.string.recipe_completed);
-            }
         } else {
             tts.stop();
             recognizer.stop();
         }
     }
 
-    private void finishRecipe() {
+    private void updateProgressBar(int step) {
+        tvStepCount.setText("Step " + step + "/" + totalSteps);
+        int progress = (int) (step * 1.0 / totalSteps * 100);
+        dbProgress.setProgress(progress);
+    }
+
+    @Override
+    public void finishRecipe() {
         // Stop speech recognition and player or text to speech and reset to start button
         recognizer.stop();
         if (player != null) {
@@ -245,18 +259,14 @@ public class SpeechActivity extends AppCompatActivity implements
             tts.stop();
         }
 
-        tvInstructions.setText(R.string.before_start_recipe_caption);
+        vpSteps.setCurrentItem(0);
         dbProgress.setProgress(0);
         tvStepCount.setText("Step " + stepCount + "/" + totalSteps);
 
         // Toggle views
-        btStart.setVisibility(View.VISIBLE);
-        prevNextLayout.setVisibility(View.INVISIBLE);
-        btStop.setVisibility(View.INVISIBLE);
-        btPause.setVisibility(View.INVISIBLE);
-        btResume.setVisibility(View.INVISIBLE);
-        tvNext.setVisibility(View.INVISIBLE);
-        tvNextStepLabel.setVisibility(View.INVISIBLE);
+        ivStop.setVisibility(View.INVISIBLE);
+        ivPause.setVisibility(View.INVISIBLE);
+        ivResume.setVisibility(View.INVISIBLE);
     }
 
     private void stopPlayer() {
@@ -341,12 +351,20 @@ public class SpeechActivity extends AppCompatActivity implements
 
         if (recognizer != null) {
             recognizer.cancel();
+            recognizer.stop();
             recognizer.shutdown();
         }
 
         if (tts != null) {
+            tts.stop();
             tts.shutdown();
         }
+
+        if (player != null) {
+            stopPlayer();
+        }
+
+        stepCount = 0;
     }
 
     /**
@@ -403,7 +421,9 @@ public class SpeechActivity extends AppCompatActivity implements
     // Called in onResult if using text to speech
     private void processTtsResult(String text) {
         if (text.equals("next step")) {
-            speakStep();
+            if (stepCount + 1 < speechCardAdapter.getCount()) {
+                vpSteps.setCurrentItem(stepCount + 1);
+            }
         } else if (text.equals("finish recipe")) {
             finishRecipe();
         } else if (text.equals("repeat step")) {
@@ -415,29 +435,29 @@ public class SpeechActivity extends AppCompatActivity implements
 
     private void pauseTts() {
         Toast.makeText(this, "Paused", Toast.LENGTH_SHORT).show();
-        btPause.setVisibility(View.INVISIBLE);
-        btResume.setVisibility(View.VISIBLE);
+        ivPause.setVisibility(View.INVISIBLE);
+        ivResume.setVisibility(View.VISIBLE);
         isPaused = true;
         recognizer.stop();
         tts.stop();
     }
 
     private void repeatTts() {
-        stepCount -= 1;
-        speakStep();
+        speakStep(stepCount);
     }
 
     private void previousTts() {
         if (stepCount > 1) {
-            stepCount -= 2;
-            speakStep();
+            stepCount -= 1;
+            vpSteps.setCurrentItem(stepCount);
+            speakStep(stepCount);
         }
     }
 
     private void resumeTts() {
         Toast.makeText(this, "Resumed", Toast.LENGTH_SHORT).show();
-        btResume.setVisibility(View.INVISIBLE);
-        btPause.setVisibility(View.VISIBLE);
+        ivResume.setVisibility(View.INVISIBLE);
+        ivPause.setVisibility(View.VISIBLE);
         isPaused = false;
         startRecognition(TTS_SEARCH);
         repeatTts();

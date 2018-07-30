@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.util.DisplayMetrics;
@@ -106,18 +107,45 @@ public class RecipeFragment extends Fragment {
 
         // Defines the xml file for the fragment
         View mainView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe, null, false);
+
+        // Sets up the "PullToZoom" views
         PullToZoomScrollViewEx pullToZoom = mainView.findViewById(R.id.pullToZoomScroll);
         View zoomView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_image, null, false);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_content, null, false);
-        pullToZoom.setHeaderView(new View(getContext()));
+        View headView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_head, null, false);
+
+        // Adds toolbar to headView if the user owns the recipe
+        if (recipe.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
+            TextView btnEditRecipe = contentView.findViewById(R.id.btnEditRecipe);
+            btnEditRecipe.setVisibility(View.VISIBLE);
+            btnEditRecipe.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Switch fragment to edit recipe and then return to this fragment with the edited recipe
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    AddRecipeFragment fragment = new AddRecipeFragment();
+                    ft.replace(R.id.frameLayout, fragment).commit();
+                    getActivity().getSupportFragmentManager().executePendingTransactions();
+                    fragment.setupEdit(recipe);
+                }
+            });
+        } else {
+            contentView.findViewById(R.id.btnEditRecipe).setVisibility(View.GONE);
+        }
+
+        // Adds "PullToZoom" views to the main view
+        pullToZoom.setHeaderView(headView);
         pullToZoom.setZoomView(zoomView);
         pullToZoom.setScrollContentView(contentView);
+
+        // Sets zoom display metrics
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
         int mScreenHeight = localDisplayMetrics.heightPixels;
         int mScreenWidth = localDisplayMetrics.widthPixels;
         LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenWidth / 16.0F)));
         pullToZoom.setHeaderLayoutParams(localObject);
+
         return mainView;
     }
 
