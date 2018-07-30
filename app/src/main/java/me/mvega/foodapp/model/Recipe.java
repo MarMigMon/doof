@@ -28,7 +28,7 @@ public class Recipe extends ParseObject {
     private static final String KEY_STEPS = "steps";
     private static final String KEY_OBJECT_ID = "objectId";
     private static final String KEY_VIEWS = "views";
-    private static final String KEY_USER_RATINGS = "userRatings";
+    public static final String KEY_USER_RATINGS = "userRatings";
     private static final int RECIPES_PER_PAGE = 20;
 
     public List<String> getSteps() {
@@ -117,6 +117,10 @@ public class Recipe extends ParseObject {
             recipeRating = recipeRating.doubleValue() / userRatings.size();
             put(KEY_RATING, recipeRating);
         }
+    }
+    public int getNumRatings() {
+        HashMap<String, Number> userRatings = (HashMap<String, Number>) get(KEY_USER_RATINGS);
+        return (userRatings == null) ? 0 : userRatings.size();
     }
 
     public Number getUserRating(ParseUser user) {

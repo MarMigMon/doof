@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import me.mvega.foodapp.model.Recipe;
 
 public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAdapter.ViewHolder> {
 
+    ParseUser user;
     private ProfileAdapterCommunication pCommunication;
     private List<Recipe> recipes;
     Context context;
@@ -89,7 +91,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
             ivRecipe = itemView.findViewById(R.id.ivRecipe);
             tvName = itemView.findViewById(R.id.tvName);
             tvPrepTime = itemView.findViewById(R.id.tvPrepTime);
-            ratingBar = itemView.findViewById(R.id.ratingBar);
+            ratingBar = itemView.findViewById(R.id.recipeRatingBar);
             tvViewCount = itemView.findViewById(R.id.tvViewCount);
 
             // add this as the itemView's OnClickListener

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ import me.mvega.foodapp.model.Recipe;
 public class ProfileFragment extends Fragment implements YourRecipesFragment.YourRecipesFragmentCommunication {
 
     ProfileFragmentCommunication yourRecipesListenerFragment;
-    ParseUser user = ParseUser.getCurrentUser();
+    ParseUser user;
     @BindView(R.id.ivProfile) ImageView ivProfile;
     @BindView(R.id.tvUsername) TextView tvUsername;
     @BindView(R.id.tvContributed) TextView tvContributed;
@@ -63,6 +64,10 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
 
+        Log.d("Profile", Boolean.toString(user==null));
+        // gets user's name
+        String userName = user.get("Name").toString();
+        tvUsername.setText(userName);
         setUserName();
         setUserDescription();
         setUserContributions();
@@ -152,7 +157,10 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     }
 
     public void showYourRecipes() {
-        replaceFragment(YourRecipesFragment.newInstance());
+        ParseUser thisUser = user;
+        YourRecipesFragment thisUserRecipes = new YourRecipesFragment();
+        thisUserRecipes.user = thisUser;
+        replaceFragment(thisUserRecipes);
     }
 
     public void respond(Recipe recipe) {
@@ -160,7 +168,10 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     }
 
     public void showFavorites() {
-        replaceFragment(FavoritesFragment.newInstance());
+        ParseUser thisUser = user;
+        FavoritesFragment thisUserFavorites = new FavoritesFragment();
+        thisUserFavorites.user = thisUser;
+        replaceFragment(thisUserFavorites);
     }
 
     public static ProfileFragment newInstance() {

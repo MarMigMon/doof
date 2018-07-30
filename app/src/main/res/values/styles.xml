@@ -12,16 +12,18 @@
         <item name="android:textColorSecondary">@color/sunflower</item>
     </style>
 
-    <style name="MyRatingBar" parent="@style/Widget.AppCompat.RatingBar.Small">
-        <item name="colorControlNormal">@android:color/darker_gray</item>
-        <item name="colorControlActivated">@color/colorAccent</item>
+    <style name="MyRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/ratingbar</item>
         <item name="android:isIndicator">true</item>
+        <item name="android:minHeight">16dp</item>
+        <item name="android:maxHeight">16dp</item>
     </style>
 
-    <style name="MyBigRatingBar" parent="@style/Widget.AppCompat.RatingBar.Indicator">
-        <item name="colorControlNormal">@android:color/darker_gray</item>
-        <item name="colorControlActivated">@color/colorAccent</item>
-        <item name="android:isIndicator">true</item>
+    <style name="MyBigRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:isIndicator">false</item>
+        <item name="android:progressDrawable">@drawable/ratingbar_big</item>
+        <item name="android:minHeight">36dp</item>
+        <item name="android:maxHeight">36dp</item>
     </style>
 
     <style name="BodyText" parent="TextAppearance.AppCompat">

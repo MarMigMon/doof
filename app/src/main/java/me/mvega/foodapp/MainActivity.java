@@ -22,7 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
-public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication, ProfileFragment.ProfileFragmentCommunication, NotificationFragment.NotificationFragmentCommunication {
+public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication, ProfileFragment.ProfileFragmentCommunication, NotificationFragment.NotificationRecipeFragmentCommunication, NotificationFragment.NotificationUserFragmentCommunication, RecipeFragment.RecipeUserCommunication {
 
     private static final String KEY_FRAGMENT = "main";
     @BindView(R.id.navigation_bar) BottomNavigationView bottomNavigationView;
@@ -63,7 +63,10 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
                                 return true;
 
                             case R.id.tab_profile:
-                                showProfile();
+                                ParseUser userProfile = ParseUser.getCurrentUser();
+                                ProfileFragment profileFragment = new ProfileFragment();
+                                profileFragment.user = userProfile;
+                                replaceFragment(profileFragment);
                                 return true;
 
                             case R.id.tab_notification:
@@ -107,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     }
 
     public void showProfile() {
-        replaceFragment(ProfileFragment.newInstance());
     }
 
     public void showNotification() {
@@ -157,4 +159,18 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         recipeFragment.recipe = (Recipe) notificationRecipe;
         replaceFragment(recipeFragment);
     }
+
+    @Override
+    public void respond(ParseUser notificationUser ) {
+        ProfileFragment profileFragment = new ProfileFragment();
+        profileFragment.user = notificationUser;
+        replaceFragment(profileFragment);
+    }
+
+//    @Override
+//    public void respond(ParseUser recipeUser) {
+//        ProfileFragment profileFragment = new ProfileFragment();
+//        profileFragment.user = recipeUser;
+//        replaceFragment(profileFragment);
+
 }

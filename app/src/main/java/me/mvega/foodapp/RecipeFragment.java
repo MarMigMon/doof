@@ -1,15 +1,18 @@
 package me.mvega.foodapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
@@ -41,8 +45,8 @@ import me.mvega.foodapp.model.Notification;
 import me.mvega.foodapp.model.Recipe;
 
 public class RecipeFragment extends Fragment {
-
-    private static final ParseUser user = ParseUser.getCurrentUser();
+    private static ParseUser user = ParseUser.getCurrentUser();
+    RecipeUserCommunication recipeUserListener;
     Recipe recipe;
     String recipeId;
     ImageView image;
@@ -50,19 +54,53 @@ public class RecipeFragment extends Fragment {
     int stepCount = 0;
     private static final String KEY_FAVORITE = "favorites";
 
-    @BindView(R.id.tvName) TextView tvName;
-    @BindView(R.id.tvUsername) TextView tvUsername;
-    @BindView(R.id.ratingBar) RatingBar ratingBar;
-    @BindView(R.id.tvType) TextView tvType;
-    @BindView(R.id.tvDescription) TextView tvDescription;
-    @BindView(R.id.tvPrepTime) TextView tvPrepTime;
-    @BindView(R.id.tvYield) TextView tvYield;
-    @BindView(R.id.tvIngredients) TextView tvIngredients;
-    @BindView(R.id.tvInstructions) TextView tvInstructions;
-    @BindView(R.id.instructionsLayout) RelativeLayout instructionsLayout;
-    @BindView(R.id.ivImage) ImageView ivImage;
-    @BindView(R.id.btPlay) ImageButton btPlay;
-    @BindView(R.id.btFavorite) ImageButton btFavorite;
+    @BindView(R.id.tvName)
+    TextView tvName;
+    @BindView(R.id.tvUsername)
+    TextView tvUsername;
+    @BindView(R.id.recipeRatingBar)
+    RatingBar recipeRating;
+    @BindView(R.id.userRatingBar)
+    RatingBar yourRating;
+    @BindView(R.id.userRatingMessage)
+    TextView userRatingMessage;
+    @BindView(R.id.tvNumRatings)
+    TextView tvNumRatings;
+    @BindView(R.id.tvType)
+    TextView tvType;
+    @BindView(R.id.tvDescription)
+    TextView tvDescription;
+    @BindView(R.id.tvPrepTime)
+    TextView tvPrepTime;
+    @BindView(R.id.tvYield)
+    TextView tvYield;
+    @BindView(R.id.tvIngredients)
+    TextView tvIngredients;
+    @BindView(R.id.tvInstructions)
+    TextView tvInstructions;
+    @BindView(R.id.instructionsLayout)
+    RelativeLayout instructionsLayout;
+    @BindView(R.id.ivImage)
+    ImageView ivImage;
+    @BindView(R.id.btPlay)
+    ImageButton btPlay;
+    @BindView(R.id.btFavorite)
+    ImageButton btFavorite;
+
+    // implement interface
+    public interface RecipeUserCommunication {
+        void respond(ParseUser notificationUser);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof RecipeUserCommunication) {
+            recipeUserListener = (RecipeUserCommunication) context;
+        } else {
+            throw new ClassCastException(context.toString() + " must implement RecipeFragment.RecipeUserCommunication");
+        }
+    }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy either dynamically or via XML layout inflation.
     @Override
@@ -71,18 +109,41 @@ public class RecipeFragment extends Fragment {
 
         // Defines the xml file for the fragment
         View mainView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe, null, false);
+
+        // Sets up the "PullToZoom" views
         PullToZoomScrollViewEx pullToZoom = mainView.findViewById(R.id.pullToZoomScroll);
         View zoomView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_image, null, false);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_content, null, false);
-        pullToZoom.setHeaderView(new View(getContext()));
+        View headView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_head, null, false);
+
+        // Adds toolbar to headView
+        Toolbar editBar = headView.findViewById(R.id.editRecipeBar);
+        editBar.inflateMenu(R.menu.menu_edit_recipe);
+        editBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.editRecipe) {
+                    // TODO if the user owns the recipe, allow them to modify its contents
+                    Toast.makeText(getContext(), "You just clicked Edit Recipe!", Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        // Adds "PullToZoom" views to the main view
+        pullToZoom.setHeaderView(headView);
         pullToZoom.setZoomView(zoomView);
         pullToZoom.setScrollContentView(contentView);
+
+        // Sets zoom display metrics
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
         int mScreenHeight = localDisplayMetrics.heightPixels;
         int mScreenWidth = localDisplayMetrics.widthPixels;
         LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenWidth / 16.0F)));
         pullToZoom.setHeaderLayoutParams(localObject);
+
         return mainView;
     }
 
@@ -90,6 +151,8 @@ public class RecipeFragment extends Fragment {
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
+        user = ParseUser.getCurrentUser();
 
         ButterKnife.bind(this, view);
 
@@ -189,9 +252,30 @@ public class RecipeFragment extends Fragment {
         }
 
         float rating = recipe.getRating().floatValue();
-        ratingBar.setRating(rating);
+        recipeRating.setRating(rating);
 
-        ratingBar.setOnTouchListener(new View.OnTouchListener() {
+        int numRatings = recipe.getNumRatings();
+        if (numRatings == 1) {
+            tvNumRatings.setText(Integer.toString(numRatings) + " Rating");
+        } else {
+            tvNumRatings.setText(Integer.toString(numRatings) + " Ratings");
+        }
+
+
+        yourRating.setRating(recipe.getUserRating(user).floatValue());
+        HashMap<String, Number> userRatings = (HashMap<String, Number>) recipe.get(Recipe.KEY_USER_RATINGS);
+        if (userRatings != null) {
+            Number userRating = userRatings.get(user.getObjectId());
+            if (userRating != null) {
+                if (userRating.doubleValue() == 1) {
+                    userRatingMessage.setText("You rated this recipe " + userRating.toString() + " star!");
+                } else {
+                    userRatingMessage.setText("You rated this recipe " + userRating.toString() + " stars!");
+                }
+            }
+        }
+
+        yourRating.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
@@ -215,6 +299,14 @@ public class RecipeFragment extends Fragment {
                 return true;
             }
         });
+
+        tvUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ParseUser notificationUser = recipe.getUser();
+                recipeUserListener.respond(notificationUser);
+            }
+        });
     }
 
     private void setInstructions(ArrayList<String> steps) {
@@ -224,7 +316,7 @@ public class RecipeFragment extends Fragment {
 
             if (stepCount > 0) {
                 // Set layout params
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams (
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.WRAP_CONTENT,
                         RelativeLayout.LayoutParams.WRAP_CONTENT);
                 params.addRule(RelativeLayout.BELOW, stepCount);
@@ -305,11 +397,22 @@ public class RecipeFragment extends Fragment {
         // updates recipe rating
         recipe.updateRating();
 
-        // updates recipe rating on rating bar
-        float recipeRating = recipe.getRating().floatValue();
-        ratingBar.setRating(recipeRating);
-
         recipe.saveInBackground();
         user.saveInBackground();
+
+        // updates recipe rating on rating bars
+        recipeRating.setRating(recipe.getRating().floatValue());
+        yourRating.setRating(rating.floatValue());
+        int numRatings = recipe.getNumRatings();
+        if (numRatings == 1) {
+            tvNumRatings.setText(Integer.toString(numRatings) + " Rating");
+        } else {
+            tvNumRatings.setText(Integer.toString(numRatings) + " Ratings");
+        }
+        if (rating.doubleValue() == 1) {
+            userRatingMessage.setText("You rated this recipe " + rating.toString() + " star!");
+        } else {
+            userRatingMessage.setText("You rated this recipe " + rating.toString() + " stars!");
+        }
     }
 }

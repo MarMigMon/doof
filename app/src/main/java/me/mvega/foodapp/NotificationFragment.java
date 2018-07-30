@@ -29,11 +29,16 @@ public class NotificationFragment extends Fragment {
     private RecyclerView rvNotifications;
     ArrayList<Notification> notifications;
     private NotificationAdapter notificationAdapter;
-    NotificationFragmentCommunication notificationListenerFragment;
+    NotificationRecipeFragmentCommunication notificationRecipeListenerFragment;
+    NotificationUserFragmentCommunication notificationUserListenerFragment;
 
-    // implement listener interface
-    public interface NotificationFragmentCommunication {
+    // implement recipe listener interface
+    public interface NotificationRecipeFragmentCommunication {
         void respond(ParseObject notificationRecipe);
+    }
+    // implement user listener interface
+    public interface NotificationUserFragmentCommunication {
+        void respond(ParseUser notificationUser);
     }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
@@ -47,10 +52,11 @@ public class NotificationFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof NotificationFragmentCommunication) {
-            notificationListenerFragment = (NotificationFragmentCommunication) context;
-        } else {
-            throw new ClassCastException(context.toString() + " must implement NotificationFragmentCommunication");
+        if (context instanceof NotificationRecipeFragmentCommunication) {
+            notificationRecipeListenerFragment = (NotificationRecipeFragmentCommunication) context;
+        }
+        if (context instanceof NotificationUserFragmentCommunication) {
+            notificationUserListenerFragment = (NotificationUserFragmentCommunication) context;
         }
     }
 
@@ -61,17 +67,23 @@ public class NotificationFragment extends Fragment {
         rvNotifications = view.findViewById(R.id.rvNotifications);
         swipeContainerNotifications = view.findViewById(R.id.swipeContainerNotifications);
 
-
         notifications = new ArrayList<>();
         notificationAdapter = new NotificationAdapter(notifications);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvNotifications.setLayoutManager(linearLayoutManager);
         rvNotifications.setAdapter(notificationAdapter);
 
-        notificationAdapter.setNotificationListener(new NotificationAdapter.NotificationAdapterCommunication() {
+        notificationAdapter.setNotificationRecipeListener(new NotificationAdapter.NotificationAdapterRecipeCommunication() {
             @Override
             public void respond(ParseObject notificationRecipe) {
-                notificationListenerFragment.respond(notificationRecipe);
+                notificationRecipeListenerFragment.respond(notificationRecipe);
+            }
+        });
+
+        notificationAdapter.setNotificationUserListener(new NotificationAdapter.NotificationAdapterUserCommunication() {
+            @Override
+            public void respond(ParseUser notificationUser) {
+                notificationUserListenerFragment.respond(notificationUser);
             }
         });
 
