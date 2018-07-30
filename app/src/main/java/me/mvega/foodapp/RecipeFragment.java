@@ -1,6 +1,7 @@
 package me.mvega.foodapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -85,18 +86,19 @@ public class RecipeFragment extends Fragment {
 
     // implement interface
     public interface RecipeUserCommunication {
-        void respond(ParseUser recipeUser);
+        void respond(ParseUser notificationUser);
     }
 
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof RecipeUserCommunication) {
-//            recipeUserListener = (RecipeUserCommunication) context;
-//        } else {
-//            throw new ClassCastException(context.toString() + " must implement RecipeFragment.RecipeUserCommunication");
-//        }
-//    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof RecipeUserCommunication) {
+            recipeUserListener = (RecipeUserCommunication) context;
+        } else {
+            throw new ClassCastException(context.toString() + " must implement RecipeFragment.RecipeUserCommunication");
+        }
+    }
+
     // The onCreateView method is called when Fragment should create its View object hierarchy either dynamically or via XML layout inflation.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -274,13 +276,13 @@ public class RecipeFragment extends Fragment {
             }
         });
 
-//        tvUsername.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                ParseUser recipeUser = recipe.getUser();
-//                recipeUserListener.respond(recipeUser);
-//            }
-//        });
+        tvUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ParseUser notificationUser = recipe.getUser();
+                recipeUserListener.respond(notificationUser);
+            }
+        });
     }
 
     private void setInstructions(ArrayList<String> steps) {
