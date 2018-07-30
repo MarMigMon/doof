@@ -160,7 +160,7 @@ public class YourRecipesFragment extends Fragment {
                     alertDialog.show();
                 } else {
                     alertDialog.setCancelable(true);
-                    alertDialog.setMessage(Html.fromHtml("You can't delete <b>" + recipe.getUser().get("Name") + "</b>'s recipe!"));
+                    alertDialog.setMessage(Html.fromHtml("You can't delete <b>" + recipe.getUser().get("Name") + "</b>'s recipe! "));
                     // Configure dialog button (OOPS)
                     alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "OOPS!",
                             new DialogInterface.OnClickListener() {
