@@ -62,6 +62,7 @@ public class SpeechCardFragment extends Fragment {
         String currStep = getArguments().getString(KEY_STEP, "");
         tvInstructions.setText(currStep);
 
+
         btStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
