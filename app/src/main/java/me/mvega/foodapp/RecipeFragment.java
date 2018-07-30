@@ -107,7 +107,9 @@ public class RecipeFragment extends Fragment {
         PullToZoomScrollViewEx pullToZoom = mainView.findViewById(R.id.pullToZoomScroll);
         View zoomView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_image, null, false);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_content, null, false);
-        pullToZoom.setHeaderView(new View(getContext()));
+        View headView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_head, null, false);
+        pullToZoom.setHeaderView(headView);
+        headView.se
         pullToZoom.setZoomView(zoomView);
         pullToZoom.setScrollContentView(contentView);
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
