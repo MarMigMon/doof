@@ -55,7 +55,7 @@ public class SpeechActivity extends AppCompatActivity implements
     private MediaPlayer player;
     private Boolean isPaused = false;
     private Boolean initializedTts;
-    private Boolean resumedRecipe = false;
+    public static Boolean startedRecipe = false;
     private int stepCount = 0;
     private int totalSteps;
     private String currStep;
@@ -81,10 +81,6 @@ public class SpeechActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            stepCount = savedInstanceState.getInt(KEY_STEP_COUNT);
-            resumedRecipe = savedInstanceState.getBoolean(KEY_RESUMED_RECIPE);
-        }
 
         setContentView(R.layout.activity_speech);
 
@@ -132,6 +128,12 @@ public class SpeechActivity extends AppCompatActivity implements
         });
 
         setTextToSpeech();
+
+        if (savedInstanceState != null) {
+            stepCount = savedInstanceState.getInt(KEY_STEP_COUNT);
+            startedRecipe = savedInstanceState.getBoolean(KEY_RESUMED_RECIPE);
+            vpSteps.setCurrentItem(stepCount);
+        }
     }
 
     private void setSpeechCardAdapter(ArrayList<String> instructions) {
@@ -142,7 +144,14 @@ public class SpeechActivity extends AppCompatActivity implements
             @Override
             public void onPageSelected(int step) {
                 stepCount = step;
-                speakStep(step);
+                updateProgressBar(step);
+                if (step > 0) {
+                    speakStep(step);
+                } else if (step == 0) {
+                    if (startedRecipe) {
+                        finishRecipe();
+                    }
+                }
             }
 
             // This method will be invoked when the current page is scrolled
@@ -193,8 +202,9 @@ public class SpeechActivity extends AppCompatActivity implements
                 if(status != TextToSpeech.ERROR) {
                     tts.setLanguage(Locale.US);
                     tts.setSpeechRate(0.9f);
-                    if (resumedRecipe) {
+                    if (startedRecipe) {
                         beginRecipe();
+                        speakStep(stepCount);
                     }
                 }
             }
@@ -202,6 +212,8 @@ public class SpeechActivity extends AppCompatActivity implements
     }
 
     public void beginRecipe() {
+        startedRecipe = true;
+
         // Toggle views
         ivStop.setVisibility(View.VISIBLE);
         ivPause.setVisibility(View.VISIBLE);
@@ -223,16 +235,20 @@ public class SpeechActivity extends AppCompatActivity implements
         if (step < speechCardAdapter.getCount() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             currStep = instructions.get(step);
             tts.speak(currStep, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
-            tvStepCount.setText("Step " + step + "/" + totalSteps);
-            int progress = (int) (step * 1.0 / totalSteps * 100);
-            dbProgress.setProgress(progress);
         } else {
             tts.stop();
             recognizer.stop();
         }
     }
 
-    private void finishRecipe() {
+    private void updateProgressBar(int step) {
+        tvStepCount.setText("Step " + step + "/" + totalSteps);
+        int progress = (int) (step * 1.0 / totalSteps * 100);
+        dbProgress.setProgress(progress);
+    }
+
+    @Override
+    public void finishRecipe() {
         // Stop speech recognition and player or text to speech and reset to start button
         recognizer.stop();
         if (player != null) {
