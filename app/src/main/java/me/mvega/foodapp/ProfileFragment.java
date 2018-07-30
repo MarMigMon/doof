@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,13 +29,20 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
 
     ProfileFragmentCommunication yourRecipesListenerFragment;
     ParseUser user;
-    @BindView(R.id.ivProfile) ImageView ivProfile;
-    @BindView(R.id.tvUsername) TextView tvUsername;
-    @BindView(R.id.tvContributed) TextView tvContributed;
-    @BindView(R.id.tvCompleted) TextView tvCompleted;
-    @BindView(R.id.tvReviewed) TextView tvReviewed;
-    @BindView(R.id.profileTabs) TabLayout tabLayout;
-    @BindView(R.id.tvDescription) TextView tvDescription;
+    @BindView(R.id.ivProfile)
+    ImageView ivProfile;
+    @BindView(R.id.tvUsername)
+    TextView tvUsername;
+    @BindView(R.id.tvContributed)
+    TextView tvContributed;
+    @BindView(R.id.tvCompleted)
+    TextView tvCompleted;
+    @BindView(R.id.tvReviewed)
+    TextView tvReviewed;
+    @BindView(R.id.profileTabs)
+    TabLayout tabLayout;
+    @BindView(R.id.tvDescription)
+    TextView tvDescription;
 
     public interface ProfileFragmentCommunication {
         void respond(Recipe recipe);
@@ -64,19 +70,28 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
 
-        Log.d("Profile", Boolean.toString(user==null));
+        // Prevents app crashing when switching orientations
+        if (savedInstanceState != null) {
+            user = savedInstanceState.getParcelable("user");
+        }
+
         // gets user's name
         String userName = user.get("Name").toString();
         tvUsername.setText(userName);
         setUserName();
         setUserDescription();
         setUserContributions();
+        setUserCompleted();
         setUserReviewed();
-
-        tvCompleted.setText("0"); // TODO get user's # of completed recipes
 
         setProfileImage();
         setTabs();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("user", user);
     }
 
     private void setUserContributions() {
@@ -98,9 +113,16 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     private void setUserReviewed() {
         HashMap<String, Number> recipesRated = (HashMap<String, Number>) user.get("recipesRated");
         if (recipesRated == null) {
-            recipesRated = new HashMap<>();
+            tvReviewed.setText("0");
+        } else {
+            tvReviewed.setText(Integer.toString(recipesRated.size()));
         }
-        tvReviewed.setText(Integer.toString(recipesRated.size()));
+    }
+
+    private void setUserCompleted() {
+        // TODO keep track of the number of recipes a user has completed
+        tvCompleted.setText("0");
+
     }
 
     private void setUserName() {
@@ -122,7 +144,8 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         if (profileImage != null) {
             String imageUrl = profileImage.getUrl();
             Glide.with(getContext()).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(ivProfile);
-        } else Glide.with(getContext()).load(R.drawable.image_placeholder).apply(RequestOptions.circleCropTransform()).into(ivProfile);
+        } else
+            Glide.with(getContext()).load(R.drawable.image_placeholder).apply(RequestOptions.circleCropTransform()).into(ivProfile);
     }
 
     private void setTabs() {
@@ -139,7 +162,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.equals(yourRecipes)) {
                     showYourRecipes();
-                } else if (tab.equals(favorites)){
+                } else if (tab.equals(favorites)) {
                     showFavorites();
                 }
             }
@@ -172,12 +195,6 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         FavoritesFragment thisUserFavorites = new FavoritesFragment();
         thisUserFavorites.user = thisUser;
         replaceFragment(thisUserFavorites);
-    }
-
-    public static ProfileFragment newInstance() {
-        ProfileFragment fragmentProfile = new ProfileFragment();
-        fragmentProfile.setArguments(new Bundle());
-        return fragmentProfile;
     }
 
     public void replaceFragment(Fragment f) {

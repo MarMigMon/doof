@@ -100,10 +100,23 @@ public class RecipeFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("recipe", recipe);
+        outState.putParcelable("user", user);
+    }
+
     // The onCreateView method is called when Fragment should create its View object hierarchy either dynamically or via XML layout inflation.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Prevents app crashing when switching orientations
+        if (savedInstanceState != null) {
+            recipe = savedInstanceState.getParcelable("recipe");
+            user = savedInstanceState.getParcelable("user");
+        }
 
         // Defines the xml file for the fragment
         View mainView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe, null, false);
