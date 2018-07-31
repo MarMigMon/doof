@@ -20,7 +20,7 @@ The following **optional** features are implemented:
 * [x] CurrentUser is persisted across sessions (closing and resuming the app)
 * [x] New users can be created through sign up
 * [x] There will be a search function and a filter to narrow the list of recipes.
-  * [x] Options for prep time, price, ingredients, and food type.
+  * [x] Options for name, max prep time, rating, and food type.
   * [x] Filter is persisted through opening and closing the filter window
 * [x] Users have a profile page.
   * [x] Within the profile page there are nested fragments for their own recipes, and one for their favorited recipes.
