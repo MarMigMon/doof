@@ -19,7 +19,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,18 +50,27 @@ public class SpeechActivity extends AppCompatActivity implements
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
 
-    private TextToSpeech tts;
     private Recipe recipe;
-    private ArrayList<String> instructions;
-    private ParseFile audioFile;
-    private SpeechRecognizer recognizer;
-    private MediaPlayer player;
-    private Boolean isPaused = false;
-    private Boolean initializedTts;
-    public static Boolean startedRecipe = false;
+
+    // Instructions
     private int stepCount = 0;
     private int totalSteps;
     private String currStep;
+    private ArrayList<String> instructions;
+
+    // Recognizer and text to speech
+    private TextToSpeech tts;
+    private SpeechRecognizer recognizer;
+    private Boolean initializedTts;
+
+    // Player
+    private ParseFile audioFile;
+    private MediaPlayer player;
+    private Boolean isPaused = false;
+
+    public static Boolean startedRecipe = false;
+
+    ParseUser user;
 
     // Buttons
     @BindView(R.id.ivStop) ImageView ivStop;
@@ -147,6 +159,9 @@ public class SpeechActivity extends AppCompatActivity implements
                 updateProgressBar(step);
                 if (step > 0) {
                     speakStep(step);
+                    if (step == totalSteps - 1) {
+                        addCompletedRecipe();
+                    }
                 } else if (step == 0) {
                     if (startedRecipe) {
                         finishRecipe();
@@ -167,6 +182,27 @@ public class SpeechActivity extends AppCompatActivity implements
                 // Code goes here
             }
         });
+    }
+
+    private void addCompletedRecipe() {
+        user = ParseUser.getCurrentUser();
+        ArrayList<Recipe> recipesCompleted = new ArrayList<Recipe>();
+        if (user.get("recipesCompleted") != null) {
+            recipesCompleted.addAll((ArrayList<Recipe>) user.get("recipesCompleted"));
+        }
+        recipesCompleted.add(recipe);
+        user.put("recipesCompleted", recipe);
+        user.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                Toast.makeText(SpeechActivity.this, "Completed", Toast.LENGTH_SHORT).show();
+                showCompletedDialog();
+            }
+        });
+    }
+
+    private void showCompletedDialog() {
+
     }
 
     @Override
