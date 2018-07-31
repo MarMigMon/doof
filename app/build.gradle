@@ -55,6 +55,9 @@ dependencies {
     implementation project(':pocketsphinx-android-5prealpha-release')
 
     implementation 'com.github.frank-zhu:pullzoomview:1.0.0'
+
+    // Confetti
+    implementation 'nl.dionsegijn:konfetti:1.1.0'
 }
 
 ant.importBuild 'assets.xml'

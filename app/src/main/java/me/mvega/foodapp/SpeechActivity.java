@@ -38,6 +38,9 @@ import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 import me.mvega.foodapp.model.Recipe;
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
+import nl.dionsegijn.konfetti.models.Size;
 
 public class SpeechActivity extends AppCompatActivity implements
         RecognitionListener, SpeechCardFragment.SpeechFragmentCommunication {
@@ -89,6 +92,9 @@ public class SpeechActivity extends AppCompatActivity implements
     // View Pager
     @BindView(R.id.vpSteps) ViewPager vpSteps;
     SpeechCardAdapter speechCardAdapter;
+
+    // Confetti
+    @BindView(R.id.viewKonfetti) KonfettiView viewKonfetti;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,9 +165,6 @@ public class SpeechActivity extends AppCompatActivity implements
                 updateProgressBar(step);
                 if (step > 0) {
                     speakStep(step);
-                    if (step == totalSteps && startedRecipe) {
-                        addCompletedRecipe();
-                    }
                 } else if (step == 0) {
                     if (startedRecipe) {
                         finishRecipe();
@@ -184,7 +187,21 @@ public class SpeechActivity extends AppCompatActivity implements
         });
     }
 
+    private void showConfetti() {
+        viewKonfetti.build()
+                .addColors(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorSecondary))
+                .setDirection(0.0, 359.0)
+                .setSpeed(1f, 5f)
+                .setFadeOutEnabled(true)
+                .setTimeToLive(800L)
+                .addShapes(Shape.RECT, Shape.CIRCLE)
+                .addSizes(new Size(12, 5f))
+                .setPosition(-50f, viewKonfetti.getWidth() + 50f, -50f, -50f)
+                .stream(80, 2000L);
+    }
+
     private void addCompletedRecipe() {
+        showConfetti();
         user = ParseUser.getCurrentUser();
         String recipeId = recipe.getObjectId();
         ArrayList<String> recipesCompleted = new ArrayList<>();
@@ -202,6 +219,7 @@ public class SpeechActivity extends AppCompatActivity implements
             @Override
             public void done(ParseException e) {
                 Toast.makeText(SpeechActivity.this, "Completed", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -269,12 +287,19 @@ public class SpeechActivity extends AppCompatActivity implements
     }
 
     public void speakStep(int step) {
+        checkIfCompleted(step);
         if (step < speechCardAdapter.getCount() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             currStep = instructions.get(step);
             tts.speak(currStep, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
         } else {
             tts.stop();
             recognizer.stop();
+        }
+    }
+
+    private void checkIfCompleted(int step) {
+        if (step == totalSteps && startedRecipe) {
+            addCompletedRecipe();
         }
     }
 
