@@ -49,6 +49,7 @@ public class EditProfileFragment extends Fragment {
     @BindView(R.id.tvDescription) TextView tvDescription;
     @BindView(R.id.etDescription) EditText etDescription;
     @BindView(R.id.btSaveDescription) Button btSaveDescription;
+    @BindView(R.id.btAddDescription) Button btAddDescription;
 
     ParseUser user = ParseUser.getCurrentUser();
     final String name = (String) user.get("Name");
@@ -96,15 +97,30 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
-        tvDescription.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                etDescription.setText(description);
-                etDescription.setVisibility(View.VISIBLE);
-                tvDescription.setVisibility(View.INVISIBLE);
-                btSaveDescription.setVisibility(View.VISIBLE);
-            }
-        });
+        if (user.get("description").equals("")) {
+            btAddDescription.setVisibility(View.VISIBLE);
+            btAddDescription.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btAddDescription.setVisibility(View.INVISIBLE);
+                    etDescription.setText(description);
+                    etDescription.setVisibility(View.VISIBLE);
+                    tvDescription.setVisibility(View.INVISIBLE);
+                    btSaveDescription.setVisibility(View.VISIBLE);
+                }
+            });
+        } else {
+            tvDescription.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    etDescription.setText(description);
+                    etDescription.setVisibility(View.VISIBLE);
+                    tvDescription.setVisibility(View.INVISIBLE);
+                    btSaveDescription.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+
 
         btSave.setOnClickListener(new View.OnClickListener() {
             @Override
