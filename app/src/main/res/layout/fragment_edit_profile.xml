@@ -97,5 +97,16 @@
             android:textSize="12sp"
             android:visibility="invisible"/>
 
+        <Button
+            android:id="@+id/btAddDescription"
+            android:layout_width="150dp"
+            android:layout_height="30dp"
+            android:layout_alignTop="@+id/tvDescription"
+            android:layout_centerHorizontal="true"
+            android:text="Add Description"
+            android:background="@drawable/round_button_light"
+            android:textSize="12sp"
+            android:visibility="invisible" />
+
     </RelativeLayout>
 </FrameLayout>
