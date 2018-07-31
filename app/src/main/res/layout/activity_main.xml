@@ -22,7 +22,7 @@
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation_bar"
-        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
+        style="@style/Widget.MaterialComponents.BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
