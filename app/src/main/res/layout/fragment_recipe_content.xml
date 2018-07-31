@@ -6,195 +6,215 @@
     android:layout_height="wrap_content"
     android:background="@color/light_gray">
 
-    <TextView
-        android:id="@+id/btnEditRecipe"
+    <android.support.v7.widget.CardView
+        android:id="@+id/editRecipeLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:background="@color/light_gray"
-        android:gravity="center"
-        android:padding="5dp"
-        android:text="Edit Recipe"
-        android:textSize="18sp" />
+        android:layout_height="wrap_content">
 
-    <RelativeLayout
+        <TextView
+            android:id="@+id/btnEditRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/light_gray"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Edit Recipe"
+            android:textSize="18sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
         android:id="@+id/mainInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btnEditRecipe"
-        android:background="@android:color/background_light"
-        android:paddingBottom="10dp"
-        android:paddingEnd="15dp"
-        android:paddingStart="15dp"
-        android:paddingTop="10dp">
+        android:layout_below="@id/editRecipeLayout"
+        android:background="@android:color/background_light">
 
-        <TextView
-            android:id="@+id/tvName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginEnd="15dp"
-            android:layout_toStartOf="@id/btFavorite"
-            android:text="Recipe Name"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp"
+            android:paddingEnd="15dp"
+            android:paddingStart="15dp"
+            android:paddingTop="10dp">
 
-        <ImageButton
-            android:id="@+id/btFavorite"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignTop="@id/tvName"
-            android:background="@android:color/transparent"
-            android:padding="5dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ufi_heart_icon" />
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="15dp"
+                android:layout_toStartOf="@id/btFavorite"
+                android:text="Recipe Name"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tvUsername"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/tvName"
-            android:layout_below="@+id/tvName"
-            android:layout_marginEnd="15dp"
-            android:layout_toStartOf="@id/btFavorite"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="User handle" />
+            <ImageButton
+                android:id="@+id/btFavorite"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@id/tvName"
+                android:background="@android:color/transparent"
+                android:padding="5dp"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ufi_heart_icon" />
 
-        <RatingBar
-            android:id="@+id/recipeRatingBar"
-            style="@style/MyRatingBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/tvName"
-            android:layout_below="@+id/tvUsername"
-            android:layout_marginTop="5dp"
-            android:numStars="5"
-            android:transformPivotX="0dp"
-            android:transformPivotY="0dp" />
+            <TextView
+                android:id="@+id/tvUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/tvName"
+                android:layout_below="@+id/tvName"
+                android:layout_marginEnd="15dp"
+                android:layout_toStartOf="@id/btFavorite"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="User handle" />
 
-        <TextView
-            android:id="@+id/tvNumRatings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/recipeRatingBar"
-            android:layout_marginStart="5dp"
-            android:layout_toEndOf="@+id/recipeRatingBar"
-            android:text="0 Ratings"
-            android:textSize="14sp" />
+            <RatingBar
+                android:id="@+id/recipeRatingBar"
+                style="@style/MyRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/tvName"
+                android:layout_below="@+id/tvUsername"
+                android:layout_marginTop="5dp"
+                android:numStars="5"
+                android:transformPivotX="0dp"
+                android:transformPivotY="0dp" />
 
-
-        <TextView
-            android:id="@+id/tvType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/tvName"
-            android:layout_below="@+id/recipeRatingBar"
-            android:text="Recipe Type" />
-
-        <TextView
-            android:id="@+id/tvDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/tvName"
-            android:layout_below="@+id/tvType"
-            android:layout_marginEnd="15dp"
-            android:layout_toStartOf="@id/btFavorite"
-            android:text="Recipe Description" />
-
-        <TextView
-            android:id="@+id/tvPrepTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/tvName"
-            android:layout_below="@+id/tvDescription"
-            android:text="Prep Time" />
+            <TextView
+                android:id="@+id/tvNumRatings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/recipeRatingBar"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@+id/recipeRatingBar"
+                android:text="0 Ratings"
+                android:textSize="14sp" />
 
 
-        <TextView
-            android:id="@+id/tvYield"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/tvName"
-            android:layout_below="@+id/tvPrepTime"
-            android:text="Recipe Yield" />
+            <TextView
+                android:id="@+id/tvType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/tvName"
+                android:layout_below="@+id/recipeRatingBar"
+                android:text="Recipe Type" />
 
-        <ImageButton
-            android:id="@+id/btPlay"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignStart="@+id/btFavorite"
-            android:layout_below="@+id/btFavorite"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/circle_button"
-            android:src="@android:drawable/ic_media_play" />
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/tvName"
+                android:layout_below="@+id/tvType"
+                android:layout_marginEnd="15dp"
+                android:layout_toStartOf="@id/btFavorite"
+                android:text="Recipe Description" />
 
-    <RelativeLayout
+            <TextView
+                android:id="@+id/tvPrepTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/tvName"
+                android:layout_below="@+id/tvDescription"
+                android:text="Prep Time" />
+
+
+            <TextView
+                android:id="@+id/tvYield"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/tvName"
+                android:layout_below="@+id/tvPrepTime"
+                android:text="Recipe Yield" />
+
+            <ImageButton
+                android:id="@+id/btPlay"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignStart="@+id/btFavorite"
+                android:layout_below="@+id/btFavorite"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/circle_button"
+                android:src="@android:drawable/ic_media_play" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
         android:id="@+id/userRating"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/mainInfo"
         android:layout_marginTop="15dp"
-        android:background="@android:color/background_light"
-        android:gravity="center"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp">
+        android:background="@android:color/background_light">
 
-        <TextView
-            android:id="@+id/userRatingMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:text="Rate this recipe!"
-            android:textSize="14sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp">
 
-        <RatingBar
-            android:id="@+id/userRatingBar"
-            style="@style/MyBigRatingBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/userRatingMessage"
-            android:numStars="5"
-            android:transformPivotX="0dp"
-            android:transformPivotY="0dp" />
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/userRatingMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="Rate this recipe!"
+                android:textSize="14sp" />
 
-    <RelativeLayout
+            <RatingBar
+                android:id="@+id/userRatingBar"
+                style="@style/MyBigRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/userRatingMessage"
+                android:numStars="5"
+                android:transformPivotX="0dp"
+                android:transformPivotY="0dp" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/userRating"
         android:layout_marginTop="15dp"
-        android:background="@android:color/background_light"
-        android:paddingBottom="10dp"
-        android:paddingEnd="15dp"
-        android:paddingStart="15dp"
-        android:paddingTop="10dp">
-
-        <TextView
-            android:id="@+id/tvIngredients"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ingredients" />
-
-        <TextView
-            android:id="@+id/tvInstructions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvIngredients"
-            android:layout_marginTop="15dp"
-            android:text="Instructions"
-            android:textSize="20sp" />
+        android:background="@android:color/background_light">
 
         <RelativeLayout
-            android:id="@+id/instructionsLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvInstructions"
-            android:layout_margin="10dp" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp"
+            android:paddingEnd="15dp"
+            android:paddingStart="15dp"
+            android:paddingTop="10dp">
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/tvIngredients"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ingredients" />
+
+            <TextView
+                android:id="@+id/tvInstructions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvIngredients"
+                android:layout_marginTop="15dp"
+                android:text="Instructions"
+                android:textSize="20sp" />
+
+            <RelativeLayout
+                android:id="@+id/instructionsLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvInstructions"
+                android:layout_margin="10dp" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>
