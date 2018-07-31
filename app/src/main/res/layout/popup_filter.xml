@@ -174,7 +174,7 @@
         <Button
             android:id="@+id/btDone"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="35dp"
             android:layout_below="@+id/tvFilter"
             android:layout_marginBottom="16dp"
             android:layout_marginStart="16dp"
