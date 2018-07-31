@@ -159,7 +159,7 @@ public class SpeechActivity extends AppCompatActivity implements
                 updateProgressBar(step);
                 if (step > 0) {
                     speakStep(step);
-                    if (step == totalSteps - 1) {
+                    if (step == totalSteps && startedRecipe) {
                         addCompletedRecipe();
                     }
                 } else if (step == 0) {
@@ -186,23 +186,24 @@ public class SpeechActivity extends AppCompatActivity implements
 
     private void addCompletedRecipe() {
         user = ParseUser.getCurrentUser();
-        ArrayList<Recipe> recipesCompleted = new ArrayList<Recipe>();
+        String recipeId = recipe.getObjectId();
+        ArrayList<String> recipesCompleted = new ArrayList<>();
+
         if (user.get("recipesCompleted") != null) {
-            recipesCompleted.addAll((ArrayList<Recipe>) user.get("recipesCompleted"));
+            recipesCompleted.addAll((ArrayList<String>) user.get("recipesCompleted"));
         }
-        recipesCompleted.add(recipe);
-        user.put("recipesCompleted", recipe);
+
+        if (!recipesCompleted.contains(recipeId)) {
+            recipesCompleted.add(recipeId);
+        }
+
+        user.put("recipesCompleted", recipesCompleted);
         user.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 Toast.makeText(SpeechActivity.this, "Completed", Toast.LENGTH_SHORT).show();
-                showCompletedDialog();
             }
         });
-    }
-
-    private void showCompletedDialog() {
-
     }
 
     @Override
