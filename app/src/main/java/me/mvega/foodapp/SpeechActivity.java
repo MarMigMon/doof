@@ -188,6 +188,7 @@ public class SpeechActivity extends AppCompatActivity implements
     }
 
     private void showConfetti() {
+        Log.d("Confetti", "Showing confetti");
         viewKonfetti.build()
                 .addColors(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorSecondary))
                 .setDirection(0.0, 359.0)
@@ -201,7 +202,6 @@ public class SpeechActivity extends AppCompatActivity implements
     }
 
     private void addCompletedRecipe() {
-        showConfetti();
         user = ParseUser.getCurrentUser();
         String recipeId = recipe.getObjectId();
         ArrayList<String> recipesCompleted = new ArrayList<>();
@@ -298,7 +298,9 @@ public class SpeechActivity extends AppCompatActivity implements
     }
 
     private void checkIfCompleted(int step) {
+        Log.d("Confetti", "Step is " + step + "and totalSteps is " + totalSteps + "and startedRecipe is " + startedRecipe);
         if (step == totalSteps && startedRecipe) {
+            showConfetti();
             addCompletedRecipe();
         }
     }

@@ -13,6 +13,7 @@ import android.transition.Explode;
 import android.transition.Fade;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.parse.ParseObject;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     private static final String KEY_FRAGMENT = "main";
     @BindView(R.id.navigation_bar) BottomNavigationView bottomNavigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.shadow_view) View shadowView;
 
     private ParseUser currentUser;
 
