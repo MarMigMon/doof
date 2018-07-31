@@ -60,6 +60,8 @@ dependencies {
 
     // Google Firebase
     implementation 'com.google.firebase:firebase-core:16.0.0'
+    // Confetti
+    implementation 'nl.dionsegijn:konfetti:1.1.0'
 }
 
 ant.importBuild 'assets.xml'

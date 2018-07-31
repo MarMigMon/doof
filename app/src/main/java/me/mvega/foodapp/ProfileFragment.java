@@ -19,6 +19,7 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -120,8 +121,12 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     }
 
     private void setUserCompleted() {
-        // TODO keep track of the number of recipes a user has completed
-        tvCompleted.setText("0");
+        ArrayList<Recipe> recipesCompleted = (ArrayList<Recipe>) user.get("recipesCompleted");
+        if (recipesCompleted != null) {
+            tvCompleted.setText(((Integer) recipesCompleted.size()).toString());
+        } else {
+            tvCompleted.setText("0");
+        }
 
     }
 
