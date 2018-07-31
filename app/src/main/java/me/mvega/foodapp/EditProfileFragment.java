@@ -4,11 +4,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,7 +58,7 @@ public class EditProfileFragment extends Fragment {
     final String description = (String) user.get("description");
 
     public final String APP_TAG = "FoodApp";
-    public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
+    public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1000;
     public String photoFileName = "photo.jpg";
     File photoFile;
     private File selectedPhotoFile;
@@ -158,6 +160,8 @@ public class EditProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 changeDescription();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.detach(EditProfileFragment.this).attach(EditProfileFragment.this).commit();
             }
         });
 
@@ -172,6 +176,7 @@ public class EditProfileFragment extends Fragment {
                 if (e == null) {
                     Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
                     tvDescription.setText(newDescription);
+                    etDescription.setText(newDescription);
                     tvDescription.setVisibility(View.VISIBLE);
                     etDescription.setVisibility(View.INVISIBLE);
                     btSaveDescription.setVisibility(View.INVISIBLE);
@@ -239,28 +244,69 @@ public class EditProfileFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data != null && resultCode == RESULT_OK) {
-            Uri photoUri = data.getData();
-            // Do something with the photo based on Uri
-            Bitmap selectedImage = null;
-            try {
-                selectedImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Glide.with(getContext()).load(selectedImage).apply(RequestOptions.circleCropTransform()).into(ivProfile);
-//            ivProfile.setImageBitmap(selectedImage);
-            user.put("image", prepareImage(selectedImage));
-            user.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
-                        Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
-                    } else {
-                        e.printStackTrace();
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // by this point we have the camera photo on disk
+                String imagePath = photoFile.getAbsolutePath();
+                selectedPhotoFile = new File(imagePath);
+                Bitmap rawTakenImage = BitmapFactory.decodeFile(new File(imagePath).getAbsolutePath());
+                ivProfile.setImageBitmap(rawTakenImage);
+                Glide.with(getContext()).load(rawTakenImage).apply(RequestOptions.circleCropTransform()).into(ivProfile);
+                user.put("image", prepareImage(rawTakenImage));
+                user.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
+                        } else {
+                            e.printStackTrace();
+                        }
                     }
+                });
+            } else { // Result was a failure
+                Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (resultCode == PICK_PHOTO_CODE) {
+            if (data != null && resultCode == RESULT_OK) {
+                Log.d("Update", "gallery photo updated");
+                Uri photoUri = data.getData();
+                // Do something with the photo based on Uri
+                Bitmap selectedImage = null;
+                try {
+                    selectedImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
+                ivProfile.setImageBitmap(selectedImage);
+                Glide.with(getContext()).load(selectedImage).apply(RequestOptions.circleCropTransform()).into(ivProfile);
+                user.put("image", prepareImage(selectedImage));
+                user.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
+                        } else {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            } else {
+                Toast.makeText(getActivity(), "Picture wasn't uploaded", Toast.LENGTH_SHORT).show();
+            }
+//            Uri photoUri = data.getData();
+//            // Do something with the photo based on Uri
+//            Bitmap selectedImage = null;
+//            try {
+//                selectedImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoUri);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            // Load the selected image into a preview
+//            ivPreview.setImageBitmap(selectedImage);
+//            recipeImage = selectedImage;
+        } else {
+            Log.d("Update", "failure");
         }
     }
 

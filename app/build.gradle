@@ -15,7 +15,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
+    }\
+
 }
 
 ext {
@@ -38,6 +39,7 @@ dependencies {
 
     implementation 'com.parse.bolts:bolts-android:1.4.0'
     implementation 'com.parse:parse-android:1.17.3'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1' // for logging API calls to LogCat
 
     // Glide for remote image loading
     implementation 'com.github.bumptech.glide:glide:3.8.0'
@@ -56,6 +58,8 @@ dependencies {
 
     implementation 'com.github.frank-zhu:pullzoomview:1.0.0'
 
+    // Google Firebase
+    implementation 'com.google.firebase:firebase-core:16.0.0'
     // Confetti
     implementation 'nl.dionsegijn:konfetti:1.1.0'
 }
@@ -63,3 +67,5 @@ dependencies {
 ant.importBuild 'assets.xml'
 preBuild.dependsOn(list, checksum)
 clean.dependsOn(clean_assets)
+
+apply plugin: 'com.google.gms.google-services'

@@ -111,9 +111,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         replaceFragment(new AddRecipeFragment());
     }
 
-    public void showProfile() {
-    }
-
     public void showNotification() {
         replaceFragment(NotificationFragment.newInstance());
     }
@@ -168,11 +165,4 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         profileFragment.user = notificationUser;
         replaceFragment(profileFragment);
     }
-
-//    @Override
-//    public void respond(ParseUser recipeUser) {
-//        ProfileFragment profileFragment = new ProfileFragment();
-//        profileFragment.user = recipeUser;
-//        replaceFragment(profileFragment);
-
 }
