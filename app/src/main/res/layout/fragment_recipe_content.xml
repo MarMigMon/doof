@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dataLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -19,9 +20,9 @@
             android:layout_alignParentTop="true"
             android:background="@color/light_gray"
             android:gravity="center"
-            android:padding="5dp"
+            android:padding="10dp"
             android:text="Edit Recipe"
-            android:textSize="18sp" />
+            android:textSize="14sp" />
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
@@ -31,7 +32,7 @@
         android:layout_below="@id/editRecipeLayout"
         android:background="@android:color/background_light">
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="10dp"
@@ -41,24 +42,30 @@
 
             <TextView
                 android:id="@+id/tvName"
-                android:layout_width="wrap_content"
+                android:layout_width="245dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_marginEnd="15dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_toStartOf="@id/btFavorite"
                 android:text="Recipe Name"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/btFavorite"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignTop="@id/tvName"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@android:color/transparent"
-                android:padding="5dp"
                 android:scaleType="fitCenter"
+                app:layout_constraintEnd_toStartOf="@+id/btPlay"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ufi_heart_icon" />
 
             <TextView
@@ -67,11 +74,15 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/tvName"
                 android:layout_below="@+id/tvName"
-                android:layout_marginEnd="15dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_toStartOf="@id/btFavorite"
                 android:clickable="true"
                 android:focusable="true"
-                android:text="User handle" />
+                android:text="User handle"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
             <RatingBar
                 android:id="@+id/recipeRatingBar"
@@ -80,20 +91,26 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/tvName"
                 android:layout_below="@+id/tvUsername"
-                android:layout_marginTop="5dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:numStars="5"
                 android:transformPivotX="0dp"
-                android:transformPivotY="0dp" />
+                android:transformPivotY="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
 
             <TextView
                 android:id="@+id/tvNumRatings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/recipeRatingBar"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_toEndOf="@+id/recipeRatingBar"
                 android:text="0 Ratings"
-                android:textSize="14sp" />
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@+id/recipeRatingBar"
+                app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
 
 
             <TextView
@@ -102,7 +119,13 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/tvName"
                 android:layout_below="@+id/recipeRatingBar"
-                android:text="Recipe Type" />
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:text="Recipe Type"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recipeRatingBar" />
 
             <TextView
                 android:id="@+id/tvDescription"
@@ -110,9 +133,15 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/tvName"
                 android:layout_below="@+id/tvType"
-                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_toStartOf="@id/btFavorite"
-                android:text="Recipe Description" />
+                android:text="Recipe Description"
+                android:textAlignment="viewStart"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvType" />
 
             <TextView
                 android:id="@+id/tvPrepTime"
@@ -120,7 +149,12 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/tvName"
                 android:layout_below="@+id/tvDescription"
-                android:text="Prep Time" />
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Prep Time"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@+id/ivTime"
+                app:layout_constraintTop_toBottomOf="@+id/tvYield" />
 
 
             <TextView
@@ -129,18 +163,45 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/tvName"
                 android:layout_below="@+id/tvPrepTime"
-                android:text="Recipe Yield" />
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="16dp"
+                android:text="Recipe Yield"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@+id/ivPeople"
+                app:layout_constraintTop_toBottomOf="@+id/btPlay" />
 
             <ImageButton
                 android:id="@+id/btPlay"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignStart="@+id/btFavorite"
-                android:layout_below="@+id/btFavorite"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/circle_button"
-                android:src="@android:drawable/ic_media_play" />
-        </RelativeLayout>
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignBottom="@+id/btFavorite"
+                android:layout_alignEnd="@+id/tvName"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/ic_play"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivTime"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvYield"
+                android:src="@drawable/ic_time" />
+
+            <ImageView
+                android:id="@+id/ivPeople"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btPlay"
+                android:src="@drawable/ic_people_outline_black_24dp" />
+        </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
@@ -151,7 +212,7 @@
         android:layout_marginTop="15dp"
         android:background="@android:color/background_light">
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -162,9 +223,11 @@
                 android:id="@+id/userRatingMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
+                android:layout_marginTop="8dp"
                 android:text="Rate this recipe!"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@+id/userRatingBar"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <RatingBar
                 android:id="@+id/userRatingBar"
@@ -172,10 +235,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/userRatingMessage"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:numStars="5"
                 android:transformPivotX="0dp"
-                android:transformPivotY="0dp" />
-        </RelativeLayout>
+                android:transformPivotY="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/userRatingMessage" />
+        </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
@@ -185,7 +256,7 @@
         android:layout_marginTop="15dp"
         android:background="@android:color/background_light">
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="10dp"
@@ -194,27 +265,51 @@
             android:paddingTop="10dp">
 
             <TextView
+                android:id="@+id/tvIngredientsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Ingredients"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
                 android:id="@+id/tvIngredients"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ingredients" />
+                android:layout_below="@+id/tvIngredientsLabel"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="Ingredients"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvIngredientsLabel" />
 
             <TextView
                 android:id="@+id/tvInstructions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvIngredients"
-                android:layout_marginTop="15dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
                 android:text="Instructions"
-                android:textSize="20sp" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvIngredients" />
 
             <RelativeLayout
                 android:id="@+id/instructionsLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvInstructions"
-                android:layout_margin="10dp" />
-        </RelativeLayout>
+                android:layout_margin="10dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvInstructions" />
+        </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 
 </RelativeLayout>
