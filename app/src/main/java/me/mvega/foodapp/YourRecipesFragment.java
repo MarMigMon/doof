@@ -54,9 +54,20 @@ public class YourRecipesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            user = savedInstanceState.getParcelable("user");
+        }
+
         onAttachToParentFragment(getParentFragment());
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.tab_profile, parent, false);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("user", user);
     }
 
     public void onAttachToParentFragment(Fragment childFragment) {
