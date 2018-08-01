@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "679562797213",
+    "firebase_url": "https://doofapp-f2083.firebaseio.com",
+    "project_id": "doofapp-f2083",
+    "storage_bucket": "doofapp-f2083.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:679562797213:android:1157a46aa5297bb1",
+        "android_client_info": {
+          "package_name": "me.marmigmon.doofapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "679562797213-nvo8gd18njqn17869h9esvhrkckboqjv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAT8AHKbK0EjvZLRk1my_LviUyiamS5ewM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:679562797213:android:7c3aa0d5e8e02b4b",
+        "android_client_info": {
+          "package_name": "me.mvega.foodapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "679562797213-nvo8gd18njqn17869h9esvhrkckboqjv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAT8AHKbK0EjvZLRk1my_LviUyiamS5ewM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

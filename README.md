@@ -20,7 +20,7 @@ The following **optional** features are implemented:
 * [x] CurrentUser is persisted across sessions (closing and resuming the app)
 * [x] New users can be created through sign up
 * [x] There will be a search function and a filter to narrow the list of recipes.
-  * [x] Options for prep time, price, ingredients, and food type.
+  * [x] Options for name, max prep time, rating, and food type.
   * [x] Filter is persisted through opening and closing the filter window
 * [x] Users have a profile page.
   * [x] Within the profile page there are nested fragments for their own recipes, and one for their favorited recipes.
@@ -37,6 +37,9 @@ The following **optional** features are implemented:
   * [x] Users can add as many steps as they require for the recipe (addStep button)
   * [x] Add and Remove steps buttons autoscroll the screen as they are clicked
 * [x] While recipe is being played, there is a user progress bar.
+  * [x] Recipe progress persists across configuration changes
+  * [x] Steps are displayed in card views in a view pager
+  * [x] User can stop, pause, and resume recipe dictation / speech recognition
 * [x] Main feed features infinite scrolling.
 * [x] Search bar automatically filters recipes as user types, and displays options for autocompletion.
 * [x] Each recipe displays a view count
@@ -48,7 +51,6 @@ The following **optional** features are implemented:
   * [x] Speech activity is launched from this page
   * [x] Profile page (including their recipes) of user who contributed that recipe can be accessed by clicking their handle
   
-
 
 The following **stretch goals** are implemented:
 
