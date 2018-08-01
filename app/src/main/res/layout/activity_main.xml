@@ -13,26 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/mainFrame"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_above="@id/navigation_bar"
         android:layout_below="@+id/toolbar_include">
 
-        <View
-            android:id="@+id/shadow_view"
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:background="@drawable/dropshadow"/>
-
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/shadow_view">
+            android:layout_height="wrap_content">
         </FrameLayout>
 
-    </RelativeLayout>
+    </FrameLayout>
 
 
     <android.support.design.widget.BottomNavigationView
