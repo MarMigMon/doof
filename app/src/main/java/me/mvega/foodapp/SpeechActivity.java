@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -61,6 +62,10 @@ public class SpeechActivity extends AppCompatActivity implements
     private String currStep;
     private ArrayList<String> instructions;
 
+    // Ingredients
+    private String ingredients;
+    private ArrayList<String> components;
+
     // Recognizer and text to speech
     private TextToSpeech tts;
     private SpeechRecognizer recognizer;
@@ -79,10 +84,10 @@ public class SpeechActivity extends AppCompatActivity implements
     @BindView(R.id.ivStop) ImageView ivStop;
     @BindView(R.id.ivPause) ImageView ivPause;
     @BindView(R.id.ivResume) ImageView ivResume;
+    @BindView(R.id.ivIngredients) ImageView ivIngredients;
 
     // Text views
     @BindView(R.id.tvName) TextView tvName;
-    @BindView(R.id.tvIngredients) TextView tvIngredients;
     @BindView(R.id.tvStepCount) TextView tvStepCount;
 
     // Progress bars
@@ -113,7 +118,10 @@ public class SpeechActivity extends AppCompatActivity implements
         recipe = getIntent().getParcelableExtra("recipe");
         audioFile = recipe.getMedia();
         tvName.setText(recipe.getName());
-        tvIngredients.setText(recipe.getIngredients());
+        ingredients = recipe.getIngredients();
+
+        components = new ArrayList<String>();
+        components.addAll(recipe.getComponents());
 
         instructions = new ArrayList<String>();
         instructions.add(getResources().getString(R.string.before_start_recipe_caption));
@@ -122,8 +130,9 @@ public class SpeechActivity extends AppCompatActivity implements
         totalSteps = instructions.size() - 1;
         tvStepCount.setText("Step " + stepCount + "/" + totalSteps);
 
-        setSpeechCardAdapter(instructions);
+        setSpeechCardAdapter(instructions, components);
 
+        ivStop.setVisibility(View.INVISIBLE);
         ivStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,6 +140,7 @@ public class SpeechActivity extends AppCompatActivity implements
             }
         });
 
+        ivPause.setVisibility(View.INVISIBLE);
         ivPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,10 +148,18 @@ public class SpeechActivity extends AppCompatActivity implements
             }
         });
 
+        ivResume.setVisibility(View.INVISIBLE);
         ivResume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 resumeTts();
+            }
+        });
+
+        ivIngredients.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showIngredients(ingredients);
             }
         });
 
@@ -154,8 +172,14 @@ public class SpeechActivity extends AppCompatActivity implements
         }
     }
 
-    private void setSpeechCardAdapter(ArrayList<String> instructions) {
-        speechCardAdapter = new SpeechCardAdapter(getSupportFragmentManager(), instructions);
+    private void showIngredients(String ingredients) {
+        FragmentManager fm = getSupportFragmentManager();
+        IngredientsDialogFragment ingredientsDialog = IngredientsDialogFragment.newInstance(ingredients);
+        ingredientsDialog.show(fm, "fragment_ingredients");
+    }
+
+    private void setSpeechCardAdapter(ArrayList<String> instructions, ArrayList<String> components) {
+        speechCardAdapter = new SpeechCardAdapter(getSupportFragmentManager(), instructions, components);
         vpSteps.setAdapter(speechCardAdapter);
         vpSteps.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             // This method will be invoked when a new page becomes selected.
@@ -185,6 +209,7 @@ public class SpeechActivity extends AppCompatActivity implements
                 // Code goes here
             }
         });
+
     }
 
     private void showConfetti() {

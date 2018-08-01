@@ -2,6 +2,7 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -25,28 +26,16 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="63dp"
+            android:layout_marginTop="80dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Recipe Name"
             android:textAlignment="center"
-            android:textSize="35sp"
+            android:textSize="26sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tvIngredients"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvName"
-            android:layout_marginBottom="32dp"
-            android:layout_marginTop="16dp"
-            android:text="Ingredients"
-            app:layout_constraintBottom_toTopOf="@+id/dbProgress"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/vpSteps" />
 
         <ImageView
             android:id="@+id/ivStop"
@@ -71,7 +60,7 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/ic_pause_circle_outline_black_24dp"
             android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivIngredients"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
@@ -84,19 +73,19 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/ic_play_circle_outline_black_24dp"
             android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivIngredients"
             app:layout_constraintTop_toTopOf="parent" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/vpSteps"
             android:layout_width="match_parent"
-            android:layout_height="330dp"
+            android:layout_height="600dp"
             android:layout_marginTop="140dp"
             android:clipToPadding="false"
+            android:minHeight="500dp"
             android:paddingEnd="30dp"
             android:paddingStart="40dp"
             app:layout_constraintEnd_toStartOf="@+id/ivStop"
-            app:layout_constraintStart_toEndOf="@+id/tvIngredients"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
@@ -105,12 +94,12 @@
             android:layout_width="100dp"
             android:layout_height="10dp"
             android:layout_alignEnd="@+id/tvStepCount"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
             android:progress="0"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pbLoading"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvStepCount"
@@ -118,12 +107,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="16dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="21dp"
             android:text="Step 0/8"
             android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/dbProgress" />
+            app:layout_constraintStart_toEndOf="@+id/dbProgress"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
             android:id="@+id/pbLoading"
@@ -132,12 +121,23 @@
             android:layout_centerHorizontal="true"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:indeterminate="true"
             android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.501"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivIngredients"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/ic_ingredients_list"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
