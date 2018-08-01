@@ -21,6 +21,7 @@ android {
 
 ext {
     supportLibVersion = '27.1.1'
+    parseVersion = "1.17.3"
 }
 
 dependencies {
@@ -60,8 +61,12 @@ dependencies {
 
     // Google Firebase
     implementation 'com.google.firebase:firebase-core:16.0.0'
+
     // Confetti
     implementation 'nl.dionsegijn:konfetti:1.1.0'
+    
+//    // Add this line
+//    implementation "com.parse:parse-fcm-android:$parseVersion"
 }
 
 ant.importBuild 'assets.xml'
