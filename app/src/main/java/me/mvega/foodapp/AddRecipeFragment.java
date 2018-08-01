@@ -1,6 +1,7 @@
 package me.mvega.foodapp;
 
 import android.Manifest;
+import android.animation.Animator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -21,6 +23,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.AppCompatSpinner;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,7 +38,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +48,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -64,46 +67,46 @@ public class AddRecipeFragment extends Fragment {
     /* Used to handle permission request */
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 399;
 
-    @BindView(R.id.scrollView)
-    ScrollView scrollView;
-    @BindView(R.id.pbLoading)
-    ProgressBar pbLoading;
-    @BindView(R.id.etRecipeName)
-    EditText etRecipeName;
-    @BindView(R.id.etDescription)
-    EditText etDescription;
-    @BindView(R.id.etIngredients)
-    EditText etIngredients;
-    @BindView(R.id.etYield)
-    EditText etYield;
-    @BindView(R.id.etPrepTime)
-    EditText etPrepTime;
-    @BindView(R.id.spType)
-    Spinner spType;
-    @BindView(R.id.spPrepTime)
-    Spinner spPrepTime;
-    @BindView(R.id.btAdd)
-    Button btAdd;
-    @BindView(R.id.btImage)
-    Button btImage;
-    @BindView(R.id.btAudio)
-    Button btAudio;
-    @BindView(R.id.buttonLayout)
-    LinearLayout buttonLayout;
-    @BindView(R.id.btAddStep)
-    Button btAddStep;
-    @BindView(R.id.btRemoveStep)
-    Button btRemoveStep;
-    @BindView(R.id.ivPreview)
-    ImageView ivPreview;
-    @BindView(R.id.instructionsLayout)
-    RelativeLayout instructionsLayout;
-    @BindView(R.id.tvInstructions)
-    TextView tvInstructions;
-    @BindView(R.id.step1)
-    EditText step1;
-    @BindView(R.id.tvRecipeTitle)
-    TextView title;
+    // Global Views
+    @BindView(R.id.scrollView) ScrollView scrollView;
+    @BindView(R.id.pbLoading) ProgressBar pbLoading;
+
+    // Start of First Page
+    @BindView(R.id.page1) RelativeLayout page1;
+    @BindView(R.id.tvRecipeTitle) TextView title;
+    @BindView(R.id.btImage) Button btImage;
+    @BindView(R.id.ivPreview) ImageView ivPreview;
+    @BindView(R.id.etRecipeName) EditText etRecipeName;
+    @BindView(R.id.spType) AppCompatSpinner spType;
+    @BindView(R.id.etDescription) EditText etDescription;
+    @BindView(R.id.etYield) EditText etYield;
+    @BindView(R.id.etPrepTime) EditText etPrepTime;
+    @BindView(R.id.spPrepTime) AppCompatSpinner spPrepTime;
+    @BindView(R.id.btNext) Button btNext;
+    // End of First Page
+
+    // Start of Second Page
+    @BindView(R.id.page2) RelativeLayout page2;
+    @BindView(R.id.tvIngredients) TextView tvIngredients;
+    @BindView(R.id.ingredientsLayout) RelativeLayout ingredientsLayout;
+    @BindView(R.id.ingredient1) EditText ingredient1;
+    @BindView(R.id.ingredientButtonLayout) LinearLayout ingredientButtonLayout;
+    @BindView(R.id.btAddIngredient) Button btAddIngredient;
+    @BindView(R.id.btRemoveIngredient) Button btRemoveIngredient;
+
+    @BindView(R.id.tvInstructions) TextView tvInstructions;
+    @BindView(R.id.instructionsLayout) RelativeLayout instructionsLayout;
+    @BindView(R.id.step1) EditText step1;
+    @BindView(R.id.stepButtonLayout) LinearLayout stepButtonLayout;
+    @BindView(R.id.btAddStep) Button btAddStep;
+    @BindView(R.id.btRemoveStep) Button btRemoveStep;
+
+    @BindView(R.id.btBack) Button btBack;
+    @BindView(R.id.btSubmit) Button btSubmit;
+    // End of Second Page
+
+    // To be implemented
+    @BindView(R.id.btAudio) Button btAudio;
 
     private Bitmap recipeImage;
     private Uri audioUri;
@@ -111,12 +114,14 @@ public class AddRecipeFragment extends Fragment {
     private final static int PICK_PHOTO_CODE = 1046;
     private final static int PICK_AUDIO_CODE = 1;
     private int stepCount = 1;
+    private int ingredientCount = 1001;
     private ArrayList<EditText> steps;
+    private ArrayList<EditText> ingredients;
 
     private String typeText = "";
     private String prepTimeText = "minutes"; // Automatically recognizes the prep-time time period as minutes
 
-    public final String APP_TAG = "FoodApp";
+    public final String APP_TAG = "doof";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public String photoFileName = "photo.jpg";
     File photoFile;
@@ -129,17 +134,31 @@ public class AddRecipeFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_add_recipe, parent, false);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("image", recipeImage);
+    }
+
     // This event is triggered soon after onCreateView().
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
 
+        if (savedInstanceState != null) {
+            recipeImage = savedInstanceState.getParcelable("image");
+            ivPreview.setImageBitmap(recipeImage);
+        }
+
         steps = new ArrayList<>();
         step1.setId(stepCount);
         steps.add(step1);
+        ingredients = new ArrayList<>();
+        ingredient1.setId(ingredientCount);
+        ingredients.add(ingredient1);
 
-        btAdd.setOnClickListener(new View.OnClickListener() {
+        btSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
@@ -147,6 +166,111 @@ public class AddRecipeFragment extends Fragment {
                 } catch (IllegalArgumentException e) {
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        btNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    checkFirstSection();
+                    // Animation
+                    page1.animate().alpha(0f).setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            page1.setVisibility(View.GONE);
+                            page2.animate().alpha(1f).setListener(new Animator.AnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animator) {
+                                    page2.setVisibility(View.VISIBLE);
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animator animator) {
+
+
+                                }
+
+                                @Override
+                                public void onAnimationCancel(Animator animator) {
+
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animator animator) {
+
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
+
+                        }
+                    });
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        btBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Animation
+                page2.animate().alpha(0f).setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        page2.setVisibility(View.GONE);
+                        page1.animate().alpha(1f).setListener(new Animator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart(Animator animator) {
+                                page1.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animator) {
+
+
+                            }
+
+                            @Override
+                            public void onAnimationCancel(Animator animator) {
+
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animator) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+
+                    }
+                });
             }
         });
 
@@ -188,7 +312,7 @@ public class AddRecipeFragment extends Fragment {
                 onAddStep();
                 // Adds the "remove step" button so the user can remove the last added step
                 btRemoveStep.setVisibility(View.VISIBLE);
-                scrollToButtonLayout(false);
+                scrollDownTextField(false);
             }
         });
 
@@ -200,7 +324,29 @@ public class AddRecipeFragment extends Fragment {
                 if (steps.size() == 1) {
                     btRemoveStep.setVisibility(View.GONE);
                 }
-                scrollToButtonLayout(true);
+                scrollDownTextField(true);
+            }
+        });
+
+        btAddIngredient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onAddIngredient();
+                // Adds the "remove ingredient" button so the user can remove the last added ingredient
+                btRemoveIngredient.setVisibility(View.VISIBLE);
+                scrollDownTextField(false);
+            }
+        });
+
+        btRemoveIngredient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onRemoveIngredient();
+                // Removes "remove ingredient" button if there is only one ingredient left
+                if (ingredients.size() == 1) {
+                    btRemoveIngredient.setVisibility(View.GONE);
+                }
+                scrollDownTextField(true);
             }
         });
 
@@ -362,7 +508,7 @@ public class AddRecipeFragment extends Fragment {
     }
 
     /**
-     * Removes the last added step (EditText) from the layout
+     * Removes the last added step (EditText) from the instructions layout
      */
     private void onRemoveStep() {
         EditText lastStep = steps.get(steps.size() - 1);
@@ -372,9 +518,56 @@ public class AddRecipeFragment extends Fragment {
     }
 
     /**
-     * Scrolls scrollview to the top of the LinearLayout containing the Add Step and Remove Step buttons
+     * Pre-fills the fragment's ingredients with the given list
+     *
+     * @param components ingredients for recipe
      */
-    private void scrollToButtonLayout(boolean reverse) {
+    private void addIngredients(List<String> components) {
+        ingredient1.setText(components.get(0));
+        for (String ingredient : components.subList(1, components.size())) {
+            onAddIngredient();
+            ingredients.get(ingredientCount - 1001).setText(ingredient);
+        }
+    }
+
+    /**
+     * Adds a new ingredient (EditText) to the layout for the user to input text
+     */
+    private void onAddIngredient() {
+        EditText ingredient = new EditText(getContext());
+
+        // Set layout params
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.BELOW, ingredientCount);
+
+        // Set up new EditText view
+        ingredientCount += 1;
+        ingredient.setId(ingredientCount);
+        ingredient.setHint("Ingredient " + (ingredientCount - 1000));
+        ingredient.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        ingredient.setLayoutParams(params);
+
+        // Add ingredient
+        ingredients.add(ingredient);
+        ingredientsLayout.addView(ingredient);
+    }
+
+    /**
+     * Removes the last added ingredient (EditText) from the ingredients layout
+     */
+    private void onRemoveIngredient() {
+        EditText lastIngredient = ingredients.get(ingredients.size() - 1);
+        ingredients.remove(lastIngredient);
+        ingredientCount -= 1;
+        ingredientsLayout.removeView(lastIngredient);
+    }
+
+    /**
+     * Scrolls scrollview to maintain position of button
+     */
+    private void scrollDownTextField(boolean reverse) {
         if (reverse) {
             scrollView.scrollBy(0, -step1.getHeight());
         } else {
@@ -400,7 +593,7 @@ public class AddRecipeFragment extends Fragment {
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             // Bring up gallery to select a photo
             startActivityForResult(intent, PICK_PHOTO_CODE);
-            }
+        }
     }
 
     // Returns the File for a photo stored on disk given the fileName
@@ -421,6 +614,7 @@ public class AddRecipeFragment extends Fragment {
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
         }
     }
+
     public File getPhotoFileUri(String fileName) {
         // Get safe storage directory for photos
         // Use `getExternalFilesDir` on Context to access package-specific directories.
@@ -428,7 +622,7 @@ public class AddRecipeFragment extends Fragment {
         File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), APP_TAG);
 
         // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
+        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
             Log.d(APP_TAG, "failed to create directory");
         }
 
@@ -479,7 +673,11 @@ public class AddRecipeFragment extends Fragment {
                 // Do something with the photo based on Uri
                 Bitmap selectedImage = null;
                 try {
-                    selectedImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoUri);
+                    Bitmap original = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoUri);
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    original.compress(Bitmap.CompressFormat.JPEG, 80, out);
+                    selectedImage = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -504,9 +702,18 @@ public class AddRecipeFragment extends Fragment {
 
     public void setSelectedPhoto(File file) {
         selectedPhotoFile = file;
-
         Bitmap rawTakenImage = BitmapFactory.decodeFile(file.getAbsolutePath());
-        ivPreview.setImageBitmap(rawTakenImage);
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        Bitmap photo = Bitmap.createBitmap(rawTakenImage, 0, 0, rawTakenImage.getWidth(), rawTakenImage.getHeight(),
+                matrix, true);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        photo.compress(Bitmap.CompressFormat.JPEG, 80, out);
+        photo = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
+
+        ivPreview.setImageBitmap(photo);
+        recipeImage = photo;
     }
 
     private ParseFile prepareImage(Bitmap bitmap) {
@@ -587,6 +794,47 @@ public class AddRecipeFragment extends Fragment {
         return stepStrings;
     }
 
+    private ArrayList<String> parseIngredients() {
+        ArrayList<String> ingredientStrings = new ArrayList<>();
+        String ingredientText;
+
+        for (int i = 0; i < ingredients.size(); i++) {
+            ingredientText = ingredients.get(i).getText().toString().trim();
+            if (!ingredientText.equals("")) {
+                ingredientStrings.add(ingredientText);
+            }
+        }
+
+        return ingredientStrings;
+    }
+
+    private void checkFirstSection() {
+        String name = etRecipeName.getText().toString();
+        String description = etDescription.getText().toString();
+
+        // Checks to ensure every required field is filled out
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException("Please enter a name for your recipe.");
+        }
+        if (description.isEmpty()) {
+            throw new IllegalArgumentException("Please enter a description for your recipe.");
+        }
+        try {
+            Number yieldNumber = Integer.valueOf(etYield.getText().toString());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Please enter a number of servings for your recipe.");
+        }
+        try {
+            Number prepTime = Integer.valueOf(etPrepTime.getText().toString());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Please enter an amount of time for your recipe.");
+        }
+
+        if (typeText.isEmpty()) {
+            throw new IllegalArgumentException("Please select a type from the type drop-down.");
+        }
+    }
+
     private void addRecipe(Recipe oldRecipe) throws IllegalArgumentException {
         final Recipe recipe;
         boolean newRecipe = false;
@@ -600,9 +848,9 @@ public class AddRecipeFragment extends Fragment {
         }
 
         ArrayList<String> steps = parseInstructions();
+        ArrayList<String> ingredients = parseIngredients();
         String name = etRecipeName.getText().toString();
         String description = etDescription.getText().toString();
-        String ingredients = etIngredients.getText().toString();
 
 
         // Checks to ensure every required field is filled out
@@ -716,7 +964,7 @@ public class AddRecipeFragment extends Fragment {
         title.setText("Edit Recipe"); // This special fragment says "Edit Recipe" rather than New Recipe
 
         // Ensures that when a recipe is submitted
-        btAdd.setOnClickListener(new View.OnClickListener() {
+        btSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
@@ -736,7 +984,6 @@ public class AddRecipeFragment extends Fragment {
         prepTimeText = prepTimeString.substring(prepTimeString.indexOf(' ') + 1);
         Log.d("AddRecipeFragment", prepTimeText);
         typeText = recipe.getType();
-        String ingredients = recipe.getIngredients();
 
         etRecipeName.setText(name);
         etDescription.setText(description);
@@ -744,18 +991,21 @@ public class AddRecipeFragment extends Fragment {
         etPrepTime.setText(prepTime.toString());
         spPrepTime.setSelection(((ArrayAdapter<String>) spPrepTime.getAdapter()).getPosition(prepTimeText));
         spType.setSelection(((ArrayAdapter<String>) spType.getAdapter()).getPosition(typeText));
-        etIngredients.setText(ingredients);
 
         addSteps(recipe.getSteps());
+        addIngredients(recipe.getIngredients());
 
-        recipe.getImage().getDataInBackground(new GetDataCallback() {
-            @Override
-            public void done(byte[] data, ParseException e) {
-                if (data != null) {
-                    ivPreview.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+        ParseFile image = recipe.getImage();
+        if (image != null) {
+            recipe.getImage().getDataInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] data, ParseException e) {
+                    if (data != null) {
+                        ivPreview.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
 }

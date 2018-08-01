@@ -16,7 +16,7 @@ public class Recipe extends ParseObject {
     public static final String KEY_NAME = "recipeName";
     public static final String KEY_TYPE = "type";
     private static final String KEY_DESCRIPTION = "description";
-    private static final String KEY_INGREDIENTS = "ingredients";
+    private static final String KEY_INGREDIENTS = "components";
     private static final String KEY_YIELD = "yield";
     private static final String KEY_IMAGE = "image";
     private static final String KEY_USER = "user";
@@ -76,11 +76,11 @@ public class Recipe extends ParseObject {
         put(KEY_DESCRIPTION, description);
     }
 
-    public String getIngredients() {
-        return getString(KEY_INGREDIENTS);
+    public List<String> getIngredients() {
+        return getList(KEY_INGREDIENTS);
     }
 
-    public void setIngredients(String ingredients) {
+    public void setIngredients(ArrayList<String> ingredients) {
         put(KEY_INGREDIENTS, ingredients);
     }
 
