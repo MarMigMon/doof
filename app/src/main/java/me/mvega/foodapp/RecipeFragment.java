@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,40 +53,24 @@ public class RecipeFragment extends Fragment {
     int stepCount = 0;
     private static final String KEY_FAVORITE = "favorites";
 
-    @BindView(R.id.tvName)
-    TextView tvName;
-    @BindView(R.id.tvUsername)
-    TextView tvUsername;
-    @BindView(R.id.recipeRatingBar)
-    RatingBar recipeRating;
-    @BindView(R.id.userRatingBar)
-    RatingBar yourRating;
-    @BindView(R.id.userRatingMessage)
-    TextView userRatingMessage;
-    @BindView(R.id.tvNumRatings)
-    TextView tvNumRatings;
-    @BindView(R.id.tvType)
-    TextView tvType;
-    @BindView(R.id.tvDescription)
-    TextView tvDescription;
-    @BindView(R.id.tvPrepTime)
-    TextView tvPrepTime;
-    @BindView(R.id.tvYield)
-    TextView tvYield;
-    @BindView(R.id.tvIngredients)
-    TextView tvIngredients;
-    @BindView(R.id.tvInstructions)
-    TextView tvInstructions;
-    @BindView(R.id.instructionsLayout)
-    RelativeLayout instructionsLayout;
-    @BindView(R.id.ivImage)
-    ImageView ivImage;
-    @BindView(R.id.btPlay)
-    ImageButton btPlay;
-    @BindView(R.id.btFavorite)
-    ImageButton btFavorite;
-//
-//    MarkerUpdatesReceiver markerUpdatesReceiver;
+    @BindView(R.id.tvName) TextView tvName;
+    @BindView(R.id.tvUsername) TextView tvUsername;
+    @BindView(R.id.recipeRatingBar) RatingBar recipeRating;
+    @BindView(R.id.userRatingBar) RatingBar yourRating;
+    @BindView(R.id.userRatingMessage) TextView userRatingMessage;
+    @BindView(R.id.tvNumRatings) TextView tvNumRatings;
+    @BindView(R.id.tvType) TextView tvType;
+    @BindView(R.id.tvDescription) TextView tvDescription;
+    @BindView(R.id.tvPrepTime) TextView tvPrepTime;
+    @BindView(R.id.tvYield) TextView tvYield;
+    @BindView(R.id.tvIngredients) TextView tvIngredients;
+    @BindView(R.id.tvInstructions) TextView tvInstructions;
+    @BindView(R.id.instructionsLayout) RelativeLayout instructionsLayout;
+    @BindView(R.id.ivImage) ImageView ivImage;
+    @BindView(R.id.btPlay) ImageButton btPlay;
+    @BindView(R.id.btFavorite) ImageButton btFavorite;
+
+    //    MarkerUpdatesReceiver markerUpdatesReceiver;
 
     // implement interface
     public interface RecipeUserCommunication {
@@ -182,7 +167,7 @@ public class RecipeFragment extends Fragment {
         tvDescription.setText(recipe.getDescription());
         tvPrepTime.setText(recipe.getPrepTimeString());
         tvYield.setText(recipe.getYield());
-        tvIngredients.setText(recipe.getIngredients());
+        tvIngredients.setText(TextUtils.join("\n",recipe.getIngredients()));
         setInstructions(steps);
 
         btPlay.setOnClickListener(new View.OnClickListener() {

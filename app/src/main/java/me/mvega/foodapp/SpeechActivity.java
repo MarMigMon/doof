@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -113,7 +114,7 @@ public class SpeechActivity extends AppCompatActivity implements
         recipe = getIntent().getParcelableExtra("recipe");
         audioFile = recipe.getMedia();
         tvName.setText(recipe.getName());
-        tvIngredients.setText(recipe.getIngredients());
+        tvIngredients.setText(TextUtils.join("\n", recipe.getIngredients()));
 
         instructions = new ArrayList<String>();
         instructions.add(getResources().getString(R.string.before_start_recipe_caption));
