@@ -21,6 +21,7 @@ android {
 
 ext {
     supportLibVersion = '27.1.1'
+    parseVersion = "1.17.3"
 }
 
 dependencies {
@@ -39,7 +40,8 @@ dependencies {
 
     implementation 'com.parse.bolts:bolts-android:1.4.0'
     implementation 'com.parse:parse-android:1.17.3'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1' // for logging API calls to LogCat
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
+    // for logging API calls to LogCat
 
     // Glide for remote image loading
     implementation 'com.github.bumptech.glide:glide:3.8.0'
@@ -60,8 +62,12 @@ dependencies {
 
     // Google Firebase
     implementation 'com.google.firebase:firebase-core:16.0.0'
+
     // Confetti
     implementation 'nl.dionsegijn:konfetti:1.1.0'
+    
+//    // Add this line
+//    implementation "com.parse:parse-fcm-android:$parseVersion"
 }
 
 ant.importBuild 'assets.xml'

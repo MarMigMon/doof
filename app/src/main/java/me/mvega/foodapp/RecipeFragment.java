@@ -70,6 +70,8 @@ public class RecipeFragment extends Fragment {
     @BindView(R.id.btPlay) ImageButton btPlay;
     @BindView(R.id.btFavorite) ImageButton btFavorite;
 
+    //    MarkerUpdatesReceiver markerUpdatesReceiver;
+
     // implement interface
     public interface RecipeUserCommunication {
         void respond(ParseUser notificationUser);
@@ -214,6 +216,10 @@ public class RecipeFragment extends Fragment {
                             }
                         }
                     });
+//                    markerUpdatesReceiver = new MarkerUpdatesReceiver(this);
+//                    IntentFilter intentFilter = new IntentFilter("com.parse.push.intent.RECEIVE");
+//                    registerReceiver(markerUpdatesReceiver, intentFilter);
+
                 } else {
                     user.removeAll(KEY_FAVORITE, Collections.singletonList(recipe.getObjectId()));
                     user.saveInBackground(new SaveCallback() {
@@ -239,6 +245,10 @@ public class RecipeFragment extends Fragment {
                             }
                         }
                     });
+//                    // avoid memory leaks
+//                    if (markerUpdatesReceiver != null) {
+//                        unregisterReceiver(markerUpdatesReceiver);
+//                    }
                 }
             }
         });
