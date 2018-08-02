@@ -158,8 +158,10 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
 
         final TabLayout.Tab yourRecipes = tabLayout.newTab().setText("Your Recipes");
         final TabLayout.Tab favorites = tabLayout.newTab().setText("Favorites");
+        final TabLayout.Tab completed = tabLayout.newTab().setText("Completed");
         tabLayout.addTab(yourRecipes, 0, true);
         tabLayout.addTab(favorites, 1, false);
+        tabLayout.addTab(completed, 2, false);
 
         // handle tab selection
         tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
@@ -169,6 +171,8 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
                     showYourRecipes();
                 } else if (tab.equals(favorites)) {
                     showFavorites();
+                } else if (tab.equals(completed)) {
+                    showCompleted();
                 }
             }
 
@@ -200,6 +204,13 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         FavoritesFragment thisUserFavorites = new FavoritesFragment();
         thisUserFavorites.user = thisUser;
         replaceFragment(thisUserFavorites);
+    }
+
+    public void showCompleted() {
+        ParseUser thisUser = user;
+        RecipesCompletedFragment thisUserCompleted = new RecipesCompletedFragment();
+        thisUserCompleted.user = thisUser;
+        replaceFragment(thisUserCompleted);
     }
 
     public void replaceFragment(Fragment f) {
