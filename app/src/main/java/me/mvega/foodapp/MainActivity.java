@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.mainFrame) FrameLayout mainFrame;
 
-    private ParseUser currentUser;
+    private final ParseUser currentUser = ParseUser.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +66,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
                                 return true;
 
                             case R.id.tab_profile:
-                                ParseUser userProfile = ParseUser.getCurrentUser();
                                 ProfileFragment profileFragment = new ProfileFragment();
-                                profileFragment.user = userProfile;
+                                profileFragment.user = currentUser;
                                 replaceFragment(profileFragment);
                                 return true;
 
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
     public void onLogoutAction(MenuItem mi) {
         ParseUser.logOut();
-        currentUser = ParseUser.getCurrentUser();
+//        currentUser = ParseUser.getCurrentUser();
         if (currentUser == null) {
             Intent i = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(i);
@@ -109,19 +108,19 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         replaceFragment(new EditProfileFragment());
     }
 
-    public void showFeed() {
+    private void showFeed() {
         replaceFragment(FeedFragment.newInstance());
     }
 
-    public void showAddRecipe() {
+    private void showAddRecipe() {
         replaceFragment(new AddRecipeFragment());
     }
 
-    public void showNotification() {
+    private void showNotification() {
         replaceFragment(NotificationFragment.newInstance());
     }
 
-    public void replaceFragment(Fragment f) {
+    private void replaceFragment(Fragment f) {
         // Begin the transaction
         final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         // Replace the contents of the container with the new fragment and complete the changes added above

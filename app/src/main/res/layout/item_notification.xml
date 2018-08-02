@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/ivActiveUserImage"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/ivActiveUserImage"
         android:clickable="true"
@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/ivActiveUserImage"
         android:layout_marginBottom="5dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/ivActiveUserImage"
         android:text="Relative Time" />
 
@@ -58,7 +58,7 @@
         android:layout_width="187dp"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/tvActiveUser"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:layout_toEndOf="@+id/tvActiveUser"
         android:text="liked/rated your recipe." />
 

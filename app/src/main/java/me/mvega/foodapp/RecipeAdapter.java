@@ -26,12 +26,13 @@ import me.mvega.foodapp.model.Recipe;
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
     private AdapterCommunication mCommunication;
-    private List<Recipe> recipes;
-    Context context;
+    private final List<Recipe> recipes;
+    private Context context;
 
     // communicates information from adapter to fragment
     public interface AdapterCommunication {
         void respond(Recipe recipe);
+
         void respond(Recipe recipe, ImageView image);
     }
 
@@ -95,7 +96,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         @BindView(R.id.recipeRatingBar) RatingBar ratingBar;
         @BindView(R.id.tvViewCount) TextView tvViewCount;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
 
             ButterKnife.bind(this, itemView);
@@ -115,7 +116,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                 // get the recipe at the position, this won't work if the class is static
                 final Recipe recipe = recipes.get(position);
                 // update view count when recipe is clicked
-                recipe.put("views", recipe.getViews()+1);
+                recipe.put("views", recipe.getViews() + 1);
                 recipe.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {

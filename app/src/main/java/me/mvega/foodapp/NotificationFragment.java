@@ -26,16 +26,15 @@ import me.mvega.foodapp.model.Notification;
 public class NotificationFragment extends Fragment {
 
     private SwipeRefreshLayout swipeContainerNotifications;
-    private RecyclerView rvNotifications;
-    ArrayList<Notification> notifications;
     private NotificationAdapter notificationAdapter;
-    NotificationRecipeFragmentCommunication notificationRecipeListenerFragment;
-    NotificationUserFragmentCommunication notificationUserListenerFragment;
+    private NotificationRecipeFragmentCommunication notificationRecipeListenerFragment;
+    private NotificationUserFragmentCommunication notificationUserListenerFragment;
 
     // implement recipe listener interface
     public interface NotificationRecipeFragmentCommunication {
         void respond(ParseObject notificationRecipe);
     }
+
     // implement user listener interface
     public interface NotificationUserFragmentCommunication {
         void respond(ParseUser notificationUser);
@@ -64,10 +63,10 @@ public class NotificationFragment extends Fragment {
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        rvNotifications = view.findViewById(R.id.rvNotifications);
+        RecyclerView rvNotifications = view.findViewById(R.id.rvNotifications);
         swipeContainerNotifications = view.findViewById(R.id.swipeContainerNotifications);
 
-        notifications = new ArrayList<>();
+        ArrayList<Notification> notifications = new ArrayList<>();
         notificationAdapter = new NotificationAdapter(notifications);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvNotifications.setLayoutManager(linearLayoutManager);
@@ -96,7 +95,7 @@ public class NotificationFragment extends Fragment {
     }
 
 
-    public void setSwipeContainer() {
+    private void setSwipeContainer() {
         // Setup refresh listener which triggers new data loading
         swipeContainerNotifications.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

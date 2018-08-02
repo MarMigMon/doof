@@ -46,12 +46,11 @@ import me.mvega.foodapp.model.Recipe;
 
 public class RecipeFragment extends Fragment {
     private static ParseUser user = ParseUser.getCurrentUser();
-    RecipeUserCommunication recipeUserListener;
+    private RecipeUserCommunication recipeUserListener;
     Recipe recipe;
-    String recipeId;
+    private String recipeId;
     ImageView image;
-    ArrayList<String> steps;
-    int stepCount = 0;
+    private int stepCount = 0;
     private static final String KEY_FAVORITE = "favorites";
 
     @BindView(R.id.tvName) TextView tvName;
@@ -160,7 +159,7 @@ public class RecipeFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
-        steps = (ArrayList<String>) recipe.getSteps();
+        ArrayList<String> steps = (ArrayList<String>) recipe.getSteps();
         recipeId = recipe.getObjectId();
 
         tvName.setText(recipe.getName());
@@ -169,7 +168,7 @@ public class RecipeFragment extends Fragment {
         tvDescription.setText(recipe.getDescription());
         tvPrepTime.setText(recipe.getPrepTimeString());
         tvYield.setText(recipe.getYield());
-        tvIngredients.setText(TextUtils.join("\n",recipe.getIngredients()));
+        tvIngredients.setText(TextUtils.join("\n", recipe.getIngredients()));
         setInstructions(steps);
 
         btPlay.setOnClickListener(new View.OnClickListener() {
@@ -347,13 +346,13 @@ public class RecipeFragment extends Fragment {
         }
     }
 
-    public void beginRecipe() {
+    private void beginRecipe() {
         Intent i = new Intent(getContext(), SpeechActivity.class);
         i.putExtra("recipe", recipe);
         startActivity(i);
     }
 
-    public void showRatingDialog() {
+    private void showRatingDialog() {
         // Create builder using dialog layout
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View dialog = getLayoutInflater().inflate(R.layout.dialog_rating, null);
@@ -395,7 +394,7 @@ public class RecipeFragment extends Fragment {
         alertDialog.show();
     }
 
-    public void updateRating(Number rating) {
+    private void updateRating(Number rating) {
         // updates user's rating in recipe object
         recipe.setUserRating(user, rating);
 

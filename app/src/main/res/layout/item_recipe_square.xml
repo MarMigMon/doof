@@ -74,7 +74,7 @@
                 android:layout_alignBottom="@+id/tvViews"
                 android:layout_alignTop="@id/tvViews"
                 android:layout_below="@+id/recipeRatingBar"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
                 android:layout_toEndOf="@id/tvViews" />
         </RelativeLayout>
     </LinearLayout>

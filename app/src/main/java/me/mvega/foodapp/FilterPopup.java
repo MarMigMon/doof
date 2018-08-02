@@ -23,17 +23,15 @@ import me.mvega.foodapp.model.Recipe;
 
 public class FilterPopup {
 
-    CheckBox[] types;
-    CheckBox[] ratings;
-    PopupWindow popup;
-    List<ParseQuery <Recipe>> finalQueries;
-    SharedPreferences prefs;
-    Context context;
-    FeedFragment feedFragment;
-    public static int lowestRating = 0;
-    public static int maxPrepTime = Integer.MAX_VALUE;
+    private final CheckBox[] types;
+    private final CheckBox[] ratings;
+    private final PopupWindow popup;
+    private final SharedPreferences prefs;
+    private final FeedFragment feedFragment;
+    private static int lowestRating = 0;
+    private static int maxPrepTime = Integer.MAX_VALUE;
     public static final String KEY_PREFERENCES = "private";
-    public static final String KEY_MAX_PREP_TIME = "prep time";
+    private static final String KEY_MAX_PREP_TIME = "prep time";
 
     // Filter Popup
     @BindView(R.id.cbAppetizer) CheckBox cbAppetizer;
@@ -52,12 +50,12 @@ public class FilterPopup {
         ButterKnife.bind(this, layout);
 
         this.popup = popup;
-        context = button.getContext();
+        Context context = button.getContext();
         prefs = context.getSharedPreferences(KEY_PREFERENCES, Context.MODE_PRIVATE);
 
-        types = new CheckBox[] {cbSnack, cbEntree, cbAppetizer, cbDessert};
-        ratings = new CheckBox[] {cb5Stars, cb4Stars, cb3Stars, cb2Stars};
-        finalQueries = new ArrayList<>();
+        types = new CheckBox[]{cbSnack, cbEntree, cbAppetizer, cbDessert};
+        ratings = new CheckBox[]{cb5Stars, cb4Stars, cb3Stars, cb2Stars};
+        List<ParseQuery<Recipe>> finalQueries = new ArrayList<>();
         feedFragment = new FeedFragment();
 
         // Set up popup window
@@ -100,7 +98,7 @@ public class FilterPopup {
 
     private void setCheckboxes(CheckBox[] checkBoxes) {
         for (CheckBox item : checkBoxes) {
-            boolean isChecked = prefs.getBoolean(item.getText().toString(),false);
+            boolean isChecked = prefs.getBoolean(item.getText().toString(), false);
             if (isChecked) {
                 item.setChecked(true);
             }
@@ -158,16 +156,16 @@ public class FilterPopup {
                 public void done(List<Recipe> newRecipes, ParseException e) {
                     lowestRating = 0;
                     maxPrepTime = Integer.MAX_VALUE;
-                    FeedFragment.resetAdapter(newRecipes, e);
+                    feedFragment.resetAdapter(newRecipes, e);
                 }
             });
         }
     }
 
-    public void findLowestRating(CheckBox[] checkBoxes) {
+    private void findLowestRating(CheckBox[] checkBoxes) {
         Boolean checked = false;
         ArrayList<Integer> numbers = new ArrayList<>();
-        for (CheckBox item: checkBoxes) {
+        for (CheckBox item : checkBoxes) {
             String name = item.getText().toString();
             if (item.isChecked()) {
                 int value = Integer.valueOf(item.getText().toString().substring(0, 1));
@@ -183,11 +181,11 @@ public class FilterPopup {
         }
     }
 
-    public ArrayList<ParseQuery<Recipe>> addTypeQueries(CheckBox[] checkBoxes) {
+    private ArrayList<ParseQuery<Recipe>> addTypeQueries(CheckBox[] checkBoxes) {
         Boolean checked = false;
         ArrayList<ParseQuery<Recipe>> queries = new ArrayList<>();
 
-        for (CheckBox item: checkBoxes) {
+        for (CheckBox item : checkBoxes) {
             String name = item.getText().toString();
             if (item.isChecked()) {
                 ParseQuery query = new ParseQuery("Recipe");

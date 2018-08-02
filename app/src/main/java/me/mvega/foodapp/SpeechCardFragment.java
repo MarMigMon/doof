@@ -20,11 +20,12 @@ public class SpeechCardFragment extends Fragment {
     @BindView(R.id.tvInstructions) TextView tvInstructions;
     @BindView(R.id.btStart) Button btStart;
 
-    SpeechFragmentCommunication listenerFragment;
+    private SpeechFragmentCommunication listenerFragment;
 
     // implement interface
     public interface SpeechFragmentCommunication {
         void startRecipe();
+
         void finishRecipe();
     }
 

@@ -41,7 +41,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class EditProfileFragment extends Fragment {
 
-    public final static int PICK_PHOTO_CODE = 1046;
+    private final static int PICK_PHOTO_CODE = 1046;
 
     @BindView(R.id.tvName) TextView tvName;
     @BindView(R.id.etName) EditText etName;
@@ -53,15 +53,12 @@ public class EditProfileFragment extends Fragment {
     @BindView(R.id.btSaveDescription) Button btSaveDescription;
     @BindView(R.id.btAddDescription) Button btAddDescription;
 
-    ParseUser user = ParseUser.getCurrentUser();
-    final String name = (String) user.get("Name");
-    final String description = (String) user.get("description");
+    private final ParseUser user = ParseUser.getCurrentUser();
+    private final String name = (String) user.get("Name");
+    private final String description = (String) user.get("description");
 
-    public final String APP_TAG = "FoodApp";
-    public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1000;
-    public String photoFileName = "photo.jpg";
-    File photoFile;
-    private File selectedPhotoFile;
+    private final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1000;
+    private File photoFile;
 
 
     @Override
@@ -87,7 +84,8 @@ public class EditProfileFragment extends Fragment {
         if (profileImage != null) {
             String imageUrl = profileImage.getUrl();
             Glide.with(getContext()).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(ivProfile);
-        } else Glide.with(getContext()).load(R.drawable.image_placeholder).apply(RequestOptions.circleCropTransform()).into(ivProfile);
+        } else
+            Glide.with(getContext()).load(R.drawable.image_placeholder).apply(RequestOptions.circleCropTransform()).into(ivProfile);
 
         tvName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,10 +206,11 @@ public class EditProfileFragment extends Fragment {
     }
 
     // Returns the File for a photo stored on disk given the fileName
-    public void onLaunchCamera() {
+    private void onLaunchCamera() {
         // create Intent to take a picture and return control to the calling application
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Create a File reference to access to future access
+        String photoFileName = "photo.jpg";
         photoFile = getPhotoFileUri(photoFileName);
 
         // wrap File object into a content provider
@@ -225,21 +224,21 @@ public class EditProfileFragment extends Fragment {
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
         }
     }
-    public File getPhotoFileUri(String fileName) {
+
+    private File getPhotoFileUri(String fileName) {
         // Get safe storage directory for photos
         // Use `getExternalFilesDir` on Context to access package-specific directories.
         // This way, we don't need to request external read/write runtime permissions.
+        String APP_TAG = "FoodApp";
         File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), APP_TAG);
 
         // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
+        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
             Log.d(APP_TAG, "failed to create directory");
         }
 
         // Return the file target for the photo based on filename
-        File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
-
-        return file;
+        return new File(mediaStorageDir.getPath() + File.separator + fileName);
     }
 
     @Override
@@ -248,7 +247,6 @@ public class EditProfileFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 // by this point we have the camera photo on disk
                 String imagePath = photoFile.getAbsolutePath();
-                selectedPhotoFile = new File(imagePath);
                 Bitmap rawTakenImage = BitmapFactory.decodeFile(new File(imagePath).getAbsolutePath());
                 ivProfile.setImageBitmap(rawTakenImage);
                 Glide.with(getContext()).load(rawTakenImage).apply(RequestOptions.circleCropTransform()).into(ivProfile);

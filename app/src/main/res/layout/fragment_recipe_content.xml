@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dataLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/light_gray">
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
         android:id="@+id/editRecipeLayout"
@@ -109,7 +108,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@+id/recipeRatingBar"
                 android:text="0 Ratings"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 app:layout_constraintStart_toEndOf="@+id/recipeRatingBar"
                 app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
 

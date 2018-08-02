@@ -31,10 +31,8 @@ import static android.support.constraint.Constraints.TAG;
 
 public class YourRecipesFragment extends Fragment {
 
-    ProfileRecipesAdapter profileRecipesAdapter;
-    YourRecipesFragmentCommunication profileListenerFragment;
-    ArrayList<Recipe> recipes;
-    RecyclerView rvRecipes;
+    private ProfileRecipesAdapter profileRecipesAdapter;
+    private YourRecipesFragmentCommunication profileListenerFragment;
     private SwipeRefreshLayout swipeContainer;
     ParseUser user;
 
@@ -70,19 +68,15 @@ public class YourRecipesFragment extends Fragment {
         outState.putParcelable("user", user);
     }
 
-    public void onAttachToParentFragment(Fragment childFragment) {
-        try
-        {
+    private void onAttachToParentFragment(Fragment childFragment) {
+        try {
             profileListenerFragment = (YourRecipesFragmentCommunication) childFragment;
 
-        }
-        catch (ClassCastException e)
-        {
+        } catch (ClassCastException e) {
             throw new ClassCastException(
                     childFragment.toString() + " must implement OnPlayerSelectionSetListener");
         }
     }
-
 
 
     // This event is triggered soon after onCreateView().
@@ -93,9 +87,9 @@ public class YourRecipesFragment extends Fragment {
         // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
 
         // find the Recycler View
-        rvRecipes = view.findViewById(R.id.rvRecipes);
+        RecyclerView rvRecipes = view.findViewById(R.id.rvRecipes);
         // initialize the ArrayList (data source)
-        recipes = new ArrayList<>();
+        ArrayList<Recipe> recipes = new ArrayList<>();
         // construct the adapter from this data source
         profileRecipesAdapter = new ProfileRecipesAdapter(recipes);
         // RecyclerView setup (layout manager, use adapter)
@@ -104,7 +98,6 @@ public class YourRecipesFragment extends Fragment {
         rvRecipes.setLayoutManager(layoutManager);
         //set the adapter
         rvRecipes.setAdapter(profileRecipesAdapter);
-
 
 
         profileRecipesAdapter.setProfileListener(new ProfileRecipesAdapter.ProfileAdapterCommunication() {
@@ -186,7 +179,6 @@ public class YourRecipesFragment extends Fragment {
                 }
             }
         });
-
 
 
         loadYourRecipes();

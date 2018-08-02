@@ -34,16 +34,12 @@ import me.mvega.foodapp.model.Recipe;
 
 public class FeedFragment extends Fragment {
 
-    static RecipeAdapter recipeAdapter;
-    static SwipeRefreshLayout swipeContainer;
-    static EndlessRecyclerViewScrollListener scrollListener;
-    LinearLayoutManager linearLayoutManager;
-    ArrayList<Recipe> recipes;
-    ArrayList<String> recipeNames;
-    FilterPopup filterPopup;
-    PopupWindow popup;
-    static Context context;
-    ArrayAdapter<String> searchAdapter;
+    private RecipeAdapter recipeAdapter;
+    private SwipeRefreshLayout swipeContainer;
+    private static EndlessRecyclerViewScrollListener scrollListener;
+    private LinearLayoutManager linearLayoutManager;
+    private ArrayList<String> recipeNames;
+    private Context context;
 
     @BindView(R.id.rvRecipes) RecyclerView rvRecipes;
     @BindView(R.id.search_bar) Toolbar toolbar;
@@ -53,7 +49,7 @@ public class FeedFragment extends Fragment {
 
     TextView tvViewCount;
 
-    FragmentCommunication listenerFragment;
+    private FragmentCommunication listenerFragment;
 
     // implement interface
     public interface FragmentCommunication {
@@ -133,7 +129,7 @@ public class FeedFragment extends Fragment {
 
     private void initializeAdapter() {
         // initialize the ArrayList (data source)
-        recipes = new ArrayList<>();
+        ArrayList<Recipe> recipes = new ArrayList<>();
         recipeAdapter = new RecipeAdapter(recipes);
 
         // Layout Manager
@@ -157,7 +153,7 @@ public class FeedFragment extends Fragment {
     }
 
     private void initializeSearch() {
-        searchAdapter = new ArrayAdapter<>(getContext(), R.layout.autocomplete_dropdown, recipeNames);
+        ArrayAdapter<String> searchAdapter = new ArrayAdapter<>(getContext(), R.layout.autocomplete_dropdown, recipeNames);
 
         // Will start suggesting searches after one character is typed
         search.setThreshold(1);
@@ -197,10 +193,10 @@ public class FeedFragment extends Fragment {
 
     // Display anchored popup menu based on view selected
     private void showFilterPopup(View v) {
-        popup = new PopupWindow(getContext());
+        PopupWindow popup = new PopupWindow(getContext());
         View layout = getLayoutInflater().inflate(R.layout.popup_filter, null);
 
-        filterPopup = new FilterPopup(layout, popup, v);
+        FilterPopup filterPopup = new FilterPopup(layout, popup, v);
     }
 
     private void searchRecipes(String query) {
@@ -215,7 +211,7 @@ public class FeedFragment extends Fragment {
         });
     }
 
-    public void setSwipeContainer() {
+    private void setSwipeContainer() {
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -239,7 +235,7 @@ public class FeedFragment extends Fragment {
         return fragmentFeed;
     }
 
-    public static void resetAdapter(List<Recipe> newRecipes, ParseException e) {
+    public void resetAdapter(List<Recipe> newRecipes, ParseException e) {
         if (e == null) {
             recipeAdapter.clear();
             // ...the data has come back, add new items to your adapter...
@@ -252,7 +248,7 @@ public class FeedFragment extends Fragment {
     }
 
     public void loadTopRecipes() {
-        clearPreferences(FilterPopup.KEY_PREFERENCES);
+        clearPreferences();
         EndlessRecyclerViewScrollListener.query = "";
 
         Recipe.Query recipeQuery = new Recipe.Query();
@@ -270,11 +266,11 @@ public class FeedFragment extends Fragment {
         });
     }
 
-    private static void clearPreferences(String key) {
-        SharedPreferences preferences = context.getSharedPreferences(key, Context.MODE_PRIVATE);
+    private void clearPreferences() {
+        SharedPreferences preferences = context.getSharedPreferences(FilterPopup.KEY_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
-        editor.commit();
+        editor.apply();
     }
 
 

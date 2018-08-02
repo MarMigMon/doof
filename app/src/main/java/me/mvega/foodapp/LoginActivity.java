@@ -67,14 +67,13 @@ public class LoginActivity extends AppCompatActivity {
                 if (e == null) {
                     currentUser = ParseUser.getCurrentUser();
                     Log.d("LoginActivity", "Login successful");
-                    Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT);
                     final Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
                     Log.e("LoginActivity", "Login failed");
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Login failed", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), "Login failed", Toast.LENGTH_SHORT).show();
                 }
             }
         });

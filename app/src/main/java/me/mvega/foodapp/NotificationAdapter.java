@@ -31,8 +31,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private NotificationAdapterRecipeCommunication nrCommunication;
     private NotificationAdapterUserCommunication nuCommunication;
-    private List<Notification> notifications;
-    Context context;
+    private final List<Notification> notifications;
+    private Context context;
 
     // notification recipe listener
     public interface NotificationAdapterRecipeCommunication {
@@ -89,10 +89,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             }
 
         if (notification.getFavorite()) {
-            holder.tvNotificationMessage.setText("liked your recipe.");
+            holder.tvNotificationMessage.setText(R.string.liked);
         }
         if (notification.getRate()) {
-            holder.tvNotificationMessage.setText("rated your recipe.");
+            holder.tvNotificationMessage.setText(R.string.rated);
         }
     }
 
@@ -109,7 +109,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         @BindView(R.id.tvNotificationMessage) TextView tvNotificationMessage;
         @BindView(R.id.tvRelativeTime) TextView tvRelativeTime;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
 
             ButterKnife.bind(this, itemView);
@@ -159,7 +159,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
     }
 
-    public String getRelativeTimeAgo(String rawJsonDate) {
+    private String getRelativeTimeAgo(String rawJsonDate) {
         String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
         SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
         sf.setLenient(true);

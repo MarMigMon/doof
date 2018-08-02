@@ -23,7 +23,7 @@ import me.mvega.foodapp.model.Recipe;
 
 import static android.support.constraint.Constraints.TAG;
 
-public class FavoritesFragment extends Fragment {
+public class RecipesCompletedFragment extends Fragment {
 
     private ProfileRecipesAdapter profileRecipesAdapter;
     private YourRecipesFragment.YourRecipesFragmentCommunication profileListenerFragment;
@@ -62,13 +62,10 @@ public class FavoritesFragment extends Fragment {
     }
 
     private void onAttachToParentFragment(Fragment childFragment) {
-        try
-        {
+        try {
             profileListenerFragment = (YourRecipesFragment.YourRecipesFragmentCommunication) childFragment;
 
-        }
-        catch (ClassCastException e)
-        {
+        } catch (ClassCastException e) {
             throw new ClassCastException(
                     childFragment.toString() + " must implement OnPlayerSelectionSetListener");
         }
@@ -98,7 +95,7 @@ public class FavoritesFragment extends Fragment {
             @Override
             public void respond(Recipe recipe) {
                 profileListenerFragment.respond(recipe);
-                }
+            }
 
             @Override
             public void showDeleteDialog(Recipe recipe) {
@@ -115,7 +112,7 @@ public class FavoritesFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                loadFavorites();
+                loadCompleted();
             }
         });
         // Configure the refreshing colors
@@ -124,7 +121,7 @@ public class FavoritesFragment extends Fragment {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        loadFavorites();
+        loadCompleted();
     }
 
     public static FavoritesFragment newInstance() {
@@ -133,22 +130,22 @@ public class FavoritesFragment extends Fragment {
         return fragmentFavorites;
     }
 
-    private void loadFavorites() {
-        ArrayList<String> userFavorites = (ArrayList<String>) user.get("favorites");
-        if (userFavorites == null) {
-            userFavorites = new ArrayList<>();
+    private void loadCompleted() {
+        ArrayList<String> userCompleted = (ArrayList<String>) user.get("recipesCompleted");
+        if (userCompleted == null) {
+            userCompleted = new ArrayList<>();
         }
         final List<ParseQuery<Recipe>> queries = new ArrayList<>();
-        Recipe.Query faveQuery = new Recipe.Query();
+        Recipe.Query completedQuery = new Recipe.Query();
 
-        for (int i = 0; i < userFavorites.size(); i++) {
+        for (int i = 0; i < userCompleted.size(); i++) {
             final Recipe.Query recipeQuery = new Recipe.Query();
-            recipeQuery.is(userFavorites.get(i));
+            recipeQuery.is(userCompleted.get(i));
             queries.add(recipeQuery);
         }
 
         if (!queries.isEmpty()) {
-            faveQuery.or(queries).include("user.username").findInBackground(new FindCallback<Recipe>() {
+            completedQuery.or(queries).include("user.username").findInBackground(new FindCallback<Recipe>() {
                 @Override
                 public void done(List<Recipe> newRecipes, ParseException e) {
                     if (e == null) {

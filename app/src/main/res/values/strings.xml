@@ -22,6 +22,10 @@
     <string name="time_icon">Time Icon</string>
     <string name="people_icon">People Icon</string>
 
+    <!--Action text-->
+    <string name="liked">liked your recipe.</string>
+    <string name="rated">rated your recipe.</string>
+
     <!--commands-->
     <string name="start_command">next step</string>
     <string name="stop_command">finish recipe</string>

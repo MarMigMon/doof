@@ -8,9 +8,9 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class SpeechCardAdapter extends FragmentPagerAdapter {
-    ArrayList<String> steps;
-    ArrayList<String> components;
+class SpeechCardAdapter extends FragmentPagerAdapter {
+    private final ArrayList<String> steps;
+    private final ArrayList<String> components;
 
     public SpeechCardAdapter(FragmentManager fragmentManager, ArrayList<String> steps, ArrayList<String> components) {
         super(fragmentManager);

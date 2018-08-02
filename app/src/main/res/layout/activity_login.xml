@@ -13,7 +13,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_marginEnd="40dp"
-        android:layout_marginTop="233dp"
+        android:layout_marginTop="250dp"
         android:ems="10"
         android:hint="Username"
         android:inputType="textPersonName"
@@ -45,14 +45,14 @@
         android:id="@+id/etPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/etUsername"
-        android:layout_marginBottom="220dp"
+        android:layout_below="@+id/etUsername"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
         tools:layout_editor_absoluteX="121dp"
-        tools:layout_editor_absoluteY="276dp" />
+        tools:layout_editor_absoluteY="276dp"
+        android:layout_marginTop="75dp"/>
 
     <Button
         android:id="@+id/btLogin"
