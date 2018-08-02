@@ -20,6 +20,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
@@ -50,6 +51,7 @@ public class FeedFragment extends Fragment {
     @BindView(R.id.search) AutoCompleteTextView search;
     @BindView(R.id.search_btn) Button btSearch;
     @BindView(R.id.filter_btn) Button btFilter;
+    @BindView(R.id.pbLoading) ProgressBar pbLoading;
 
     TextView tvViewCount;
 
@@ -87,10 +89,12 @@ public class FeedFragment extends Fragment {
         swipeContainer = view.findViewById(R.id.swipeContainer);
         context = view.getContext();
 
+        pbLoading.setVisibility(ProgressBar.VISIBLE);
+
         initializeAdapter();
         initializeEndlessScrolling();
-        loadTopRecipes();
         setSwipeContainer();
+        loadTopRecipes();
 
         btFilter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,6 +146,7 @@ public class FeedFragment extends Fragment {
 
         // Set adapter
         rvRecipes.setAdapter(recipeAdapter);
+        rvRecipes.addItemDecoration(new SpacesItemDecoration(5));
 
         recipeAdapter.setListener(new RecipeAdapter.AdapterCommunication() {
             @Override
@@ -266,6 +271,7 @@ public class FeedFragment extends Fragment {
                 }
                 resetAdapter(newRecipes, e);
                 initializeSearch();
+                pbLoading.setVisibility(ProgressBar.INVISIBLE);
             }
         });
     }

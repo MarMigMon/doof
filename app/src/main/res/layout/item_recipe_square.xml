@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="4dp"
-    android:layout_marginRight="4dp"
-    android:layout_marginTop="16dp"
     android:clickable="true"
     android:focusable="true"
-    card_view:cardCornerRadius="8dp"
-    card_view:cardElevation="8dp">
+    card_view:cardElevation="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/ivRecipe"
@@ -24,19 +20,27 @@
             android:background="@drawable/image_placeholder"
             android:scaleType="centerCrop" />
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/tvName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Recipe Name"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:textStyle="bold" />
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Recipe Name"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toTopOf="parent" />
 
             <RatingBar
                 android:id="@+id/recipeRatingBar"
@@ -44,37 +48,75 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@id/tvName"/>
+                android:layout_below="@id/tvName"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toBottomOf="@+id/tvName" />
 
             <TextView
                 android:id="@+id/tvPrepTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/recipeRatingBar"
-                android:text="Prep Time"
-                android:textAlignment="textEnd"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"/>
-
-            <TextView
-                android:id="@+id/tvViews"
+                style="@style/BodyText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/recipeRatingBar"
-                android:layout_alignStart="@+id/recipeRatingBar"
-                android:layout_alignTop="@+id/tvPrepTime"
-                android:layout_alignBottom="@+id/tvPrepTime"
-                android:text="Views:" />
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/recipeRatingBar"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Prep Time"
+                android:textAlignment="viewStart"
+                card_view:layout_constraintStart_toEndOf="@+id/ivTimeIcon"
+                card_view:layout_constraintTop_toBottomOf="@+id/recipeRatingBar" />
 
             <TextView
                 android:id="@+id/tvViewCount"
+                style="@style/BodyText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/tvViews"
-                android:layout_alignBottom="@+id/tvViews"
+                android:layout_alignBottom="@+id/tvViewsLabel"
+                android:layout_alignTop="@id/tvViewsLabel"
                 android:layout_below="@+id/recipeRatingBar"
-                android:layout_toEndOf="@id/tvViews"
-                android:layout_marginLeft="5dp"/>
-        </RelativeLayout>
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@id/tvViewsLabel"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintStart_toEndOf="@+id/ivViewsIcon"
+                card_view:layout_constraintTop_toBottomOf="@+id/tvPrepTime" />
+
+            <ImageView
+                android:id="@+id/ivTimeIcon"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_time"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toBottomOf="@+id/recipeRatingBar" />
+
+            <ImageView
+                android:id="@+id/ivViewsIcon"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="16dp"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toBottomOf="@+id/tvPrepTime"
+                card_view:srcCompat="@drawable/ic_visibility_black_24dp" />
+
+            <TextView
+                android:id="@+id/tvViewsLabel"
+                style="@style/BodyText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="3dp"
+                android:text="views"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintStart_toEndOf="@+id/tvViewCount"
+                card_view:layout_constraintTop_toBottomOf="@+id/tvPrepTime" />
+
+        </android.support.constraint.ConstraintLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>
