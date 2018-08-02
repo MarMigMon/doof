@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.parse.DeleteCallback;
@@ -25,6 +26,8 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
 import static android.support.constraint.Constraints.TAG;
@@ -34,8 +37,9 @@ public class YourRecipesFragment extends Fragment {
     ProfileRecipesAdapter profileRecipesAdapter;
     YourRecipesFragmentCommunication profileListenerFragment;
     ArrayList<Recipe> recipes;
-    RecyclerView rvRecipes;
-    private SwipeRefreshLayout swipeContainer;
+    @BindView(R.id.pbLoading) ProgressBar pbLoading;
+    @BindView(R.id.rvRecipes) RecyclerView rvRecipes;
+    @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
     ParseUser user;
 
     // implement interface
@@ -89,12 +93,9 @@ public class YourRecipesFragment extends Fragment {
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        // Setup any handles to view objects here
-        // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
+        ButterKnife.bind(this, view);
+        pbLoading.setVisibility(ProgressBar.VISIBLE);
 
-        // find the Recycler View
-        rvRecipes = view.findViewById(R.id.rvRecipes);
-        // initialize the ArrayList (data source)
         recipes = new ArrayList<>();
         // construct the adapter from this data source
         profileRecipesAdapter = new ProfileRecipesAdapter(recipes);
@@ -104,7 +105,7 @@ public class YourRecipesFragment extends Fragment {
         rvRecipes.setLayoutManager(layoutManager);
         //set the adapter
         rvRecipes.setAdapter(profileRecipesAdapter);
-
+        rvRecipes.addItemDecoration(new SpacesItemDecoration(32));
 
 
         profileRecipesAdapter.setProfileListener(new ProfileRecipesAdapter.ProfileAdapterCommunication() {
@@ -187,12 +188,8 @@ public class YourRecipesFragment extends Fragment {
             }
         });
 
-
-
         loadYourRecipes();
 
-        // Lookup the swipe container view
-        swipeContainer = view.findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -230,7 +227,7 @@ public class YourRecipesFragment extends Fragment {
                     profileRecipesAdapter.addAll(newRecipes);
                     // Now we call setRefreshing(false) to signal refresh has finished
                     swipeContainer.setRefreshing(false);
-
+                    pbLoading.setVisibility(ProgressBar.INVISIBLE);
                 } else {
                     e.printStackTrace();
                 }

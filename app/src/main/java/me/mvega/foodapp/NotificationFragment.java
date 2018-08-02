@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -20,13 +21,17 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Notification;
 
 
 public class NotificationFragment extends Fragment {
 
-    private SwipeRefreshLayout swipeContainerNotifications;
-    private RecyclerView rvNotifications;
+    @BindView(R.id.swipeContainerNotifications) SwipeRefreshLayout swipeContainerNotifications;
+    @BindView(R.id.rvNotifications) RecyclerView rvNotifications;
+    @BindView(R.id.pbLoading) ProgressBar pbLoading;
+
     ArrayList<Notification> notifications;
     private NotificationAdapter notificationAdapter;
     NotificationRecipeFragmentCommunication notificationRecipeListenerFragment;
@@ -64,8 +69,8 @@ public class NotificationFragment extends Fragment {
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        rvNotifications = view.findViewById(R.id.rvNotifications);
-        swipeContainerNotifications = view.findViewById(R.id.swipeContainerNotifications);
+        ButterKnife.bind(this, view);
+        pbLoading.setVisibility(ProgressBar.VISIBLE);
 
         notifications = new ArrayList<>();
         notificationAdapter = new NotificationAdapter(notifications);
@@ -136,6 +141,7 @@ public class NotificationFragment extends Fragment {
                     notificationAdapter.clear();
                     notificationAdapter.addAll(newNotification);
                     swipeContainerNotifications.setRefreshing(false);
+                    pbLoading.setVisibility(ProgressBar.INVISIBLE);
                 } else {
                     e.printStackTrace();
                 }

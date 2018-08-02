@@ -77,7 +77,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/cvMain"
             android:layout_marginTop="15dp"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            style="@style/CardViewRound">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"

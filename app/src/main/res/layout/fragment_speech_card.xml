@@ -14,7 +14,8 @@
             android:id="@+id/cvMain"
             android:layout_width="320dp"
             android:layout_height="320dp"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            style="@style/CardViewRound">
 
             <RelativeLayout
                 android:layout_width="match_parent"

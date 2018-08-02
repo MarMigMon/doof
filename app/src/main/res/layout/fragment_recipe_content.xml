@@ -75,14 +75,14 @@
                 android:layout_alignStart="@+id/tvName"
                 android:layout_below="@+id/tvName"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_toStartOf="@id/btFavorite"
                 android:clickable="true"
                 android:focusable="true"
                 android:text="User handle"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvName" />
+                app:layout_constraintTop_toBottomOf="@+id/recipeRatingBar" />
 
             <RatingBar
                 android:id="@+id/recipeRatingBar"
@@ -92,12 +92,12 @@
                 android:layout_alignStart="@+id/tvName"
                 android:layout_below="@+id/tvUsername"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:numStars="5"
                 android:transformPivotX="0dp"
                 android:transformPivotY="0dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
+                app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
             <TextView
                 android:id="@+id/tvNumRatings"
@@ -105,12 +105,12 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/recipeRatingBar"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_toEndOf="@+id/recipeRatingBar"
                 android:text="0 Ratings"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 app:layout_constraintStart_toEndOf="@+id/recipeRatingBar"
-                app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
+                app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
 
             <TextView
@@ -120,12 +120,12 @@
                 android:layout_alignStart="@+id/tvName"
                 android:layout_below="@+id/recipeRatingBar"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="20dp"
                 android:text="Recipe Type"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recipeRatingBar" />
+                app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
 
             <TextView
                 android:id="@+id/tvDescription"
@@ -135,13 +135,14 @@
                 android:layout_below="@+id/tvType"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_toStartOf="@id/btFavorite"
                 android:text="Recipe Description"
                 android:textAlignment="viewStart"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvType" />
+                app:layout_constraintTop_toBottomOf="@+id/tvType"
+                app:layout_constraintVertical_bias="1.0" />
 
             <TextView
                 android:id="@+id/tvPrepTime"
@@ -237,7 +238,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:numStars="5"
                 android:transformPivotX="0dp"
                 android:transformPivotY="0dp"
@@ -280,7 +281,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvIngredientsLabel"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="Ingredients"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvIngredientsLabel" />
@@ -305,7 +306,7 @@
                 android:layout_below="@+id/tvInstructions"
                 android:layout_margin="10dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvInstructions" />
         </android.support.constraint.ConstraintLayout>
