@@ -37,6 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.app.Activity.RESULT_OK;
+import static me.mvega.foodapp.MainActivity.currentUser;
 
 
 public class EditProfileFragment extends Fragment {
@@ -53,7 +54,7 @@ public class EditProfileFragment extends Fragment {
     @BindView(R.id.btSaveDescription) Button btSaveDescription;
     @BindView(R.id.btAddDescription) Button btAddDescription;
 
-    ParseUser user = ParseUser.getCurrentUser();
+    ParseUser user = currentUser;
     final String name = (String) user.get("Name");
     final String description = (String) user.get("description");
 
@@ -61,7 +62,6 @@ public class EditProfileFragment extends Fragment {
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1000;
     public String photoFileName = "photo.jpg";
     File photoFile;
-    private File selectedPhotoFile;
 
 
     @Override
@@ -248,7 +248,7 @@ public class EditProfileFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 // by this point we have the camera photo on disk
                 String imagePath = photoFile.getAbsolutePath();
-                selectedPhotoFile = new File(imagePath);
+                File selectedPhotoFile = new File(imagePath);
                 Bitmap rawTakenImage = BitmapFactory.decodeFile(new File(imagePath).getAbsolutePath());
                 ivProfile.setImageBitmap(rawTakenImage);
                 Glide.with(getContext()).load(rawTakenImage).apply(RequestOptions.circleCropTransform()).into(ivProfile);
