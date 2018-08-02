@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.mainFrame) FrameLayout mainFrame;
 
-    private ParseUser currentUser = ParseUser.getCurrentUser();
+    public static ParseUser currentUser = ParseUser.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

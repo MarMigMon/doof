@@ -33,13 +33,13 @@ public class FavoritesFragment extends Fragment {
     ParseUser user;
 
     // implement interface
-    public interface YourRecipesFragmentCommunication {
-        void respond(Recipe recipe);
-    }
-
-    public void setYourRecipeListener(YourRecipesFragment.YourRecipesFragmentCommunication yourRecipesListener) {
-        this.profileListenerFragment = (YourRecipesFragment.YourRecipesFragmentCommunication) yourRecipesListener;
-    }
+//    public interface YourRecipesFragmentCommunication {
+//        void respond(Recipe recipe);
+//    }
+//
+//    public void setYourRecipeListener(YourRecipesFragment.YourRecipesFragmentCommunication yourRecipesListener) {
+//        this.profileListenerFragment = (YourRecipesFragment.YourRecipesFragmentCommunication) yourRecipesListener;
+//    }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
