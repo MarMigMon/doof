@@ -7,20 +7,21 @@
     tools:context="me.mvega.foodapp.SignupActivity">
 
     <TextView
-        android:id="@+id/tvUsername"
+        android:id="@+id/tvFullName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="123dp"
+        android:layout_marginTop="199dp"
         android:text="Full Name:" />
 
     <TextView
-        android:id="@+id/tvFullName"
+        android:id="@+id/tvUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/etNewUser"
         android:layout_alignStart="@+id/tvPassword"
+        android:layout_alignBaseline="@+id/etNewUser"
+        android:layout_centerVertical="true"
         android:text="Username:" />
 
     <TextView
@@ -28,8 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/etNewPass"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="36dp"
+        android:layout_alignStart="@+id/etFullName"
         android:text="Password:" />
 
     <EditText
@@ -37,45 +37,60 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/etFullName"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="234dp"
+        android:layout_below="@+id/etFullName"
         android:ems="10"
         android:hint="Enter new username"
         android:inputType="textPersonName"
-        android:textStyle="italic" />
+        android:layout_marginTop="30dp"/>
 
     <EditText
         android:id="@+id/etFullName"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/tvFullName"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
         android:ems="10"
         android:hint="Enter your full name"
         android:inputType="textPersonName"
-        android:textAlignment="center"
-        android:textStyle="italic" />
+        android:textAlignment="center" />
 
     <EditText
         android:id="@+id/etNewPass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/etNewUser"
-        android:layout_marginBottom="203dp"
+        android:layout_below="@+id/etNewUser"
         android:ems="10"
         android:hint="Enter new password"
         android:inputType="textPersonName"
-        android:textStyle="italic" />
+        android:layout_marginTop="40dp"/>
 
     <Button
         android:id="@+id/btCreateUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/etNewPass"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="115dp"
-        android:text="Create Account" />
+        android:background="@drawable/round_button"
+        android:text="Create Account"
+        android:layout_marginTop="60dp"/>
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="67dp"
+        android:layout_toStartOf="@+id/etNewUser"
+        app:srcCompat="@drawable/icon_orange" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:layout_alignEnd="@+id/etNewUser"
+        android:layout_alignTop="@+id/imageView2"
+        android:layout_marginLeft="40dp"
+        app:srcCompat="@drawable/logo_black" />
 
 </RelativeLayout>

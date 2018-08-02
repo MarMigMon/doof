@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
 
-        <service
+ <!--       <service
             android:name="com.parse.fcm.ParseFirebaseInstanceIdService"
             android:exported="true">
             <intent-filter>
@@ -34,7 +34,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-
+-->
         <receiver
             android:name="com.parse.ParsePushBroadcastReceiver"
             android:exported="false">
