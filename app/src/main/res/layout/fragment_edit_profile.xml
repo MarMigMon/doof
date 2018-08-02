@@ -8,7 +8,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_margin="10dp">
 
         <TextView
@@ -34,13 +34,13 @@
             android:id="@+id/btSave"
             android:layout_width="80dp"
             android:layout_height="30dp"
-            android:layout_toRightOf="@+id/etName"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="25dp"
+            android:layout_toRightOf="@+id/etName"
             android:background="@drawable/round_button_light"
             android:text="Save"
             android:textSize="12sp"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/ivProfile"
@@ -66,12 +66,12 @@
             android:id="@+id/tvDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_below="@+id/btChangeProfilePic"
-            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"
-            android:textSize="12sp"
-            android:text="Description" />
+            android:layout_marginTop="20dp"
+            android:text="Description"
+            android:textSize="12sp" />
 
         <EditText
             android:id="@+id/etDescription"
@@ -95,7 +95,7 @@
             android:background="@drawable/round_button_light"
             android:text="Save"
             android:textSize="12sp"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/btAddDescription"
@@ -103,8 +103,8 @@
             android:layout_height="30dp"
             android:layout_alignTop="@+id/tvDescription"
             android:layout_centerHorizontal="true"
-            android:text="Add Description"
             android:background="@drawable/round_button_light"
+            android:text="Add Description"
             android:textSize="12sp"
             android:visibility="invisible" />
 

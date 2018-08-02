@@ -171,6 +171,7 @@ public class RecipesCompletedFragment extends Fragment {
             profileRecipesAdapter.clear();
             // Now we call setRefreshing(false) to signal refresh has finished
             swipeContainer.setRefreshing(false);
+            pbLoading.setVisibility(ProgressBar.INVISIBLE);
         }
     }
 }
