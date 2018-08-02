@@ -111,7 +111,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
                 // get the recipe at the position, this won't work if the class is static
                 Recipe recipe = recipes.get(position);
                 // update view count when recipe is clicked
-                recipe.put("views", recipe.getViews() + 1);
+                recipe.setViews(recipe.getViews() + 1);
                 recipe.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {

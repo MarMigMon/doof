@@ -38,9 +38,11 @@ public class YourRecipesFragment extends Fragment {
     private ProfileRecipesAdapter profileRecipesAdapter;
     private YourRecipesFragmentCommunication profileListenerFragment;
 
-    @BindView(R.id.pbLoading) ProgressBar pbLoading;
+    @BindView(R.id.pbLoading)
+    private ProgressBar pbLoading;
     @BindView(R.id.rvRecipes) RecyclerView rvRecipes;
-    @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
+    @BindView(R.id.swipeContainer)
+    private SwipeRefreshLayout swipeContainer;
     ParseUser user;
 
     // implement interface
@@ -70,7 +72,7 @@ public class YourRecipesFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("user", user);
     }

@@ -44,7 +44,7 @@ class SpeechCardAdapter extends FragmentPagerAdapter {
 
     private String matchesIngredient(String currStep) {
         String[] stepSplit = currStep.replaceAll("[,./]", "").split(" ");
-        String matchingIngredients = "";
+        StringBuilder matchingIngredients = new StringBuilder();
         String[] filter = {"and", "or", "from", "tbsp", "TB", "cup", "into", "a", "to", "c", "the", "tsp"};
         List<String> filterList = Arrays.asList(filter);
 
@@ -52,12 +52,12 @@ class SpeechCardAdapter extends FragmentPagerAdapter {
             String[] componentSplit = component.replaceAll("[/,.0-9]", "").split(" ");
             for (String word : stepSplit) {
                 List<String> componentList = Arrays.asList(componentSplit);
-                if ((componentList.contains(word) || componentList.contains(word + "s")) && !matchingIngredients.contains(component) && !filterList.contains(word)) {
-                    matchingIngredients = matchingIngredients + component + "\n";
+                if ((componentList.contains(word) || componentList.contains(word + "s")) && !matchingIngredients.toString().contains(component) && !filterList.contains(word)) {
+                    matchingIngredients.append(component).append("\n");
                 }
             }
         }
-        return matchingIngredients;
+        return matchingIngredients.toString();
     }
 
 }

@@ -30,9 +30,12 @@ import static me.mvega.foodapp.MainActivity.currentUser;
 
 public class NotificationFragment extends Fragment {
 
-    @BindView(R.id.swipeContainerNotifications) SwipeRefreshLayout swipeContainerNotifications;
-    @BindView(R.id.rvNotifications) RecyclerView rvNotifications;
-    @BindView(R.id.pbLoading) ProgressBar pbLoading;
+    @BindView(R.id.swipeContainerNotifications)
+    SwipeRefreshLayout swipeContainerNotifications;
+    @BindView(R.id.rvNotifications)
+    RecyclerView rvNotifications;
+    @BindView(R.id.pbLoading)
+    private ProgressBar pbLoading;
 
     private NotificationAdapter notificationAdapter;
     private NotificationRecipeFragmentCommunication notificationRecipeListenerFragment;
@@ -71,8 +74,6 @@ public class NotificationFragment extends Fragment {
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        RecyclerView rvNotifications = view.findViewById(R.id.rvNotifications);
-        swipeContainerNotifications = view.findViewById(R.id.swipeContainerNotifications);
         ButterKnife.bind(this, view);
         pbLoading.setVisibility(ProgressBar.VISIBLE);
 

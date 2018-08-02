@@ -1,11 +1,11 @@
 package me.mvega.foodapp;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -90,7 +90,7 @@ public class RecipeFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("recipe", recipe);
         outState.putParcelable("user", user);
@@ -98,7 +98,7 @@ public class RecipeFragment extends Fragment {
 
     // The onCreateView method is called when Fragment should create its View object hierarchy either dynamically or via XML layout inflation.
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Prevents app crashing when switching orientations
@@ -142,7 +142,7 @@ public class RecipeFragment extends Fragment {
 
         // Sets zoom display metrics
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
-        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
         int mScreenHeight = localDisplayMetrics.heightPixels;
         int mScreenWidth = localDisplayMetrics.widthPixels;
         LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenWidth / 16.0F)));
@@ -155,7 +155,7 @@ public class RecipeFragment extends Fragment {
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
 
         user = ParseUser.getCurrentUser();
 
@@ -205,10 +205,10 @@ public class RecipeFragment extends Fragment {
                     });
 
                     Notification likeNotification = new Notification();
-                    likeNotification.put("activeUser", user);
-                    likeNotification.put("recipe", recipe);
-                    likeNotification.put("recipeUser", recipe.getUser());
-                    likeNotification.put("favorite", true);
+                    likeNotification.setActiveUser(user);
+                    likeNotification.setRecipe(recipe);
+                    likeNotification.setRecipeUser(recipe.getUser());
+                    likeNotification.setFavorite(true);
                     likeNotification.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
@@ -295,10 +295,10 @@ public class RecipeFragment extends Fragment {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     showRatingDialog();
                     Notification rateNotification = new Notification();
-                    rateNotification.put("activeUser", user);
-                    rateNotification.put("recipe", recipe);
-                    rateNotification.put("recipeUser", recipe.getUser());
-                    rateNotification.put("rate", true);
+                    rateNotification.setActiveUser(user);
+                    rateNotification.setRecipe(recipe);
+                    rateNotification.setRecipeUser( recipe.getUser());
+                    rateNotification.setRate(true);
                     rateNotification.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {

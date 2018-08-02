@@ -91,6 +91,7 @@
                 android:layout_height="15dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
+                android:contentDescription="@string/time_icon"
                 android:src="@drawable/ic_time"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toBottomOf="@+id/recipeRatingBar" />
@@ -101,10 +102,11 @@
                 android:layout_height="15dp"
                 android:layout_marginBottom="16dp"
                 android:layout_marginStart="16dp"
+                android:contentDescription="@string/views_icon"
+                android:src="@drawable/ic_visibility_black_24dp"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toBottomOf="@+id/tvPrepTime"
-                android:src="@drawable/ic_visibility_black_24dp" />
+                card_view:layout_constraintTop_toBottomOf="@+id/tvPrepTime" />
 
             <TextView
                 android:id="@+id/tvViewsLabel"

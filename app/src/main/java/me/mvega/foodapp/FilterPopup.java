@@ -55,7 +55,6 @@ public class FilterPopup {
 
         types = new CheckBox[]{cbSnack, cbEntree, cbAppetizer, cbDessert};
         ratings = new CheckBox[]{cb5Stars, cb4Stars, cb3Stars, cb2Stars};
-        List<ParseQuery<Recipe>> finalQueries = new ArrayList<>();
         feedFragment = new FeedFragment();
 
         // Set up popup window

@@ -21,6 +21,7 @@
     <string name="play_icon">Play Icon</string>
     <string name="time_icon">Time Icon</string>
     <string name="people_icon">People Icon</string>
+    <string name="views_icon">Views Icon</string>
 
     <!--Action text-->
     <string name="liked">liked your recipe.</string>

@@ -92,7 +92,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("user", user);
     }

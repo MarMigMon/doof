@@ -47,7 +47,8 @@ public class FeedFragment extends Fragment {
     @BindView(R.id.search) AutoCompleteTextView search;
     @BindView(R.id.search_btn) Button btSearch;
     @BindView(R.id.filter_btn) Button btFilter;
-    @BindView(R.id.pbLoading) ProgressBar pbLoading;
+    @BindView(R.id.pbLoading)
+    private ProgressBar pbLoading;
 
     TextView tvViewCount;
 
@@ -146,11 +147,6 @@ public class FeedFragment extends Fragment {
 
         recipeAdapter.setListener(new RecipeAdapter.AdapterCommunication() {
             @Override
-            public void respond(Recipe recipe) {
-                listenerFragment.respond(recipe);
-            }
-
-            @Override
             public void respond(Recipe recipe, ImageView image) {
                 listenerFragment.respond(recipe, image);
             }
@@ -201,7 +197,7 @@ public class FeedFragment extends Fragment {
         PopupWindow popup = new PopupWindow(getContext());
         View layout = getLayoutInflater().inflate(R.layout.popup_filter, null);
 
-        FilterPopup filterPopup = new FilterPopup(layout, popup, v);
+        new FilterPopup(layout, popup, v);
     }
 
     private void searchRecipes(String query) {

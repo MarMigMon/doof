@@ -72,8 +72,8 @@
                     android:id="@+id/tvContributed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/strContributed"
-                    android:layout_marginLeft="8dp"
+                    android:layout_toEndOf="@+id/strContributed"
+                    android:layout_marginStart="8dp"
                     android:layout_alignTop="@id/strContributed"
                     android:text="0"
                     android:textAlignment="textEnd" />
@@ -82,8 +82,8 @@
                     android:id="@+id/tvCompleted"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/strCompleted"
-                    android:layout_marginLeft="8dp"
+                    android:layout_toEndOf="@+id/strCompleted"
+                    android:layout_marginStart="8dp"
                     android:layout_alignTop="@id/strCompleted"
                     android:text="0"
                     android:textAlignment="textEnd" />
@@ -92,8 +92,8 @@
                     android:id="@+id/tvReviewed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/strReviewed"
-                    android:layout_marginLeft="8dp"
+                    android:layout_toEndOf="@+id/strReviewed"
+                    android:layout_margin="8dp"
                     android:layout_alignTop="@id/strReviewed"
                     android:text="0"
                     android:textAlignment="textEnd" />

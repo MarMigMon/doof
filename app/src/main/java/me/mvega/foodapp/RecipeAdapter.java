@@ -31,8 +31,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     // communicates information from adapter to fragment
     public interface AdapterCommunication {
-        void respond(Recipe recipe);
-
         void respond(Recipe recipe, ImageView image);
     }
 
@@ -116,7 +114,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                 // get the recipe at the position, this won't work if the class is static
                 final Recipe recipe = recipes.get(position);
                 // update view count when recipe is clicked
-                recipe.put("views", recipe.getViews() + 1);
+                recipe.setViews(recipe.getViews() + 1);
                 recipe.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {

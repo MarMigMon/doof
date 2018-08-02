@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.mainFrame) FrameLayout mainFrame;
 
-    public static final ParseUser currentUser = ParseUser.getCurrentUser();
+    public static ParseUser currentUser = ParseUser.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,11 +97,9 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     public void onLogoutAction(MenuItem mi) {
         ParseUser.logOut();
         currentUser = null;
-        if (currentUser == null) {
-            Intent i = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(i);
-            finish();
-        }
+        Intent i = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(i);
+        finish();
     }
 
     public void onEditProfileAction(MenuItem mi) {

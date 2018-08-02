@@ -79,7 +79,7 @@ public class SpeechActivity extends AppCompatActivity implements
 
     private static Boolean startedRecipe = false;
 
-    ParseUser user;
+    private ParseUser user;
 
     // Buttons
     @BindView(R.id.ivStop) ImageView ivStop;
@@ -121,10 +121,10 @@ public class SpeechActivity extends AppCompatActivity implements
         tvName.setText(recipe.getName());
         ingredients = TextUtils.join("\n", recipe.getIngredients());
 
-        ArrayList<String> components = new ArrayList<String>();
+        ArrayList<String> components = new ArrayList<>();
         components.addAll(recipe.getComponents());
 
-        instructions = new ArrayList<String>();
+        instructions = new ArrayList<>();
         instructions.add(getResources().getString(R.string.before_start_recipe_caption));
         instructions.addAll(recipe.getSteps());
 
@@ -510,16 +510,21 @@ public class SpeechActivity extends AppCompatActivity implements
 
     // Called in onResult if using text to speech
     private void processTtsResult(String text) {
-        if (text.equals("next step")) {
-            if (stepCount + 1 < speechCardAdapter.getCount()) {
-                vpSteps.setCurrentItem(stepCount + 1);
-            }
-        } else if (text.equals("finish recipe")) {
-            finishRecipe();
-        } else if (text.equals("repeat step")) {
-            repeatTts();
-        } else if (text.equals("previous step")) {
-            previousTts();
+        switch (text) {
+            case "next step":
+                if (stepCount + 1 < speechCardAdapter.getCount()) {
+                    vpSteps.setCurrentItem(stepCount + 1);
+                }
+                break;
+            case "finish recipe":
+                finishRecipe();
+                break;
+            case "repeat step":
+                repeatTts();
+                break;
+            case "previous step":
+                previousTts();
+                break;
         }
     }
 

@@ -24,7 +24,6 @@ public class Recipe extends ParseObject {
     public static final String KEY_PREP_TIME = "prepTime";
     private static final String KEY_PREP_TIME_PERIOD = "prepTimePeriod";
     private static final String KEY_MEDIA = "media";
-    private static final String KEY_USERS_WHO_FAVORITED = "usersWhoFavorited";
     private static final String KEY_STEPS = "steps";
     private static final String KEY_OBJECT_ID = "objectId";
     private static final String KEY_VIEWS = "views";

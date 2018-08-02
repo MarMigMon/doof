@@ -26,6 +26,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Notification;
+import me.mvega.foodapp.model.Recipe;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
@@ -130,9 +131,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 if (position != RecyclerView.NO_POSITION) {
                     // get the recipe at the position, this won't work if the class is static
                     final Notification notification = notifications.get(position);
-                    ParseObject notificationRecipe = notification.getRecipe();
+                    Recipe notificationRecipe = (Recipe) notification.getRecipe();
                     // update view count when recipe is clicked
-                    notificationRecipe.put("views", notificationRecipe.getInt("views") + 1);
+                    notificationRecipe.setViews(notificationRecipe.getViews() + 1);
                     notificationRecipe.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {

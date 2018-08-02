@@ -17,6 +17,10 @@ public class Notification extends ParseObject {
         return getParseUser(KEY_ACTIVE_USER);
     }
 
+    public void setActiveUser(ParseUser activeUser) {
+        put(KEY_ACTIVE_USER, activeUser);
+    }
+
     public ParseObject getRecipe() {
         return getParseObject(KEY_RECIPE);
     }
@@ -29,12 +33,24 @@ public class Notification extends ParseObject {
         return getParseUser(KEY_RECIPE_USER);
     }
 
+    public void setRecipeUser(ParseUser recipeUser) {
+        put(KEY_RECIPE_USER, recipeUser);
+    }
+
     public Boolean getFavorite() {
         return getBoolean(KEY_FAVORITE);
     }
 
+    public void setFavorite(Boolean favorite) {
+        put(KEY_FAVORITE, favorite);
+    }
+
     public Boolean getRate() {
         return getBoolean(KEY_RATE);
+    }
+
+    public void setRate(Boolean rate) {
+        put(KEY_RATE, rate);
     }
 
     public static class Query extends ParseQuery<Notification> {
