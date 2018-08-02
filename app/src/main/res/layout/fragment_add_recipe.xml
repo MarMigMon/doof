@@ -25,6 +25,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="8dp"
             android:orientation="vertical">
 
             <!-- The user sees these fields first -->
@@ -43,6 +44,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="10dp"
                     android:text="@string/new_recipe"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -57,20 +60,21 @@
                     <Button
                         android:id="@+id/btImage"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
                         android:layout_centerInParent="true"
-                        android:background="@drawable/round_button"
+                        android:background="@drawable/round_button_light"
+                        android:padding="10dp"
                         android:text="UPLOAD IMAGE" />
 
                     <ImageView
                         android:id="@+id/ivPreview"
                         android:layout_width="match_parent"
-                        android:layout_height="160dp"
+                        android:layout_height="203dp"
                         android:layout_marginBottom="5dp"
                         android:layout_marginTop="5dp"
                         android:contentDescription="@string/recipe_image"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/image_placeholder" />
+                        android:src="@drawable/img_placeholder" />
                 </RelativeLayout>
 
                 <android.support.design.widget.TextInputLayout
@@ -195,11 +199,13 @@
                 <Button
                     android:id="@+id/btNext"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_alignParentEnd="true"
                     android:layout_below="@id/typeLayout"
-                    android:layout_margin="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/round_button"
+                    android:padding="10dp"
                     android:text="NEXT" />
             </RelativeLayout>
 
