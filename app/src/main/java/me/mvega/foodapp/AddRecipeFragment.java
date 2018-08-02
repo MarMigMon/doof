@@ -146,6 +146,8 @@ public class AddRecipeFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
 
+        ivPreview.setBackgroundResource(R.drawable.image_placeholder);
+
         if (savedInstanceState != null) {
             recipeImage = savedInstanceState.getParcelable("image");
             ivPreview.setImageBitmap(recipeImage);
