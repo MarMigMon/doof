@@ -85,6 +85,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="67dp"
         android:layout_toStartOf="@+id/etUsername"
+        android:contentDescription="@string/logo"
         app:srcCompat="@drawable/icon_orange" />
 
     <ImageView
@@ -93,6 +94,7 @@
         android:layout_height="100dp"
         android:layout_alignEnd="@+id/etUsername"
         android:layout_alignTop="@+id/imageView2"
+        android:contentDescription="@string/logo_text"
         app:srcCompat="@drawable/logo_black" />
 
 </RelativeLayout>

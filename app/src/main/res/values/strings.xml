@@ -8,6 +8,20 @@
     <string name="recipe_desc">Description</string>
     <string name="search_bar">Search for a recipe</string>
 
+    <!--Content Descriptions-->
+    <string name="logo">Logo</string>
+    <string name="logo_text">Logo Text</string>
+    <string name="recipe_image">Recipe Image</string>
+    <string name="user_image">User Image</string>
+    <string name="stop_icon">Stop Icon</string>
+    <string name="pause_icon">Pause Icon</string>
+    <string name="resume_icon">Resume Icon</string>
+    <string name="ingredients">Ingredients Layout</string>
+    <string name="favorites_icon">Favorites Icon</string>
+    <string name="play_icon">Play Icon</string>
+    <string name="time_icon">Time Icon</string>
+    <string name="people_icon">People Icon</string>
+
     <!--commands-->
     <string name="start_command">next step</string>
     <string name="stop_command">finish recipe</string>

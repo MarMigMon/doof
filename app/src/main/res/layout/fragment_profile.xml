@@ -24,6 +24,7 @@
                 android:layout_gravity="center"
                 android:layout_marginEnd="15dp"
                 android:layout_marginStart="20dp"
+                android:contentDescription="@string/user_image"
                 app:srcCompat="@android:color/background_dark" />
 
             <RelativeLayout
@@ -100,10 +101,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/userInfo"
-            android:text="Hello there!"
-            android:layout_marginStart="20dp"
+            android:layout_marginBottom="15dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="15dp"/>
+            android:layout_marginStart="20dp"
+            android:text="Hello there!" />
 
     </RelativeLayout>
 
@@ -112,8 +113,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/userDescription"
+        app:tabGravity="fill"
         app:tabMode="fixed"
-        app:tabGravity="fill"/>
+        app:tabSelectedTextColor="@android:color/black"
+        app:tabTextColor="@android:color/darker_gray" />
 
     <FrameLayout
         android:id="@+id/userRecipes"

@@ -68,6 +68,7 @@
                         android:layout_height="160dp"
                         android:layout_marginBottom="5dp"
                         android:layout_marginTop="5dp"
+                        android:contentDescription="@string/recipe_image"
                         android:scaleType="centerCrop"
                         android:src="@drawable/image_placeholder" />
                 </RelativeLayout>
@@ -197,8 +198,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_below="@id/typeLayout"
-                    android:background="@drawable/round_button"
                     android:layout_margin="5dp"
+                    android:background="@drawable/round_button"
                     android:text="NEXT" />
             </RelativeLayout>
 
@@ -249,16 +250,16 @@
                         android:id="@+id/btAddIngredient"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/round_button"
                         android:layout_margin="5dp"
+                        android:background="@drawable/round_button"
                         android:text="Add Ingredient" />
 
                     <Button
                         android:id="@+id/btRemoveIngredient"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/round_button"
                         android:layout_margin="5dp"
+                        android:background="@drawable/round_button"
                         android:text="Remove Ingredient"
                         android:visibility="gone" />
 
@@ -299,16 +300,16 @@
                         android:id="@+id/btAddStep"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/round_button"
                         android:layout_margin="5dp"
+                        android:background="@drawable/round_button"
                         android:text="Add Step" />
 
                     <Button
                         android:id="@+id/btRemoveStep"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/round_button"
                         android:layout_margin="5dp"
+                        android:background="@drawable/round_button"
                         android:text="Remove Step"
                         android:visibility="gone" />
 

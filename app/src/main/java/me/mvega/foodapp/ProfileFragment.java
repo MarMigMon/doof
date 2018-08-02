@@ -160,6 +160,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         final TabLayout.Tab favorites = tabLayout.newTab().setText("Favorites");
         tabLayout.addTab(yourRecipes, 0, true);
         tabLayout.addTab(favorites, 1, false);
+        yourRecipes.select();
 
         // handle tab selection
         tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {

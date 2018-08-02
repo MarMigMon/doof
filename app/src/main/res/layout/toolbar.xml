@@ -18,12 +18,14 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/icon_orange"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp"
+            android:contentDescription="@string/logo"
+            android:src="@drawable/icon_orange" />
 
         <ImageView
             android:layout_width="50dp"
             android:layout_height="20dp"
+            android:contentDescription="@string/logo_text"
             android:src="@drawable/logo_black" />
 
     </android.support.v7.widget.Toolbar>

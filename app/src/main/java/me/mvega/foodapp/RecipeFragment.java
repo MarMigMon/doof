@@ -1,5 +1,6 @@
 package me.mvega.foodapp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -151,6 +152,7 @@ public class RecipeFragment extends Fragment {
 
     // This event is triggered soon after onCreateView().
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
@@ -286,6 +288,7 @@ public class RecipeFragment extends Fragment {
         }
 
         yourRating.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
