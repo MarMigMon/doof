@@ -28,6 +28,7 @@ import java.util.List;
 import me.mvega.foodapp.model.Recipe;
 
 import static android.support.constraint.Constraints.TAG;
+import static me.mvega.foodapp.MainActivity.currentUser;
 
 public class YourRecipesFragment extends Fragment {
 
@@ -43,9 +44,9 @@ public class YourRecipesFragment extends Fragment {
         void respond(Recipe recipe);
     }
 
-    public void setYourRecipeListener(YourRecipesFragmentCommunication yourRecipesListener) {
-        this.profileListenerFragment = (YourRecipesFragmentCommunication) yourRecipesListener;
-    }
+//    public void setYourRecipeListener(YourRecipesFragmentCommunication yourRecipesListener) {
+//        this.profileListenerFragment = (YourRecipesFragmentCommunication) yourRecipesListener;
+//    }
 
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
@@ -118,7 +119,7 @@ public class YourRecipesFragment extends Fragment {
                 // Create alert dialog
                 final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
                 // Show error when userProfile is not the currentUser's profile
-                if (user == ParseUser.getCurrentUser()) {
+                if (user == currentUser) {
                     // Add cancel option and message
                     alertDialog.setCancelable(true);
                     alertDialog.setMessage(Html.fromHtml("Are you sure you want to delete <b>" + recipe.getName() + "</b>?"));
@@ -186,8 +187,6 @@ public class YourRecipesFragment extends Fragment {
                 }
             }
         });
-
-
 
         loadYourRecipes();
 

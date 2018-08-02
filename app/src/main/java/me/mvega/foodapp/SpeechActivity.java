@@ -44,6 +44,8 @@ import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
 
+import static me.mvega.foodapp.MainActivity.currentUser;
+
 public class SpeechActivity extends AppCompatActivity implements
         RecognitionListener, SpeechCardFragment.SpeechFragmentCommunication {
 
@@ -228,7 +230,7 @@ public class SpeechActivity extends AppCompatActivity implements
     }
 
     private void addCompletedRecipe() {
-        user = ParseUser.getCurrentUser();
+        user = currentUser;
         String recipeId = recipe.getObjectId();
         ArrayList<String> recipesCompleted = new ArrayList<>();
 

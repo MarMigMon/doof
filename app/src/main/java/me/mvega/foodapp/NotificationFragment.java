@@ -22,6 +22,8 @@ import java.util.List;
 
 import me.mvega.foodapp.model.Notification;
 
+import static me.mvega.foodapp.MainActivity.currentUser;
+
 
 public class NotificationFragment extends Fragment {
 
@@ -122,7 +124,7 @@ public class NotificationFragment extends Fragment {
 
     private void loadYourNotifications() {
         final Notification.Query notificationQuery = new Notification.Query();
-        notificationQuery.recipeUser(ParseUser.getCurrentUser());
+        notificationQuery.recipeUser(currentUser);
         notificationQuery.getTop().newestFirst();
         notificationQuery.include("activeUser.username")
                 .include("activeUser.image")
