@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
     public void onLogoutAction(MenuItem mi) {
         ParseUser.logOut();
-//        currentUser = ParseUser.getCurrentUser();
+        currentUser = null;
         if (currentUser == null) {
             Intent i = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(i);
