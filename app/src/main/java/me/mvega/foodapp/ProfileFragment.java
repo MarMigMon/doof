@@ -26,6 +26,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
+import static me.mvega.foodapp.MainActivity.currentUser;
+
 public class ProfileFragment extends Fragment implements YourRecipesFragment.YourRecipesFragmentCommunication {
 
     ProfileFragmentCommunication yourRecipesListenerFragment;
@@ -156,10 +158,20 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     private void setTabs() {
         showYourRecipes(); // Automatically selects Your Recipes tab to start profile screen
 
-        final TabLayout.Tab yourRecipes = tabLayout.newTab().setText("Your Recipes");
+        // get first part of user's name
+        String[] nameSplit = user.get("Name").toString().split(" ");
+
+        final TabLayout.Tab yourRecipes = tabLayout.newTab();
+        if (user == currentUser) {
+            yourRecipes.setText("Your Recipes");
+        } else {
+            yourRecipes.setText(nameSplit[0] + "'s recipes");
+        }
         final TabLayout.Tab favorites = tabLayout.newTab().setText("Favorites");
+        final TabLayout.Tab completed = tabLayout.newTab().setText("Completed");
         tabLayout.addTab(yourRecipes, 0, true);
         tabLayout.addTab(favorites, 1, false);
+        tabLayout.addTab(completed, 2, false);
 
         // handle tab selection
         tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
@@ -169,6 +181,8 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
                     showYourRecipes();
                 } else if (tab.equals(favorites)) {
                     showFavorites();
+                } else if (tab.equals(completed)) {
+                    showCompleted();
                 }
             }
 
@@ -200,6 +214,13 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         FavoritesFragment thisUserFavorites = new FavoritesFragment();
         thisUserFavorites.user = thisUser;
         replaceFragment(thisUserFavorites);
+    }
+
+    public void showCompleted() {
+        ParseUser thisUser = user;
+        RecipesCompletedFragment thisUserCompleted = new RecipesCompletedFragment();
+        thisUserCompleted.user = thisUser;
+        replaceFragment(thisUserCompleted);
     }
 
     public void replaceFragment(Fragment f) {

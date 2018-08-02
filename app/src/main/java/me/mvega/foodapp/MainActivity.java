@@ -14,6 +14,7 @@ import android.transition.Fade;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.parse.ParseObject;
@@ -28,9 +29,9 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     private static final String KEY_FRAGMENT = "main";
     @BindView(R.id.navigation_bar) BottomNavigationView bottomNavigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.shadow_view) View shadowView;
+    @BindView(R.id.mainFrame) FrameLayout mainFrame;
 
-    private ParseUser currentUser;
+    public static ParseUser currentUser = ParseUser.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
                                 return true;
 
                             case R.id.tab_profile:
-                                ParseUser userProfile = ParseUser.getCurrentUser();
+                                ParseUser userProfile = currentUser;
                                 ProfileFragment profileFragment = new ProfileFragment();
                                 profileFragment.user = userProfile;
                                 replaceFragment(profileFragment);
@@ -80,6 +81,11 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
                         }
                     }
                 });
+        View shadow = new View(this);
+        shadow.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                15));
+        shadow.setBackground(getResources().getDrawable(R.drawable.dropshadow));
+        mainFrame.addView(shadow);
     }
 
     @Override
@@ -91,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
     public void onLogoutAction(MenuItem mi) {
         ParseUser.logOut();
-        currentUser = ParseUser.getCurrentUser();
+//        currentUser = ParseUser.getCurrentUser();
         if (currentUser == null) {
             Intent i = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(i);
