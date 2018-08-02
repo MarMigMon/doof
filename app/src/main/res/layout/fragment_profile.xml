@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorBackground">
 
     <RelativeLayout
         android:id="@+id/userDescription"
@@ -127,7 +128,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@id/profileTabs"
-        android:layout_marginTop="8dp"/>
+        android:layout_below="@id/profileTabs"/>
 
 </RelativeLayout>

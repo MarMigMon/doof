@@ -12,6 +12,7 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -41,6 +42,7 @@ public class SignupActivity extends AppCompatActivity {
                     user.setUsername(etNewUser.getText().toString());
                     user.setPassword(etNewPass.getText().toString());
                     user.put("Name", etFullName.getText().toString());
+                    user.put("recipesCompleted", new ArrayList<>());
 
                     user.signUpInBackground(new SignUpCallback() {
                         public void done(ParseException e) {
@@ -89,5 +91,4 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
     }
-
 }

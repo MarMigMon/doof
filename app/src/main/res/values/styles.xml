@@ -9,6 +9,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorSecondary</item>
         <item name="android:textColorSecondary">@color/sunflower</item>
+        <item name="android:textColor">@color/dark_gray</item>
     </style>
 
     <style name="MyRatingBar" parent="@android:style/Widget.RatingBar">
