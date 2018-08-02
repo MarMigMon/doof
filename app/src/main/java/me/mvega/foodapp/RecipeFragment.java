@@ -44,8 +44,10 @@ import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Notification;
 import me.mvega.foodapp.model.Recipe;
 
+import static me.mvega.foodapp.MainActivity.currentUser;
+
 public class RecipeFragment extends Fragment {
-    private static ParseUser user = ParseUser.getCurrentUser();
+    private static ParseUser user = currentUser;
     private RecipeUserCommunication recipeUserListener;
     Recipe recipe;
     private String recipeId;

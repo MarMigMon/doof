@@ -44,6 +44,8 @@ import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
 
+import static me.mvega.foodapp.MainActivity.currentUser;
+
 public class SpeechActivity extends AppCompatActivity implements
         RecognitionListener, SpeechCardFragment.SpeechFragmentCommunication {
 
@@ -76,6 +78,8 @@ public class SpeechActivity extends AppCompatActivity implements
     private Boolean isPaused = false;
 
     private static Boolean startedRecipe = false;
+
+    ParseUser user;
 
     // Buttons
     @BindView(R.id.ivStop) ImageView ivStop;
@@ -224,7 +228,7 @@ public class SpeechActivity extends AppCompatActivity implements
     }
 
     private void addCompletedRecipe() {
-        ParseUser user = ParseUser.getCurrentUser();
+        user = currentUser;
         String recipeId = recipe.getObjectId();
         ArrayList<String> recipesCompleted = new ArrayList<>();
 

@@ -45,7 +45,6 @@ import android.widget.Toast;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.BufferedInputStream;
@@ -63,6 +62,7 @@ import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
 import static android.app.Activity.RESULT_OK;
+import static me.mvega.foodapp.MainActivity.currentUser;
 
 public class AddRecipeFragment extends Fragment {
     /* Used to handle permission request */
@@ -940,7 +940,7 @@ public class AddRecipeFragment extends Fragment {
 
         if (newRecipe) {
             // Recipe user and rating are automatically filled in Parse
-            recipe.setUser(ParseUser.getCurrentUser());
+            recipe.setUser(currentUser);
             recipe.setRating(0);
             recipe.saveInBackground(new SaveCallback() {
                 @Override

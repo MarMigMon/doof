@@ -37,6 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.app.Activity.RESULT_OK;
+import static me.mvega.foodapp.MainActivity.currentUser;
 
 
 public class EditProfileFragment extends Fragment {
@@ -53,13 +54,12 @@ public class EditProfileFragment extends Fragment {
     @BindView(R.id.btSaveDescription) Button btSaveDescription;
     @BindView(R.id.btAddDescription) Button btAddDescription;
 
-    private final ParseUser user = ParseUser.getCurrentUser();
+    private final ParseUser user = currentUser;
     private final String name = (String) user.get("Name");
     private final String description = (String) user.get("description");
 
     private final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1000;
     private File photoFile;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
