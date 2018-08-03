@@ -1,5 +1,6 @@
 package me.mvega.foodapp;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -22,6 +24,26 @@ public class SpeechCardFragmentPlain extends Fragment {
     @BindView(R.id.tvStepCount) TextView tvStepCount;
     @BindView(R.id.tvStepLabel) TextView tvStepLabel;
     @BindView(R.id.tvIngredients) TextView tvIngredients;
+    @BindView(R.id.ivReplay)
+    ImageButton ibReplay;
+
+    SpeechCardFragmentPlain.SpeechFragmentCommunication listenerFragment;
+
+    // implement interface
+    public interface SpeechFragmentCommunication {
+        void replayStep();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof SpeechCardFragmentPlain.SpeechFragmentCommunication) {
+            listenerFragment = (SpeechCardFragmentPlain.SpeechFragmentCommunication) context;
+        } else {
+            throw new ClassCastException(context.toString()
+                    + " must implement SpeechCardFragmentPlain.FragmentCommunication");
+        }
+    }
 
     public static SpeechCardFragmentPlain newInstance(String step, int stepCount, String ingredients) {
         Bundle args = new Bundle();
@@ -52,5 +74,12 @@ public class SpeechCardFragmentPlain extends Fragment {
         tvInstructions.setText(currStep);
         tvStepCount.setText(stepCount.toString());
         tvIngredients.setText(ingredients);
+
+        ibReplay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listenerFragment.replayStep();
+            }
+        });
     }
 }

@@ -47,7 +47,7 @@ import nl.dionsegijn.konfetti.models.Size;
 import static me.mvega.foodapp.MainActivity.currentUser;
 
 public class SpeechActivity extends AppCompatActivity implements
-        RecognitionListener, SpeechCardFragment.SpeechFragmentCommunication {
+        RecognitionListener, SpeechCardFragment.SpeechFragmentCommunication, SpeechCardFragmentPlain.SpeechFragmentCommunication {
 
     private static final String TTS_SEARCH = "Text to speech";
     private static final String PLAYER_SEARCH = "Player";
@@ -331,6 +331,11 @@ public class SpeechActivity extends AppCompatActivity implements
             showConfetti();
             addCompletedRecipe();
         }
+    }
+
+    @Override
+    public void replayStep() {
+        repeatTts();
     }
 
     private void updateProgressBar(int step) {
