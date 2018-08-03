@@ -93,7 +93,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@+id/strReviewed"
-                    android:layout_margin="8dp"
+                    android:layout_marginStart="8dp"
                     android:layout_alignTop="@id/strReviewed"
                     android:text="0"
                     android:textAlignment="textEnd" />
