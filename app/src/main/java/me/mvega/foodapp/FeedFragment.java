@@ -147,7 +147,6 @@ public class FeedFragment extends Fragment {
 
         // Set adapter
         rvRecipes.setAdapter(recipeAdapter);
-        rvRecipes.addItemDecoration(new SpacesItemDecoration(5));
 
         recipeAdapter.setListener(new RecipeAdapter.AdapterCommunication() {
             @Override
