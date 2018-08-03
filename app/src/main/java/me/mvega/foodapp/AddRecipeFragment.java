@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,7 +21,6 @@ import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.media.ExifInterface;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -710,7 +710,6 @@ public class AddRecipeFragment extends Fragment {
         // Tries to appropriately rotates image
 
         try {
-
             ExifInterface ei = new ExifInterface(file.getAbsolutePath());
             int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                     ExifInterface.ORIENTATION_UNDEFINED);
@@ -749,7 +748,7 @@ public class AddRecipeFragment extends Fragment {
         Bitmap photo = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
                 matrix, true);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        photo.compress(Bitmap.CompressFormat.JPEG, 80, out);
+        photo.compress(Bitmap.CompressFormat.JPEG, 100, out);
         return BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
     }
 
