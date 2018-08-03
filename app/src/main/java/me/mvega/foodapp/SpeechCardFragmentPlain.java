@@ -29,7 +29,6 @@ public class SpeechCardFragmentPlain extends Fragment {
 
     SpeechCardFragmentPlain.SpeechFragmentCommunication listenerFragment;
 
-    // implement interface
     public interface SpeechFragmentCommunication {
         void replayStep();
     }
@@ -58,7 +57,6 @@ public class SpeechCardFragmentPlain extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_speech_card_plain, container, false);
     }
 

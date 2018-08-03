@@ -37,7 +37,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     // notification recipe listener
     public interface NotificationAdapterRecipeCommunication {
-        void respond(ParseObject notificationRecipe);
+        void respond (ParseObject notificationRecipe);
     }
     public void setNotificationRecipeListener(NotificationAdapterRecipeCommunication notificationRecipeListener) {
         this.nrCommunication = notificationRecipeListener;
