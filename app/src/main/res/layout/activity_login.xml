@@ -20,7 +20,7 @@
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+        app:layout_constraintTop_toBottomOf="@+id/logoText" />
 
     <EditText
         android:id="@+id/etPassword"
@@ -92,7 +92,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="90dp"
         android:contentDescription="@string/logo_text"
-        app:layout_constraintStart_toEndOf="@string/logo"
+        app:layout_constraintStart_toEndOf="@id/logo"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo_black" />
 
