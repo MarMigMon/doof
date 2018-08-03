@@ -200,7 +200,7 @@ public class FeedFragment extends Fragment {
         PopupWindow popup = new PopupWindow(getContext());
         View layout = getLayoutInflater().inflate(R.layout.popup_filter, null);
 
-        new FilterPopup(layout, popup, v);
+        new FilterPopup(layout, popup, v, this);
     }
 
     private void searchRecipes(String query) {
