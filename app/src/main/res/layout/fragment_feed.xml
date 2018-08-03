@@ -98,7 +98,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@color/light_gray"
-                android:paddingTop="8dp">
+                android:paddingTop="8dp"
+                android:clipToPadding="false">
 
             </android.support.v7.widget.RecyclerView>
 
