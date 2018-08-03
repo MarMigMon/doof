@@ -21,7 +21,7 @@
 
 
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="15dp">
@@ -31,11 +31,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_margin="15dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="42dp"
                 android:text="@string/before_start_recipe_caption"
                 android:textAlignment="center"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/btStart"
@@ -43,11 +45,74 @@
                 android:layout_height="35dp"
                 android:layout_below="@+id/tvInstructions"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="150dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
                 android:background="@drawable/round_button"
-                android:text="Begin" />
+                android:text="Begin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        </RelativeLayout>
+            <SeekBar
+                android:id="@+id/sbSpeed"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignStart="@+id/btStart"
+                android:layout_marginTop="25dp"
+                android:progress="50"
+                app:layout_constraintEnd_toStartOf="@+id/ivRabbit"
+                app:layout_constraintStart_toEndOf="@+id/ivTurtle"
+                app:layout_constraintTop_toBottomOf="@+id/tvSpeedLabel" />
+
+            <TextView
+                android:id="@+id/tvSpeedLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="55dp"
+                android:text="CONFIGURE SPEED"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvInstructions" />
+
+            <ImageButton
+                android:id="@+id/ibReplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:src="@drawable/ic_replay_black_24dp"
+                android:tint="@color/medium_gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivTurtle"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="18dp"
+                android:src="@drawable/slow_turtle"
+                android:tint="@color/medium_gray"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvSpeedLabel" />
+
+            <ImageView
+                android:id="@+id/ivRabbit"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="18dp"
+                android:src="@drawable/fast_rabbit"
+                android:tint="@color/medium_gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvSpeedLabel" />
+
+        </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
 

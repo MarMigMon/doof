@@ -11,4 +11,5 @@
     <color name="vermilion">#FF9B82</color>
     <color name="light_gray">#eeeeee</color>
     <color name="dark_gray">@color/textColor</color>
+    <color name="medium_gray">#CCC</color>
 </resources>
