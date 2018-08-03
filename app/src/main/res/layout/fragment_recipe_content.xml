@@ -129,20 +129,22 @@
 
             <TextView
                 android:id="@+id/tvDescription"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/tvName"
                 android:layout_below="@+id/tvType"
                 android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_toStartOf="@id/btFavorite"
                 android:text="Recipe Description"
                 android:textAlignment="viewStart"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvType"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintVertical_bias="0.111" />
 
             <TextView
                 android:id="@+id/tvPrepTime"
