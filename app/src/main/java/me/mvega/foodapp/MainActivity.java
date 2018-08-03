@@ -152,12 +152,14 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     public void respond(Recipe recipe) {
         RecipeFragment recipeFragment = new RecipeFragment();
         recipeFragment.recipe = recipe;
+        setFadeTransition(recipeFragment);
         replaceFragment(recipeFragment);
     }
 
     @Override
-    public void respond(ParseObject notificationRecipe) {
+    public void respond (ParseObject notificationRecipe) {
         RecipeFragment recipeFragment = new RecipeFragment();
+        setFadeTransition(recipeFragment);
         recipeFragment.recipe = (Recipe) notificationRecipe;
         replaceFragment(recipeFragment);
     }
@@ -165,7 +167,16 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     @Override
     public void respond(ParseUser notificationUser ) {
         ProfileFragment profileFragment = new ProfileFragment();
+        setFadeTransition(profileFragment);
         profileFragment.user = notificationUser;
         replaceFragment(profileFragment);
+    }
+
+    private void setFadeTransition(Fragment f) {
+        // Set transitions if minimum api requirements are met
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            f.setEnterTransition(new Fade());
+            f.setExitTransition(new Fade());
+        }
     }
 }
