@@ -210,7 +210,9 @@ public class FeedFragment extends Fragment {
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
-                resetAdapter(newRecipes, e);
+                if (newRecipes != null) {
+                    resetAdapter(newRecipes, e);
+                }
             }
         });
     }
