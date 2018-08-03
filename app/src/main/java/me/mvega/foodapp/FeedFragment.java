@@ -210,7 +210,9 @@ public class FeedFragment extends Fragment {
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
-                resetAdapter(newRecipes, e);
+                if (newRecipes != null) {
+                    resetAdapter(newRecipes, e);
+                }
             }
         });
     }
@@ -261,12 +263,14 @@ public class FeedFragment extends Fragment {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
                 recipeNames = new ArrayList<>();
-                for (Recipe recipe : newRecipes) {
-                    recipeNames.add(recipe.getName());
+                if (newRecipes != null) {
+                    for (Recipe recipe : newRecipes) {
+                        recipeNames.add(recipe.getName());
+                    }
+                    resetAdapter(newRecipes, e);
+                    initializeSearch();
+                    pbLoading.setVisibility(ProgressBar.INVISIBLE);
                 }
-                resetAdapter(newRecipes, e);
-                initializeSearch();
-                pbLoading.setVisibility(ProgressBar.INVISIBLE);
             }
         });
     }

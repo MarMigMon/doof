@@ -293,7 +293,7 @@ public class SpeechActivity extends AppCompatActivity implements
             public void onInit(int status) {
                 if (status != TextToSpeech.ERROR) {
                     tts.setLanguage(Locale.US);
-                    tts.setSpeechRate(0.9f);
+                    tts.setSpeechRate(1.0f);
                     if (startedRecipe) {
                         beginRecipe();
                         speakStep(stepCount);
@@ -488,7 +488,12 @@ public class SpeechActivity extends AppCompatActivity implements
         }
 
         stepCount = 0;
-        speakThread.quitSafely();
+
+        if (speakThread != null) {
+            speakThread.quitSafely();
+        }
+
+        startedRecipe = false;
     }
 
     /**
