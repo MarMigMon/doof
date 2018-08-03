@@ -31,12 +31,13 @@ public class FavoritesFragment extends Fragment {
     private ProfileRecipesAdapter profileRecipesAdapter;
     private YourRecipesFragment.YourRecipesFragmentCommunication profileListenerFragment;
 
-    @BindView(R.id.rvRecipes) RecyclerView rvRecipes;
+    @BindView(R.id.rvRecipes)
+    RecyclerView rvRecipes;
     @BindView(R.id.swipeContainer)
-    private SwipeRefreshLayout swipeContainer;
+    SwipeRefreshLayout swipeContainer;
     ParseUser user;
     @BindView(R.id.pbLoading)
-    private ProgressBar pbLoading;
+    ProgressBar pbLoading;
 
     // implement interface
 //    public interface YourRecipesFragmentCommunication {
@@ -70,13 +71,10 @@ public class FavoritesFragment extends Fragment {
     }
 
     private void onAttachToParentFragment(Fragment childFragment) {
-        try
-        {
+        try {
             profileListenerFragment = (YourRecipesFragment.YourRecipesFragmentCommunication) childFragment;
 
-        }
-        catch (ClassCastException e)
-        {
+        } catch (ClassCastException e) {
             throw new ClassCastException(
                     childFragment.toString() + " must implement OnPlayerSelectionSetListener");
         }
@@ -107,7 +105,7 @@ public class FavoritesFragment extends Fragment {
             @Override
             public void respond(Recipe recipe) {
                 profileListenerFragment.respond(recipe);
-                }
+            }
 
             @Override
             public void showDeleteDialog(Recipe recipe) {
@@ -131,12 +129,6 @@ public class FavoritesFragment extends Fragment {
                 android.R.color.holo_red_light);
 
         loadFavorites();
-    }
-
-    public static FavoritesFragment newInstance() {
-        FavoritesFragment fragmentFavorites = new FavoritesFragment();
-        fragmentFavorites.setArguments(new Bundle());
-        return fragmentFavorites;
     }
 
     private void loadFavorites() {

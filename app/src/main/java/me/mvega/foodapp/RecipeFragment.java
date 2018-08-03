@@ -51,7 +51,6 @@ public class RecipeFragment extends Fragment {
     private RecipeUserCommunication recipeUserListener;
     Recipe recipe;
     private String recipeId;
-    ImageView image;
     private int stepCount = 0;
     private static final String KEY_FAVORITE = "favorites";
 
@@ -143,7 +142,6 @@ public class RecipeFragment extends Fragment {
         // Sets zoom display metrics
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
-        int mScreenHeight = localDisplayMetrics.heightPixels;
         int mScreenWidth = localDisplayMetrics.widthPixels;
         LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenWidth / 16.0F)));
         pullToZoom.setHeaderLayoutParams(localObject);

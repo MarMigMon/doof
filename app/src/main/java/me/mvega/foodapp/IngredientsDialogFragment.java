@@ -16,7 +16,8 @@ import butterknife.ButterKnife;
 public class IngredientsDialogFragment extends DialogFragment {
 
     private static final String KEY_INGREDIENTS = "ingredients";
-    @BindView(R.id.tvIngredients) TextView tvIngredients;
+    @BindView(R.id.tvIngredients)
+    TextView tvIngredients;
 
     public static IngredientsDialogFragment newInstance(String ingredients) {
         Bundle args = new Bundle();

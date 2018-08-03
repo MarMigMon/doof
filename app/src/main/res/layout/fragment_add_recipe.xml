@@ -81,7 +81,8 @@
                     android:id="@+id/etRecipeNameLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/imageLayout">
+                    android:layout_below="@+id/imageLayout"
+                    android:layout_marginTop="10dp">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/etRecipeName"
@@ -103,7 +104,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/recipe_desc"
-                        android:inputType="text"
+                        android:inputType="textMultiLine"
                         android:singleLine="true" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -227,7 +228,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:text="Ingredients"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <RelativeLayout
@@ -242,35 +243,36 @@
                         android:layout_height="wrap_content"
                         android:hint="Ingredient 1"
                         android:inputType="text"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:textSize="18sp" />
                 </RelativeLayout>
 
                 <LinearLayout
                     android:id="@+id/ingredientButtonLayout"
+                    style="?android:attr/buttonBarStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/ingredientsLayout"
                     android:gravity="center">
 
                     <Button
-                        android:id="@+id/btAddIngredient"
-                        style="?android:buttonBarButtonStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/round_button"
-                        android:text="Add Ingredient" />
-
-                    <Button
                         android:id="@+id/btRemoveIngredient"
-                        style="?android:buttonBarButtonStyle"
+                        style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
                         android:layout_margin="5dp"
-                        android:background="@drawable/round_button"
+                        android:background="@drawable/round_button_light"
                         android:text="Remove Ingredient"
                         android:visibility="gone" />
 
+                    <Button
+                        android:id="@+id/btAddIngredient"
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/round_button_light"
+                        android:text="Add Ingredient" />
                 </LinearLayout>
 
                 <TextView
@@ -278,8 +280,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/ingredientButtonLayout"
+                    android:layout_marginTop="20dp"
                     android:text="Instructions"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <RelativeLayout
@@ -294,7 +297,8 @@
                         android:layout_height="wrap_content"
                         android:hint="Step 1"
                         android:inputType="text"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:textSize="18sp" />
                 </RelativeLayout>
 
                 <LinearLayout
@@ -306,24 +310,23 @@
                     android:gravity="center">
 
                     <Button
-                        android:id="@+id/btAddStep"
-                        style="?android:buttonBarButtonStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/round_button"
-                        android:text="Add Step" />
-
-                    <Button
                         android:id="@+id/btRemoveStep"
                         style="?android:buttonBarButtonStyle"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
                         android:layout_margin="5dp"
-                        android:background="@drawable/round_button"
+                        android:background="@drawable/round_button_light"
                         android:text="Remove Step"
                         android:visibility="gone" />
 
+                    <Button
+                        android:id="@+id/btAddStep"
+                        style="?android:buttonBarButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/round_button_light"
+                        android:text="Add Step" />
                 </LinearLayout>
 
                 <Button
@@ -340,22 +343,23 @@
                 <Button
                     android:id="@+id/btSubmit"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_alignParentEnd="true"
                     android:layout_below="@id/stepButtonLayout"
-                    android:layout_margin="5dp"
+                    android:layout_margin="10dp"
                     android:background="@drawable/round_button"
                     android:text="SUBMIT" />
 
                 <Button
                     android:id="@+id/btBack"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_alignParentStart="true"
                     android:layout_below="@id/stepButtonLayout"
-                    android:layout_margin="5dp"
-                    android:background="@drawable/round_button"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/round_button_light"
                     android:text="BACK" />
+
             </RelativeLayout>
         </LinearLayout>
     </FrameLayout>

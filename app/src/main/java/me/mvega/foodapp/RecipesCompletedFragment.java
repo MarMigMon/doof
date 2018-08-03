@@ -31,11 +31,12 @@ public class RecipesCompletedFragment extends Fragment {
     private ProfileRecipesAdapter profileRecipesAdapter;
     private YourRecipesFragment.YourRecipesFragmentCommunication profileListenerFragment;
 
-    @BindView(R.id.rvRecipes) RecyclerView rvRecipes;
+    @BindView(R.id.rvRecipes)
+    RecyclerView rvRecipes;
     @BindView(R.id.swipeContainer)
-    private SwipeRefreshLayout swipeContainer;
+    SwipeRefreshLayout swipeContainer;
     @BindView(R.id.pbLoading)
-    private ProgressBar pbLoading;
+    ProgressBar pbLoading;
     ParseUser user;
 
 //    // implement interface
@@ -131,12 +132,6 @@ public class RecipesCompletedFragment extends Fragment {
         loadCompleted();
     }
 
-    public static FavoritesFragment newInstance() {
-        FavoritesFragment fragmentFavorites = new FavoritesFragment();
-        fragmentFavorites.setArguments(new Bundle());
-        return fragmentFavorites;
-    }
-
     private void loadCompleted() {
         ArrayList<String> userCompleted = (ArrayList<String>) user.get("recipesCompleted");
         if (userCompleted == null) {
@@ -173,6 +168,7 @@ public class RecipesCompletedFragment extends Fragment {
             profileRecipesAdapter.clear();
             // Now we call setRefreshing(false) to signal refresh has finished
             swipeContainer.setRefreshing(false);
+            pbLoading.setVisibility(ProgressBar.INVISIBLE);
         }
     }
 }

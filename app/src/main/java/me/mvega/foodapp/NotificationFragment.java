@@ -35,7 +35,7 @@ public class NotificationFragment extends Fragment {
     @BindView(R.id.rvNotifications)
     RecyclerView rvNotifications;
     @BindView(R.id.pbLoading)
-    private ProgressBar pbLoading;
+    ProgressBar pbLoading;
 
     private NotificationAdapter notificationAdapter;
     private NotificationRecipeFragmentCommunication notificationRecipeListenerFragment;

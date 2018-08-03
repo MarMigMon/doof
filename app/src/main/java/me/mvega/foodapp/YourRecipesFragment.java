@@ -39,10 +39,11 @@ public class YourRecipesFragment extends Fragment {
     private YourRecipesFragmentCommunication profileListenerFragment;
 
     @BindView(R.id.pbLoading)
-    private ProgressBar pbLoading;
-    @BindView(R.id.rvRecipes) RecyclerView rvRecipes;
+    ProgressBar pbLoading;
+    @BindView(R.id.rvRecipes)
+    RecyclerView rvRecipes;
     @BindView(R.id.swipeContainer)
-    private SwipeRefreshLayout swipeContainer;
+    SwipeRefreshLayout swipeContainer;
     ParseUser user;
 
     // implement interface
@@ -207,12 +208,6 @@ public class YourRecipesFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-    }
-
-    public static YourRecipesFragment newInstance() {
-        YourRecipesFragment fragmentYourRecipes = new YourRecipesFragment();
-        fragmentYourRecipes.setArguments(new Bundle());
-        return fragmentYourRecipes;
     }
 
     private void loadYourRecipes() {

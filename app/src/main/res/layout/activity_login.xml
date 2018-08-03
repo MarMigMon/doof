@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,36 +10,17 @@
         android:id="@+id/etUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="40dp"
-        android:layout_marginTop="250dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
         android:ems="10"
         android:hint="Username"
         android:inputType="textPersonName"
-        tools:layout_editor_absoluteX="121dp"
-        tools:layout_editor_absoluteY="182dp" />
-
-    <TextView
-        android:id="@+id/tvUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/etUsername"
-        android:layout_alignEnd="@+id/tvPassword"
-        android:text="Username:"
-        tools:layout_editor_absoluteX="35dp"
-        tools:layout_editor_absoluteY="200dp" />
-
-    <TextView
-        android:id="@+id/tvPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/etPassword"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="42dp"
-        android:text="Password:"
-        tools:layout_editor_absoluteX="35dp"
-        tools:layout_editor_absoluteY="295dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
 
     <EditText
         android:id="@+id/etPassword"
@@ -47,54 +28,72 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/etUsername"
         android:layout_below="@+id/etUsername"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
-        tools:layout_editor_absoluteX="121dp"
-        tools:layout_editor_absoluteY="276dp"
-        android:layout_marginTop="30dp"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etUsername" />
 
     <Button
         android:id="@+id/btLogin"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="136dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/round_button"
         android:text="Login"
-        tools:layout_editor_absoluteX="147dp"
-        tools:layout_editor_absoluteY="356dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
     <Button
         android:id="@+id/btSignup"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="33dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/round_button_secondary"
         android:text="Sign Up"
-        tools:layout_editor_absoluteX="294dp"
-        tools:layout_editor_absoluteY="517dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btLogin" />
 
     <ImageView
-        android:id="@+id/ivTime"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:id="@+id/logo"
+        android:layout_width="80dp"
+        android:layout_height="85dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="67dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="57dp"
+        android:layout_marginTop="90dp"
         android:layout_toStartOf="@+id/etUsername"
         android:contentDescription="@string/logo"
+        app:layout_constraintEnd_toStartOf="@+id/logoText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/icon_orange" />
 
     <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
+        android:id="@+id/logoText"
+        android:layout_width="182dp"
+        android:layout_height="84dp"
         android:layout_alignEnd="@+id/etUsername"
-        android:layout_alignTop="@+id/ivTime"
+        android:layout_alignTop="@+id/logo"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="90dp"
         android:contentDescription="@string/logo_text"
+        app:layout_constraintStart_toEndOf="@string/logo"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo_black" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

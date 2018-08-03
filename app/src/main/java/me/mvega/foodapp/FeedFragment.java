@@ -42,13 +42,18 @@ public class FeedFragment extends Fragment {
     private ArrayList<String> recipeNames;
     private Context context;
 
-    @BindView(R.id.rvRecipes) RecyclerView rvRecipes;
-    @BindView(R.id.search_bar) Toolbar toolbar;
-    @BindView(R.id.search) AutoCompleteTextView search;
-    @BindView(R.id.search_btn) Button btSearch;
-    @BindView(R.id.filter_btn) Button btFilter;
+    @BindView(R.id.rvRecipes)
+    RecyclerView rvRecipes;
+    @BindView(R.id.search_bar)
+    Toolbar toolbar;
+    @BindView(R.id.search)
+    AutoCompleteTextView search;
+    @BindView(R.id.search_btn)
+    Button btSearch;
+    @BindView(R.id.filter_btn)
+    Button btFilter;
     @BindView(R.id.pbLoading)
-    private ProgressBar pbLoading;
+    ProgressBar pbLoading;
 
     TextView tvViewCount;
 
@@ -56,7 +61,6 @@ public class FeedFragment extends Fragment {
 
     // implement interface
     public interface FragmentCommunication {
-        void respond(Recipe recipe);
         void respond(Recipe recipe, ImageView image);
     }
 

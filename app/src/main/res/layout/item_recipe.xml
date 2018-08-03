@@ -25,7 +25,7 @@
             <ImageView
                 android:id="@+id/ivRecipe"
                 android:layout_width="150dp"
-                android:layout_height="200dp"
+                android:layout_height="210dp"
                 android:background="@drawable/image_placeholder"
                 android:contentDescription="@string/recipe_image"
                 android:scaleType="centerCrop"

@@ -839,12 +839,12 @@ public class AddRecipeFragment extends Fragment {
             throw new IllegalArgumentException("Please enter a description for your recipe.");
         }
         try {
-            Number yieldNumber = Integer.valueOf(etYield.getText().toString());
+            Integer.valueOf(etYield.getText().toString());
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Please enter a number of servings for your recipe.");
         }
         try {
-            Number prepTime = Integer.valueOf(etPrepTime.getText().toString());
+            Integer.valueOf(etPrepTime.getText().toString());
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Please enter an amount of time for your recipe.");
         }
