@@ -74,6 +74,10 @@ public class SpeechActivity extends AppCompatActivity implements
     private SpeechRecognizer recognizer;
     private Boolean initializedTts;
 
+    // Handler
+    HandlerThread speakThread;
+    Handler speechHandler;
+
     // Player
     private ParseFile audioFile;
     private MediaPlayer player;
@@ -319,15 +323,21 @@ public class SpeechActivity extends AppCompatActivity implements
         }
     }
 
-    private void speakStep(int step) {
-        checkIfCompleted(step);
-        if (step < speechCardAdapter.getCount() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            String currStep = instructions.get(step);
-            tts.speak(currStep, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
-        } else {
-            tts.stop();
-            recognizer.stop();
-        }
+    private void speakStep(final int step) {
+        speakThread = new HandlerThread("SpeakStep");
+        speakThread.start();
+        speechHandler = new Handler(speakThread.getLooper());
+        speechHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                checkIfCompleted(step);
+                if (step < speechCardAdapter.getCount() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    String currStep = instructions.get(step);
+                    tts.speak(currStep, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
+                }
+            }
+        });
+        speakThread.quitSafely();
     }
 
     private void checkIfCompleted(int step) {
@@ -478,6 +488,7 @@ public class SpeechActivity extends AppCompatActivity implements
         }
 
         stepCount = 0;
+        speakThread.quitSafely();
     }
 
     /**
