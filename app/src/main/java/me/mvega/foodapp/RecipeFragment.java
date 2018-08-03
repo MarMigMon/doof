@@ -1,10 +1,11 @@
 package me.mvega.foodapp;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -47,12 +48,10 @@ import static me.mvega.foodapp.MainActivity.currentUser;
 
 public class RecipeFragment extends Fragment {
     private static ParseUser user = currentUser;
-    RecipeUserCommunication recipeUserListener;
+    private RecipeUserCommunication recipeUserListener;
     Recipe recipe;
-    String recipeId;
-    ImageView image;
-    ArrayList<String> steps;
-    int stepCount = 0;
+    private String recipeId;
+    private int stepCount = 0;
     private static final String KEY_FAVORITE = "favorites";
 
     @BindView(R.id.tvName) TextView tvName;
@@ -90,7 +89,7 @@ public class RecipeFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("recipe", recipe);
         outState.putParcelable("user", user);
@@ -98,7 +97,7 @@ public class RecipeFragment extends Fragment {
 
     // The onCreateView method is called when Fragment should create its View object hierarchy either dynamically or via XML layout inflation.
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Prevents app crashing when switching orientations
@@ -142,8 +141,7 @@ public class RecipeFragment extends Fragment {
 
         // Sets zoom display metrics
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
-        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
-        int mScreenHeight = localDisplayMetrics.heightPixels;
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
         int mScreenWidth = localDisplayMetrics.widthPixels;
         LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenWidth / 16.0F)));
         pullToZoom.setHeaderLayoutParams(localObject);
@@ -153,14 +151,15 @@ public class RecipeFragment extends Fragment {
 
     // This event is triggered soon after onCreateView().
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
+    @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
 
         user = ParseUser.getCurrentUser();
 
         ButterKnife.bind(this, view);
 
-        steps = (ArrayList<String>) recipe.getSteps();
+        ArrayList<String> steps = (ArrayList<String>) recipe.getSteps();
         recipeId = recipe.getObjectId();
 
         tvName.setText(recipe.getName());
@@ -169,7 +168,7 @@ public class RecipeFragment extends Fragment {
         tvDescription.setText(recipe.getDescription());
         tvPrepTime.setText(recipe.getPrepTimeString());
         tvYield.setText(recipe.getYield());
-        tvIngredients.setText(TextUtils.join("\n",recipe.getIngredients()));
+        tvIngredients.setText(TextUtils.join("\n", recipe.getIngredients()));
         setInstructions(steps);
 
         btPlay.setOnClickListener(new View.OnClickListener() {
@@ -204,10 +203,10 @@ public class RecipeFragment extends Fragment {
                     });
 
                     Notification likeNotification = new Notification();
-                    likeNotification.put("activeUser", user);
-                    likeNotification.put("recipe", recipe);
-                    likeNotification.put("recipeUser", recipe.getUser());
-                    likeNotification.put("favorite", true);
+                    likeNotification.setActiveUser(user);
+                    likeNotification.setRecipe(recipe);
+                    likeNotification.setRecipeUser(recipe.getUser());
+                    likeNotification.setFavorite(true);
                     likeNotification.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
@@ -288,15 +287,16 @@ public class RecipeFragment extends Fragment {
         }
 
         yourRating.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     showRatingDialog();
                     Notification rateNotification = new Notification();
-                    rateNotification.put("activeUser", user);
-                    rateNotification.put("recipe", recipe);
-                    rateNotification.put("recipeUser", recipe.getUser());
-                    rateNotification.put("rate", true);
+                    rateNotification.setActiveUser(user);
+                    rateNotification.setRecipe(recipe);
+                    rateNotification.setRecipeUser( recipe.getUser());
+                    rateNotification.setRate(true);
                     rateNotification.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
@@ -346,13 +346,13 @@ public class RecipeFragment extends Fragment {
         }
     }
 
-    public void beginRecipe() {
+    private void beginRecipe() {
         Intent i = new Intent(getContext(), SpeechActivity.class);
         i.putExtra("recipe", recipe);
         startActivity(i);
     }
 
-    public void showRatingDialog() {
+    private void showRatingDialog() {
         // Create builder using dialog layout
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View dialog = getLayoutInflater().inflate(R.layout.dialog_rating, null);
@@ -394,7 +394,7 @@ public class RecipeFragment extends Fragment {
         alertDialog.show();
     }
 
-    public void updateRating(Number rating) {
+    private void updateRating(Number rating) {
         // updates user's rating in recipe object
         recipe.setUserRating(user, rating);
 

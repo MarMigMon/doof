@@ -30,19 +30,22 @@ import static me.mvega.foodapp.MainActivity.currentUser;
 
 public class NotificationFragment extends Fragment {
 
-    @BindView(R.id.swipeContainerNotifications) SwipeRefreshLayout swipeContainerNotifications;
-    @BindView(R.id.rvNotifications) RecyclerView rvNotifications;
-    @BindView(R.id.pbLoading) ProgressBar pbLoading;
+    @BindView(R.id.swipeContainerNotifications)
+    SwipeRefreshLayout swipeContainerNotifications;
+    @BindView(R.id.rvNotifications)
+    RecyclerView rvNotifications;
+    @BindView(R.id.pbLoading)
+    ProgressBar pbLoading;
 
-    ArrayList<Notification> notifications;
     private NotificationAdapter notificationAdapter;
-    NotificationRecipeFragmentCommunication notificationRecipeListenerFragment;
-    NotificationUserFragmentCommunication notificationUserListenerFragment;
+    private NotificationRecipeFragmentCommunication notificationRecipeListenerFragment;
+    private NotificationUserFragmentCommunication notificationUserListenerFragment;
 
     // implement recipe listener interface
     public interface NotificationRecipeFragmentCommunication {
         void respond(ParseObject notificationRecipe);
     }
+
     // implement user listener interface
     public interface NotificationUserFragmentCommunication {
         void respond(ParseUser notificationUser);
@@ -74,7 +77,7 @@ public class NotificationFragment extends Fragment {
         ButterKnife.bind(this, view);
         pbLoading.setVisibility(ProgressBar.VISIBLE);
 
-        notifications = new ArrayList<>();
+        ArrayList<Notification> notifications = new ArrayList<>();
         notificationAdapter = new NotificationAdapter(notifications);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvNotifications.setLayoutManager(linearLayoutManager);
@@ -103,7 +106,7 @@ public class NotificationFragment extends Fragment {
     }
 
 
-    public void setSwipeContainer() {
+    private void setSwipeContainer() {
         // Setup refresh listener which triggers new data loading
         swipeContainerNotifications.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

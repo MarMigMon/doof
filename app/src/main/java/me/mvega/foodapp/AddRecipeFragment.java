@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.support.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -110,7 +111,6 @@ public class AddRecipeFragment extends Fragment {
 
     private Bitmap recipeImage;
     private Uri audioUri;
-    private String audioName;
     private final static int PICK_PHOTO_CODE = 1046;
     private final static int PICK_AUDIO_CODE = 1;
     private int stepCount = 1;
@@ -121,21 +121,18 @@ public class AddRecipeFragment extends Fragment {
     private String typeText = "";
     private String prepTimeText = "minutes"; // Automatically recognizes the prep-time time period as minutes
 
-    public final String APP_TAG = "doof";
-    public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
-    public String photoFileName = "photo.jpg";
-    File photoFile;
-    private File selectedPhotoFile;
+    private final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
+    private File photoFile;
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_add_recipe, parent, false);
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("image", recipeImage);
     }
@@ -143,7 +140,7 @@ public class AddRecipeFragment extends Fragment {
     // This event is triggered soon after onCreateView().
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
 
         ivPreview.setBackgroundResource(R.drawable.image_placeholder);
@@ -452,7 +449,6 @@ public class AddRecipeFragment extends Fragment {
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
             Log.d("AddRecipeFragment", "Permission granted");
-            return;
         }
     }
 
@@ -462,11 +458,7 @@ public class AddRecipeFragment extends Fragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Recognizer initialization is a time-consuming and it involves IO,
-                // so we execute it in async task
-                return;
-            } else {
+            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 Toast.makeText(getContext(), "Accept permissions to enable adding recipes", Toast.LENGTH_LONG).show();
             }
         }
@@ -585,7 +577,7 @@ public class AddRecipeFragment extends Fragment {
     }
 
     // Trigger gallery selection for a photo
-    public void onPickPhoto() {
+    private void onPickPhoto() {
         // Create intent for picking a photo from the gallery
         Intent intent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -599,10 +591,11 @@ public class AddRecipeFragment extends Fragment {
     }
 
     // Returns the File for a photo stored on disk given the fileName
-    public void onLaunchCamera() {
+    private void onLaunchCamera() {
         // create Intent to take a picture and return control to the calling application
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Create a File reference to access to future access
+        String photoFileName = "photo.jpg";
         photoFile = getPhotoFileUri(photoFileName);
 
         // wrap File object into a content provider
@@ -617,10 +610,11 @@ public class AddRecipeFragment extends Fragment {
         }
     }
 
-    public File getPhotoFileUri(String fileName) {
+    private File getPhotoFileUri(String fileName) {
         // Get safe storage directory for photos
         // Use `getExternalFilesDir` on Context to access package-specific directories.
         // This way, we don't need to request external read/write runtime permissions.
+        String APP_TAG = "doof";
         File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), APP_TAG);
 
         // Create the storage directory if it does not exist
@@ -629,20 +623,16 @@ public class AddRecipeFragment extends Fragment {
         }
 
         // Return the file target for the photo based on filename
-        File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
-
-        return file;
+        return new File(mediaStorageDir.getPath() + File.separator + fileName);
     }
 
-    public String getFileName(Uri uri) {
+    private String getFileName(Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {
-            Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
-            try {
+            try (Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
                     result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 }
-            } finally {
                 cursor.close();
             }
         }
@@ -686,36 +676,65 @@ public class AddRecipeFragment extends Fragment {
                 // Load the selected image into a preview
                 ivPreview.setImageBitmap(selectedImage);
                 recipeImage = selectedImage;
-            } else {
-                return;
             }
         } else if (requestCode == PICK_AUDIO_CODE) {
             if (data != null && resultCode == RESULT_OK) {
                 //the selected audio.
                 audioUri = data.getData();
-                audioName = getFileName(audioUri);
+                String audioName = getFileName(audioUri);
                 btAudio.setText(audioName);
                 Log.d("AddRecipeFragment", "Picked audio");
-            } else {
-                return;
             }
         }
     }
 
-    public void setSelectedPhoto(File file) {
-        selectedPhotoFile = file;
+    private void setSelectedPhoto(File file) {
         Bitmap rawTakenImage = BitmapFactory.decodeFile(file.getAbsolutePath());
 
+        // Tries to appropriately rotates image
+
+        try {
+
+            ExifInterface ei = new ExifInterface(file.getAbsolutePath());
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED);
+
+            Bitmap photo;
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    photo = rotateImage(rawTakenImage, 90);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    photo = rotateImage(rawTakenImage, 180);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    photo = rotateImage(rawTakenImage, 270);
+                    break;
+
+                case ExifInterface.ORIENTATION_NORMAL:
+                default:
+                    photo = rawTakenImage;
+            }
+            ivPreview.setImageBitmap(photo);
+            recipeImage = photo;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            ivPreview.setImageBitmap(rawTakenImage);
+            recipeImage = rawTakenImage;
+        }
+    }
+
+    private static Bitmap rotateImage(Bitmap source, float angle) {
         Matrix matrix = new Matrix();
-        matrix.postRotate(90);
-        Bitmap photo = Bitmap.createBitmap(rawTakenImage, 0, 0, rawTakenImage.getWidth(), rawTakenImage.getHeight(),
+        matrix.postRotate(angle);
+        Bitmap photo = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
                 matrix, true);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         photo.compress(Bitmap.CompressFormat.JPEG, 80, out);
-        photo = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
-
-        ivPreview.setImageBitmap(photo);
-        recipeImage = photo;
+        return BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
     }
 
     private ParseFile prepareImage(Bitmap bitmap) {
@@ -723,8 +742,7 @@ public class AddRecipeFragment extends Fragment {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             byte[] bitmapBytes = stream.toByteArray();
 
-            ParseFile image = new ParseFile("RecipeImage", bitmapBytes);
-            return image;
+            return new ParseFile("RecipeImage", bitmapBytes);
         } else {
             return null;
         }
@@ -776,8 +794,7 @@ public class AddRecipeFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-        byte[] audioBytes = out.toByteArray();
-        return audioBytes;
+        return out.toByteArray();
     }
 
     private ArrayList<String> parseInstructions() {
@@ -820,12 +837,12 @@ public class AddRecipeFragment extends Fragment {
             throw new IllegalArgumentException("Please enter a description for your recipe.");
         }
         try {
-            Number yieldNumber = Integer.valueOf(etYield.getText().toString());
+            Integer.valueOf(etYield.getText().toString());
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Please enter a number of servings for your recipe.");
         }
         try {
-            Number prepTime = Integer.valueOf(etPrepTime.getText().toString());
+            Integer.valueOf(etPrepTime.getText().toString());
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Please enter an amount of time for your recipe.");
         }

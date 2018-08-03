@@ -72,6 +72,7 @@
                         android:layout_height="203dp"
                         android:layout_marginBottom="5dp"
                         android:layout_marginTop="5dp"
+                        android:contentDescription="@string/recipe_image"
                         android:scaleType="centerCrop"
                         android:src="@drawable/img_placeholder" />
                 </RelativeLayout>
@@ -80,8 +81,8 @@
                     android:id="@+id/etRecipeNameLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_below="@+id/imageLayout">
+                    android:layout_below="@+id/imageLayout"
+                    android:layout_marginTop="10dp">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/etRecipeName"
@@ -200,10 +201,10 @@
                     android:id="@+id/btNext"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
                     android:layout_alignParentEnd="true"
                     android:layout_below="@id/typeLayout"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/round_button"
                     android:padding="10dp"
                     android:text="NEXT" />
@@ -241,12 +242,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Ingredient 1"
+                        android:inputType="text"
                         android:singleLine="true"
                         android:textSize="18sp" />
                 </RelativeLayout>
 
                 <LinearLayout
                     android:id="@+id/ingredientButtonLayout"
+                    style="?android:attr/buttonBarStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/ingredientsLayout"
@@ -254,21 +257,22 @@
 
                     <Button
                         android:id="@+id/btRemoveIngredient"
+                        style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
-                        android:background="@drawable/round_button_light"
                         android:layout_margin="5dp"
+                        android:background="@drawable/round_button_light"
                         android:text="Remove Ingredient"
                         android:visibility="gone" />
 
                     <Button
                         android:id="@+id/btAddIngredient"
+                        style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_margin="5dp"
                         android:background="@drawable/round_button_light"
                         android:text="Add Ingredient" />
-
                 </LinearLayout>
 
                 <TextView
@@ -292,6 +296,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Step 1"
+                        android:inputType="text"
                         android:singleLine="true"
                         android:textSize="18sp" />
                 </RelativeLayout>
@@ -306,6 +311,7 @@
 
                     <Button
                         android:id="@+id/btRemoveStep"
+                        style="?android:buttonBarButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_margin="5dp"
@@ -315,6 +321,7 @@
 
                     <Button
                         android:id="@+id/btAddStep"
+                        style="?android:buttonBarButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_margin="5dp"

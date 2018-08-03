@@ -62,12 +62,10 @@ public class SpeechActivity extends AppCompatActivity implements
     // Instructions
     private int stepCount = 0;
     private int totalSteps;
-    private String currStep;
     private ArrayList<String> instructions;
 
     // Ingredients
     private String ingredients;
-    private ArrayList<String> components;
 
     // Recognizer and text to speech
     private TextToSpeech tts;
@@ -79,9 +77,9 @@ public class SpeechActivity extends AppCompatActivity implements
     private MediaPlayer player;
     private Boolean isPaused = false;
 
-    public static Boolean startedRecipe = false;
+    private static Boolean startedRecipe = false;
 
-    ParseUser user;
+    private ParseUser user;
 
     // Buttons
     @BindView(R.id.ivStop) ImageView ivStop;
@@ -99,7 +97,7 @@ public class SpeechActivity extends AppCompatActivity implements
 
     // View Pager
     @BindView(R.id.vpSteps) ViewPager vpSteps;
-    SpeechCardAdapter speechCardAdapter;
+    private SpeechCardAdapter speechCardAdapter;
 
     // Confetti
     @BindView(R.id.viewKonfetti) KonfettiView viewKonfetti;
@@ -123,10 +121,10 @@ public class SpeechActivity extends AppCompatActivity implements
         tvName.setText(recipe.getName());
         ingredients = TextUtils.join("\n", recipe.getIngredients());
 
-        components = new ArrayList<String>();
+        ArrayList<String> components = new ArrayList<>();
         components.addAll(recipe.getComponents());
 
-        instructions = new ArrayList<String>();
+        instructions = new ArrayList<>();
         instructions.add(getResources().getString(R.string.before_start_recipe_caption));
         instructions.addAll(recipe.getSteps());
 
@@ -282,7 +280,7 @@ public class SpeechActivity extends AppCompatActivity implements
         tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
+                if (status != TextToSpeech.ERROR) {
                     tts.setLanguage(Locale.US);
                     tts.setSpeechRate(0.9f);
                     if (startedRecipe) {
@@ -294,7 +292,7 @@ public class SpeechActivity extends AppCompatActivity implements
         });
     }
 
-    public void beginRecipe() {
+    private void beginRecipe() {
         startedRecipe = true;
 
         // Toggle views
@@ -314,10 +312,10 @@ public class SpeechActivity extends AppCompatActivity implements
         }
     }
 
-    public void speakStep(int step) {
+    private void speakStep(int step) {
         checkIfCompleted(step);
         if (step < speechCardAdapter.getCount() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            currStep = instructions.get(step);
+            String currStep = instructions.get(step);
             tts.speak(currStep, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
         } else {
             tts.stop();
@@ -373,10 +371,8 @@ public class SpeechActivity extends AppCompatActivity implements
                 player.prepare();
                 player.stop();
                 player.release();
-                player=null;
-            }
-            catch (Exception e)
-            {
+                player = null;
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -398,15 +394,16 @@ public class SpeechActivity extends AppCompatActivity implements
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
-            return;
         }
     }
 
     private static class SetupTask extends AsyncTask<Void, Void, Exception> {
-        WeakReference<SpeechActivity> activityReference;
+        final WeakReference<SpeechActivity> activityReference;
+
         SetupTask(SpeechActivity activity) {
             this.activityReference = new WeakReference<>(activity);
         }
+
         @Override
         protected Exception doInBackground(Void... params) {
             try {
@@ -418,17 +415,18 @@ public class SpeechActivity extends AppCompatActivity implements
             }
             return null;
         }
+
         @Override
         protected void onPostExecute(Exception result) {
             if (result != null) {
-                Toast.makeText(activityReference.get(),"Failed to init recognizer " + result, Toast.LENGTH_LONG);
+                Toast.makeText(activityReference.get(), "Failed to init recognizer " + result, Toast.LENGTH_LONG).show();
             }
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions, @NonNull  int[] grantResults) {
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == PERMISSIONS_REQUEST_RECORD_AUDIO) {
@@ -517,16 +515,21 @@ public class SpeechActivity extends AppCompatActivity implements
 
     // Called in onResult if using text to speech
     private void processTtsResult(String text) {
-        if (text.equals("next step")) {
-            if (stepCount + 1 < speechCardAdapter.getCount()) {
-                vpSteps.setCurrentItem(stepCount + 1);
-            }
-        } else if (text.equals("finish recipe")) {
-            finishRecipe();
-        } else if (text.equals("repeat step")) {
-            repeatTts();
-        } else if (text.equals("previous step")) {
-            previousTts();
+        switch (text) {
+            case "next step":
+                if (stepCount + 1 < speechCardAdapter.getCount()) {
+                    vpSteps.setCurrentItem(stepCount + 1);
+                }
+                break;
+            case "finish recipe":
+                finishRecipe();
+                break;
+            case "repeat step":
+                repeatTts();
+                break;
+            case "previous step":
+                previousTts();
+                break;
         }
     }
 

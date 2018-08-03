@@ -25,6 +25,7 @@
                 android:layout_gravity="center"
                 android:layout_marginEnd="15dp"
                 android:layout_marginStart="20dp"
+                android:contentDescription="@string/user_image"
                 app:srcCompat="@android:color/background_dark" />
 
             <RelativeLayout
@@ -72,8 +73,8 @@
                     android:id="@+id/tvContributed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/strContributed"
-                    android:layout_marginLeft="8dp"
+                    android:layout_toEndOf="@+id/strContributed"
+                    android:layout_marginStart="8dp"
                     android:layout_alignTop="@id/strContributed"
                     android:text="0"
                     android:textAlignment="textEnd" />
@@ -82,8 +83,8 @@
                     android:id="@+id/tvCompleted"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/strCompleted"
-                    android:layout_marginLeft="8dp"
+                    android:layout_toEndOf="@+id/strCompleted"
+                    android:layout_marginStart="8dp"
                     android:layout_alignTop="@id/strCompleted"
                     android:text="0"
                     android:textAlignment="textEnd" />
@@ -92,8 +93,8 @@
                     android:id="@+id/tvReviewed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/strReviewed"
-                    android:layout_marginLeft="8dp"
+                    android:layout_toEndOf="@+id/strReviewed"
+                    android:layout_marginStart="8dp"
                     android:layout_alignTop="@id/strReviewed"
                     android:text="0"
                     android:textAlignment="textEnd" />
@@ -107,10 +108,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/userInfo"
-            android:text="Hello there!"
-            android:layout_marginStart="20dp"
+            android:layout_marginBottom="15dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="15dp"/>
+            android:layout_marginStart="20dp"
+            android:text="Hello there!" />
 
     </RelativeLayout>
 
@@ -119,8 +120,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/userDescription"
+        app:tabGravity="fill"
         app:tabMode="fixed"
-        app:tabGravity="fill"/>
+        app:tabSelectedTextColor="@android:color/black"
+        app:tabTextColor="@android:color/darker_gray" />
 
     <FrameLayout
         android:id="@+id/userRecipes"

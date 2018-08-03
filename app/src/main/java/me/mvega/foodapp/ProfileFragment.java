@@ -30,7 +30,7 @@ import static me.mvega.foodapp.MainActivity.currentUser;
 
 public class ProfileFragment extends Fragment implements YourRecipesFragment.YourRecipesFragmentCommunication {
 
-    ProfileFragmentCommunication yourRecipesListenerFragment;
+    private ProfileFragmentCommunication yourRecipesListenerFragment;
     ParseUser user;
     @BindView(R.id.ivProfile)
     ImageView ivProfile;
@@ -92,7 +92,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("user", user);
     }
@@ -172,6 +172,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         tabLayout.addTab(yourRecipes, 0, true);
         tabLayout.addTab(favorites, 1, false);
         tabLayout.addTab(completed, 2, false);
+        yourRecipes.select();
 
         // handle tab selection
         tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
@@ -198,7 +199,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         });
     }
 
-    public void showYourRecipes() {
+    private void showYourRecipes() {
         ParseUser thisUser = user;
         YourRecipesFragment thisUserRecipes = new YourRecipesFragment();
         thisUserRecipes.user = thisUser;
@@ -209,21 +210,21 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         yourRecipesListenerFragment.respond(recipe);
     }
 
-    public void showFavorites() {
+    private void showFavorites() {
         ParseUser thisUser = user;
         FavoritesFragment thisUserFavorites = new FavoritesFragment();
         thisUserFavorites.user = thisUser;
         replaceFragment(thisUserFavorites);
     }
 
-    public void showCompleted() {
+    private void showCompleted() {
         ParseUser thisUser = user;
         RecipesCompletedFragment thisUserCompleted = new RecipesCompletedFragment();
         thisUserCompleted.user = thisUser;
         replaceFragment(thisUserCompleted);
     }
 
-    public void replaceFragment(Fragment f) {
+    private void replaceFragment(Fragment f) {
         final FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.userRecipes, f).commit();
     }

@@ -1,11 +1,12 @@
 package me.mvega.foodapp;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
+abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
     // The minimum amount of items to have below your current scroll position
     // before loading more.
     private int visibleThreshold = 5;
@@ -16,11 +17,11 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     // True if we are still waiting for the last set of data to load.
     private boolean loading = true;
     // Sets the starting page index
-    private int startingPageIndex = 0;
+    private final int startingPageIndex = 0;
     // Checks if there is a search query
     public static String query = "";
 
-    RecyclerView.LayoutManager mLayoutManager;
+    private final RecyclerView.LayoutManager mLayoutManager;
 
     public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
@@ -36,13 +37,12 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
     }
 
-    public int getLastVisibleItem(int[] lastVisibleItemPositions) {
+    private int getLastVisibleItem(int[] lastVisibleItemPositions) {
         int maxSize = 0;
         for (int i = 0; i < lastVisibleItemPositions.length; i++) {
             if (i == 0) {
                 maxSize = lastVisibleItemPositions[i];
-            }
-            else if (lastVisibleItemPositions[i] > maxSize) {
+            } else if (lastVisibleItemPositions[i] > maxSize) {
                 maxSize = lastVisibleItemPositions[i];
             }
         }
@@ -53,7 +53,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     // We are given a few useful parameters to help us work out if we need to load some more data,
     // but first we check if we are waiting for the previous load to finish.
     @Override
-    public void onScrolled(RecyclerView view, int dx, int dy) {
+    public void onScrolled(@NonNull RecyclerView view, int dx, int dy) {
         int lastVisibleItemPosition = 0;
         int totalItemCount = mLayoutManager.getItemCount();
 
@@ -103,6 +103,6 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     }
 
     // Defines the process for actually loading more data based on page
-    public abstract void onLoadMore(int page, int totalItemsCount, RecyclerView view, String query);
+    protected abstract void onLoadMore(int page, int totalItemsCount, RecyclerView view, String query);
 
 }

@@ -26,13 +26,14 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Notification;
+import me.mvega.foodapp.model.Recipe;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
     private NotificationAdapterRecipeCommunication nrCommunication;
     private NotificationAdapterUserCommunication nuCommunication;
-    private List<Notification> notifications;
-    Context context;
+    private final List<Notification> notifications;
+    private Context context;
 
     // notification recipe listener
     public interface NotificationAdapterRecipeCommunication {
@@ -89,10 +90,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             }
 
         if (notification.getFavorite()) {
-            holder.tvNotificationMessage.setText("liked your recipe.");
+            holder.tvNotificationMessage.setText(R.string.liked);
         }
         if (notification.getRate()) {
-            holder.tvNotificationMessage.setText("rated your recipe.");
+            holder.tvNotificationMessage.setText(R.string.rated);
         }
     }
 
@@ -109,7 +110,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         @BindView(R.id.tvNotificationMessage) TextView tvNotificationMessage;
         @BindView(R.id.tvRelativeTime) TextView tvRelativeTime;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
 
             ButterKnife.bind(this, itemView);
@@ -130,9 +131,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 if (position != RecyclerView.NO_POSITION) {
                     // get the recipe at the position, this won't work if the class is static
                     final Notification notification = notifications.get(position);
-                    ParseObject notificationRecipe = notification.getRecipe();
+                    Recipe notificationRecipe = (Recipe) notification.getRecipe();
                     // update view count when recipe is clicked
-                    notificationRecipe.put("views", notificationRecipe.getInt("views") + 1);
+                    notificationRecipe.setViews(notificationRecipe.getViews() + 1);
                     notificationRecipe.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
@@ -159,7 +160,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
     }
 
-    public String getRelativeTimeAgo(String rawJsonDate) {
+    private String getRelativeTimeAgo(String rawJsonDate) {
         String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
         SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
         sf.setLenient(true);

@@ -35,12 +35,15 @@ import static me.mvega.foodapp.MainActivity.currentUser;
 
 public class YourRecipesFragment extends Fragment {
 
-    ProfileRecipesAdapter profileRecipesAdapter;
-    YourRecipesFragmentCommunication profileListenerFragment;
-    ArrayList<Recipe> recipes;
-    @BindView(R.id.pbLoading) ProgressBar pbLoading;
-    @BindView(R.id.rvRecipes) RecyclerView rvRecipes;
-    @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
+    private ProfileRecipesAdapter profileRecipesAdapter;
+    private YourRecipesFragmentCommunication profileListenerFragment;
+
+    @BindView(R.id.pbLoading)
+    ProgressBar pbLoading;
+    @BindView(R.id.rvRecipes)
+    RecyclerView rvRecipes;
+    @BindView(R.id.swipeContainer)
+    SwipeRefreshLayout swipeContainer;
     ParseUser user;
 
     // implement interface
@@ -70,24 +73,20 @@ public class YourRecipesFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("user", user);
     }
 
-    public void onAttachToParentFragment(Fragment childFragment) {
-        try
-        {
+    private void onAttachToParentFragment(Fragment childFragment) {
+        try {
             profileListenerFragment = (YourRecipesFragmentCommunication) childFragment;
 
-        }
-        catch (ClassCastException e)
-        {
+        } catch (ClassCastException e) {
             throw new ClassCastException(
                     childFragment.toString() + " must implement OnPlayerSelectionSetListener");
         }
     }
-
 
 
     // This event is triggered soon after onCreateView().
@@ -97,7 +96,11 @@ public class YourRecipesFragment extends Fragment {
         ButterKnife.bind(this, view);
         pbLoading.setVisibility(ProgressBar.VISIBLE);
 
-        recipes = new ArrayList<>();
+        // find the Recycler View
+        RecyclerView rvRecipes = view.findViewById(R.id.rvRecipes);
+        // initialize the ArrayList (data source)
+        ArrayList<Recipe> recipes = new ArrayList<>();
+
         // construct the adapter from this data source
         profileRecipesAdapter = new ProfileRecipesAdapter(recipes);
         // RecyclerView setup (layout manager, use adapter)
@@ -107,7 +110,6 @@ public class YourRecipesFragment extends Fragment {
         //set the adapter
         rvRecipes.setAdapter(profileRecipesAdapter);
         rvRecipes.addItemDecoration(new SpacesItemDecoration(32));
-
 
         profileRecipesAdapter.setProfileListener(new ProfileRecipesAdapter.ProfileAdapterCommunication() {
             @Override
@@ -206,12 +208,6 @@ public class YourRecipesFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-    }
-
-    public static YourRecipesFragment newInstance() {
-        YourRecipesFragment fragmentYourRecipes = new YourRecipesFragment();
-        fragmentYourRecipes.setArguments(new Bundle());
-        return fragmentYourRecipes;
     }
 
     private void loadYourRecipes() {

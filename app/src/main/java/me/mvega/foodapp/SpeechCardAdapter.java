@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SpeechCardAdapter extends FragmentPagerAdapter {
-    ArrayList<String> steps;
-    ArrayList<String> components;
+class SpeechCardAdapter extends FragmentPagerAdapter {
+    private final ArrayList<String> steps;
+    private final ArrayList<String> components;
 
     public SpeechCardAdapter(FragmentManager fragmentManager, ArrayList<String> steps, ArrayList<String> components) {
         super(fragmentManager);
@@ -44,7 +44,7 @@ public class SpeechCardAdapter extends FragmentPagerAdapter {
 
     private String matchesIngredient(String currStep) {
         String[] stepSplit = currStep.toLowerCase().replaceAll("[,./]", "").split(" ");
-        String matchingIngredients = "";
+        StringBuilder matchingIngredients = new StringBuilder();
         String[] filter = {"and", "or", "from", "tbsp", "TB", "cup", "into", "a", "to", "c", "the", "tsp"};
         List<String> filterList = Arrays.asList(filter);
 
@@ -52,12 +52,12 @@ public class SpeechCardAdapter extends FragmentPagerAdapter {
             String[] componentSplit = component.toLowerCase().replaceAll("[/,.0-9]", "").split(" ");
             for (String word : stepSplit) {
                 List<String> componentList = Arrays.asList(componentSplit);
-                if ((componentList.contains(word) || componentList.contains(word + "s")) && !matchingIngredients.contains(component) && !filterList.contains(word)) {
-                    matchingIngredients = matchingIngredients + component + "\n";
+                if ((componentList.contains(word) || componentList.contains(word + "s")) && !matchingIngredients.toString().contains(component) && !filterList.contains(word)) {
+                    matchingIngredients.append(component).append("\n");
                 }
             }
         }
-        return matchingIngredients;
+        return matchingIngredients.toString();
     }
 
 }

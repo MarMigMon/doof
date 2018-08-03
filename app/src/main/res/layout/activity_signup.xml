@@ -76,21 +76,23 @@
         android:layout_marginTop="60dp"/>
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/ivTime"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="67dp"
         android:layout_toStartOf="@+id/etNewUser"
-        app:srcCompat="@drawable/icon_orange" />
+        app:srcCompat="@drawable/icon_orange"
+        android:contentDescription="@string/logo"/>
 
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="200dp"
         android:layout_height="100dp"
         android:layout_alignEnd="@+id/etNewUser"
-        android:layout_alignTop="@+id/imageView2"
-        android:layout_marginLeft="40dp"
-        app:srcCompat="@drawable/logo_black" />
+        android:layout_alignTop="@+id/ivTime"
+        android:layout_marginStart="40dp"
+        app:srcCompat="@drawable/logo_black"
+        android:contentDescription="@string/logo_text"/>
 
 </RelativeLayout>

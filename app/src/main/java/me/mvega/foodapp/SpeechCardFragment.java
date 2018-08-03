@@ -20,11 +20,12 @@ public class SpeechCardFragment extends Fragment {
     @BindView(R.id.tvInstructions) TextView tvInstructions;
     @BindView(R.id.btStart) Button btStart;
 
-    SpeechFragmentCommunication listenerFragment;
+    private SpeechFragmentCommunication listenerFragment;
 
     // implement interface
     public interface SpeechFragmentCommunication {
         void startRecipe();
+
         void finishRecipe();
     }
 
@@ -48,7 +49,7 @@ public class SpeechCardFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_speech_card, container, false);

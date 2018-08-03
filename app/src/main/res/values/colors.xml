@@ -3,18 +3,12 @@
     <color name="colorPrimary">#ffcc4b</color>
     <color name="colorSecondary">#80deea</color>
     <color name="colorBackground">#FFF</color>
-    <color name="colorPrimaryDark">#002984</color>
-    <color name="colorPrimaryLight">#757de8</color>
+    <color name="colorPrimaryDark">#c89b10</color>
+    <color name="colorPrimaryLight">#ffff7d</color>
     <color name="textColor">#333</color>
-    <color name="textOnPrimary">@color/textColor</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="textOnAccent">@android:color/black</color>
     <color name="lavender">#977BB6</color>
     <color name="sunflower">#FFA921</color>
     <color name="vermilion">#FF9B82</color>
     <color name="light_gray">#eeeeee</color>
-    <color name="greenPrimary">#8BC34A</color>
-    <color name="greenPrimaryDark">#5a9216</color>
-    <color name="greenPrimaryLight">#bef67a</color>
-    <color name="dark_gray">#333</color>
+    <color name="dark_gray">@color/textColor</color>
 </resources>

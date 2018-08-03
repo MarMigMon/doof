@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="70dp" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp">
 
     <ImageView
         android:id="@+id/ivActiveUserImage"
@@ -11,9 +11,10 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:src="@drawable/ic_profile"
         android:clickable="true"
-        android:focusable="true" />
+        android:contentDescription="@string/user_image"
+        android:focusable="true"
+        android:src="@drawable/ic_profile" />
 
     <ImageView
         android:id="@+id/ivRecipe"
@@ -23,32 +24,33 @@
         android:layout_alignParentTop="true"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="10dp"
-        android:src="@drawable/image_placeholder"
-        android:scaleType="centerCrop"
         android:clickable="true"
-        android:focusable="true" />
+        android:contentDescription="@string/recipe_image"
+        android:focusable="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/image_placeholder" />
 
     <TextView
         android:id="@+id/tvActiveUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/ivActiveUserImage"
-        android:layout_toEndOf="@+id/ivActiveUserImage"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"
-        android:text="username"
-        android:textStyle="bold"
+        android:layout_toEndOf="@+id/ivActiveUserImage"
         android:clickable="true"
-        android:focusable="true" />
+        android:focusable="true"
+        android:text="username"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvRelativeTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/ivActiveUserImage"
-        android:layout_toEndOf="@+id/ivActiveUserImage"
         android:layout_marginBottom="5dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/ivActiveUserImage"
         android:text="Relative Time" />
 
     <TextView
@@ -56,7 +58,7 @@
         android:layout_width="187dp"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/tvActiveUser"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:layout_toEndOf="@+id/tvActiveUser"
         android:text="liked/rated your recipe." />
 

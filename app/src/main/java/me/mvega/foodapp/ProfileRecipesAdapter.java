@@ -25,16 +25,18 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
 
     ParseUser user;
     private ProfileAdapterCommunication pCommunication;
-    private List<Recipe> recipes;
-    Context context;
+    private final List<Recipe> recipes;
+    private Context context;
 
     // pass in the Recipes array in the constructor
-    public ProfileRecipesAdapter(List<Recipe> recipes) { this.recipes = recipes;
+    public ProfileRecipesAdapter(List<Recipe> recipes) {
+        this.recipes = recipes;
     }
 
     // communicates information from adapter to fragment
     public interface ProfileAdapterCommunication {
         void respond(Recipe recipe);
+
         void showDeleteDialog(Recipe recipe);
     }
 
@@ -78,13 +80,13 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        public ImageView ivRecipe;
-        public TextView tvName;
-        public TextView tvPrepTime;
-        public RatingBar ratingBar;
-        public TextView tvViewCount;
+        final ImageView ivRecipe;
+        final TextView tvName;
+        final TextView tvPrepTime;
+        final RatingBar ratingBar;
+        final TextView tvViewCount;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
 
             // perform findViewById lookups
@@ -109,7 +111,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
                 // get the recipe at the position, this won't work if the class is static
                 Recipe recipe = recipes.get(position);
                 // update view count when recipe is clicked
-                recipe.put("views", recipe.getViews()+1);
+                recipe.setViews(recipe.getViews() + 1);
                 recipe.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
@@ -141,7 +143,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
     }
 
 
-        // Clean all elements of the recycler
+    // Clean all elements of the recycler
     public void clear() {
         recipes.clear();
         notifyDataSetChanged();

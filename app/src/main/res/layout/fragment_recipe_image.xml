@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_alignParentTop="true"
+    android:contentDescription="@string/recipe_image"
     android:scaleType="centerCrop"
     android:src="@drawable/image_placeholder"
     android:transitionName="image" />

@@ -28,13 +28,16 @@ import static android.support.constraint.Constraints.TAG;
 
 public class FavoritesFragment extends Fragment {
 
-    ProfileRecipesAdapter profileRecipesAdapter;
-    YourRecipesFragment.YourRecipesFragmentCommunication profileListenerFragment;
-    ArrayList<Recipe> recipes;
-    @BindView(R.id.rvRecipes) RecyclerView rvRecipes;
-    @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
+    private ProfileRecipesAdapter profileRecipesAdapter;
+    private YourRecipesFragment.YourRecipesFragmentCommunication profileListenerFragment;
+
+    @BindView(R.id.rvRecipes)
+    RecyclerView rvRecipes;
+    @BindView(R.id.swipeContainer)
+    SwipeRefreshLayout swipeContainer;
     ParseUser user;
-    @BindView(R.id.pbLoading) ProgressBar pbLoading;
+    @BindView(R.id.pbLoading)
+    ProgressBar pbLoading;
 
     // implement interface
 //    public interface YourRecipesFragmentCommunication {
@@ -62,19 +65,16 @@ public class FavoritesFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("user", user);
     }
 
-    public void onAttachToParentFragment(Fragment childFragment) {
-        try
-        {
+    private void onAttachToParentFragment(Fragment childFragment) {
+        try {
             profileListenerFragment = (YourRecipesFragment.YourRecipesFragmentCommunication) childFragment;
 
-        }
-        catch (ClassCastException e)
-        {
+        } catch (ClassCastException e) {
             throw new ClassCastException(
                     childFragment.toString() + " must implement OnPlayerSelectionSetListener");
         }
@@ -87,8 +87,10 @@ public class FavoritesFragment extends Fragment {
         ButterKnife.bind(this, view);
         pbLoading.setVisibility(ProgressBar.VISIBLE);
 
+        // find the Recycler View
+        RecyclerView rvRecipes = view.findViewById(R.id.rvRecipes);
         // initialize the ArrayList (data source)
-        recipes = new ArrayList<>();
+        ArrayList<Recipe> recipes = new ArrayList<>();
         // construct the adapter from this data source
         profileRecipesAdapter = new ProfileRecipesAdapter(recipes);
         // RecyclerView setup (layout manager, use adapter)
@@ -103,7 +105,7 @@ public class FavoritesFragment extends Fragment {
             @Override
             public void respond(Recipe recipe) {
                 profileListenerFragment.respond(recipe);
-                }
+            }
 
             @Override
             public void showDeleteDialog(Recipe recipe) {
@@ -127,12 +129,6 @@ public class FavoritesFragment extends Fragment {
                 android.R.color.holo_red_light);
 
         loadFavorites();
-    }
-
-    public static FavoritesFragment newInstance() {
-        FavoritesFragment fragmentFavorites = new FavoritesFragment();
-        fragmentFavorites.setArguments(new Bundle());
-        return fragmentFavorites;
     }
 
     private void loadFavorites() {
