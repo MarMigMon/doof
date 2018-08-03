@@ -740,8 +740,6 @@ public class AddRecipeFragment extends Fragment {
     private ParseFile prepareImage(Bitmap bitmap) {
         if (bitmap != null) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-
             byte[] bitmapBytes = stream.toByteArray();
 
             return new ParseFile("RecipeImage", bitmapBytes);

@@ -39,12 +39,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:text="Prep Time"
                 android:textAppearance="@style/BodyText"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ivTime"
-                app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
+                app:layout_constraintStart_toEndOf="@+id/ivTime" />
 
             <TextView
                 android:id="@+id/tvDescription"
@@ -105,11 +103,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginTop="8dp"
                 android:text="views"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <TextView
                 android:id="@+id/tvViewCount"
@@ -118,11 +114,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginEnd="3dp"
-                android:layout_marginTop="8dp"
                 android:text="0"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvViewsLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
+                app:layout_constraintEnd_toStartOf="@+id/tvViewsLabel" />
 
             <ImageView
                 android:id="@+id/ivTime"
@@ -130,12 +124,11 @@
                 android:layout_height="15dp"
                 android:layout_marginBottom="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
                 android:contentDescription="@string/time_icon"
                 android:src="@drawable/ic_time"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ivRecipe"
-                app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
+                app:layout_constraintStart_toEndOf="@+id/ivRecipe" />
+
 
             <ImageView
                 android:id="@+id/ivViews"
@@ -143,12 +136,10 @@
                 android:layout_height="15dp"
                 android:layout_marginBottom="16dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginTop="8dp"
                 android:contentDescription="@string/views_icon"
                 android:src="@drawable/ic_visibility_black_24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvViewCount"
-                app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
+                app:layout_constraintEnd_toStartOf="@+id/tvViewCount" />
 
         </android.support.constraint.ConstraintLayout>
 
