@@ -45,19 +45,28 @@ public class EditProfileFragment extends Fragment {
 
     private final static int PICK_PHOTO_CODE = 1046;
 
-    @BindView(R.id.tvName) TextView tvName;
-    @BindView(R.id.etName) EditText etName;
-    @BindView(R.id.ivProfile) ImageView ivProfile;
-    @BindView(R.id.btChangeProfilePic) Button btChangeProfilePic;
-    @BindView(R.id.btSave) Button btSave;
-    @BindView(R.id.tvDescription) TextView tvDescription;
-    @BindView(R.id.etDescription) EditText etDescription;
-    @BindView(R.id.btSaveDescription) Button btSaveDescription;
-    @BindView(R.id.btAddDescription) Button btAddDescription;
+    @BindView(R.id.tvName)
+    TextView tvName;
+    @BindView(R.id.etName)
+    EditText etName;
+    @BindView(R.id.ivProfile)
+    ImageView ivProfile;
+    @BindView(R.id.btChangeProfilePic)
+    Button btChangeProfilePic;
+    @BindView(R.id.btSave)
+    Button btSave;
+    @BindView(R.id.tvDescription)
+    TextView tvDescription;
+    @BindView(R.id.etDescription)
+    EditText etDescription;
+    @BindView(R.id.btSaveDescription)
+    Button btSaveDescription;
+    @BindView(R.id.btAddDescription)
+    Button btAddDescription;
 
     private final ParseUser user = currentUser;
     private final String name = (String) user.get("Name");
-    private final String description = (String) user.get("description");
+    private String description = (String) user.get("description");
 
     private final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1000;
     private File photoFile;
@@ -98,6 +107,9 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
+        if (description == null) {
+            description = "";
+        }
         if (user.get("description").equals("")) {
             btAddDescription.setVisibility(View.VISIBLE);
             btAddDescription.setOnClickListener(new View.OnClickListener() {

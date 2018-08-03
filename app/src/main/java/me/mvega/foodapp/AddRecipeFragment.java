@@ -74,7 +74,6 @@ public class AddRecipeFragment extends Fragment {
 
     // Start of First Page
     @BindView(R.id.page1) RelativeLayout page1;
-    @BindView(R.id.tvRecipeTitle) TextView title;
     @BindView(R.id.btImage) Button btImage;
     @BindView(R.id.ivPreview) ImageView ivPreview;
     @BindView(R.id.etRecipeName) EditText etRecipeName;
@@ -977,9 +976,6 @@ public class AddRecipeFragment extends Fragment {
      * @param recipe the recipe the user wants to edit
      */
     public void setupEdit(final Recipe recipe) {
-
-        title.setText("Edit Recipe"); // This special fragment says "Edit Recipe" rather than New Recipe
-
         // Ensures that when a recipe is submitted
         btSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
