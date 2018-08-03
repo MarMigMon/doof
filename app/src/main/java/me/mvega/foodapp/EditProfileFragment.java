@@ -279,7 +279,7 @@ public class EditProfileFragment extends Fragment {
             }
         }
         if (resultCode == PICK_PHOTO_CODE) {
-            if (data != null && resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 Log.d("Update", "gallery photo updated");
                 Uri photoUri = data.getData();
                 // Do something with the photo based on Uri
@@ -305,17 +305,6 @@ public class EditProfileFragment extends Fragment {
             } else {
                 Toast.makeText(getActivity(), "Picture wasn't uploaded", Toast.LENGTH_SHORT).show();
             }
-//            Uri photoUri = data.getData();
-//            // Do something with the photo based on Uri
-//            Bitmap selectedImage = null;
-//            try {
-//                selectedImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoUri);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            // Load the selected image into a preview
-//            ivPreview.setImageBitmap(selectedImage);
-//            recipeImage = selectedImage;
         } else {
             Log.d("Update", "failure");
         }
