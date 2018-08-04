@@ -2,4 +2,4 @@
 
 grammar menu;
 
-public <final_rule> = next step | previous step | finish recipe | repeat step;
+public <final_rule> = next step | previous step | restart recipe | repeat step;

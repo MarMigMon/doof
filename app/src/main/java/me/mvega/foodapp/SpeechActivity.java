@@ -566,7 +566,7 @@ public class SpeechActivity extends AppCompatActivity implements
                     vpSteps.setCurrentItem(stepCount + 1);
                 }
                 break;
-            case "finish recipe":
+            case "restart recipe":
                 finishRecipe();
                 break;
             case "repeat step":
