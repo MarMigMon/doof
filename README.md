@@ -11,7 +11,7 @@ The following **required** functionality is completed:
 * [x] The recipe will be read aloud
 * [x] The user will be able to scroll through a list of recipes
 * [x] The recipes will produce a detail screen when clicked
-* [x] The app will be able to register when the user says commands such as "Next Step", "Previous Step", "Repeat Step", and respond accordingly
+* [x] The app will be able to register when the user says commands such as "Next Step", "Previous Step", "Repeat Step", and "Restart Recipe", and respond accordingly
 
 
 The following **optional** features are implemented:
