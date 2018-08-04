@@ -262,7 +262,7 @@ public class SpeechActivity extends AppCompatActivity implements
             @Override
             public void done(ParseException e) {
                 Toast.makeText(SpeechActivity.this, "Completed", Toast.LENGTH_SHORT).show();
-
+                showConfetti();
             }
         });
     }
