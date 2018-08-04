@@ -150,7 +150,7 @@ public class FilterPopup {
         ArrayList<ParseQuery<Recipe>> ratingQueries = addTypeQueries(types);
 
         if (!ratingQueries.isEmpty()) {
-            filter.getTop().withUser().newestFirst().or(ratingQueries).findInBackground(new FindCallback<Recipe>() {
+            Recipe.Query.or(ratingQueries).setLimit(20).include("user").orderByDescending("createdAt").findInBackground(new FindCallback<Recipe>() {
                 @Override
                 public void done(List<Recipe> newRecipes, ParseException e) {
                     lowestRating = 0;

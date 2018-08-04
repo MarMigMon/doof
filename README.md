@@ -11,7 +11,7 @@ The following **required** functionality is completed:
 * [x] The recipe will be read aloud
 * [x] The user will be able to scroll through a list of recipes
 * [x] The recipes will produce a detail screen when clicked
-* [x] The app will be able to register when the user says commands such as "Next Step", "Previous Step", "Repeat Step", and respond accordingly
+* [x] The app will be able to register when the user says commands such as "Next Step", "Previous Step", "Repeat Step", and "Restart Recipe", and respond accordingly
 
 
 The following **optional** features are implemented:
@@ -23,7 +23,7 @@ The following **optional** features are implemented:
   * [x] Options for name, max prep time, rating, and food type.
   * [x] Filter is persisted through opening and closing the filter window
 * [x] Users have a profile page.
-  * [x] Within the profile page there are nested fragments for their own recipes, and one for their favorited recipes.
+  * [x] Within the profile page are nested fragments for their own recipes, favorited recipes, and completed recipes.
   * [x] Profile page keeps track of recipes contributed (by that user), recipes reviewed (rated), and recipes completed.
   * [x] Users are able to edit their profile page, such as adding a description and changing their profile picture.
 * [x] Users receive notifications when other users interact with their recipes.
@@ -39,7 +39,10 @@ The following **optional** features are implemented:
 * [x] While recipe is being played, there is a user progress bar.
   * [x] Recipe progress persists across configuration changes
   * [x] Steps are displayed in card views in a view pager
-  * [x] User can stop, pause, and resume recipe dictation / speech recognition
+  * [x] User can stop, pause, replay, and resume recipe dictation / speech recognition
+  * [x] User can configure speed of recipe dictation
+  * [x] Relevant ingredients are listed beneath each step while a popup can be toggled to view full ingredient list
+  * [x] App automatically updates recipes completed count upon reaching the last step
 * [x] Main feed features infinite scrolling.
 * [x] Search bar automatically filters recipes as user types, and displays options for autocompletion.
 * [x] Each recipe displays a view count

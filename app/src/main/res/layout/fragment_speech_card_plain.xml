@@ -69,6 +69,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:src="@drawable/ic_replay_black_24dp"
+                android:tint="@color/medium_gray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </android.support.constraint.ConstraintLayout>

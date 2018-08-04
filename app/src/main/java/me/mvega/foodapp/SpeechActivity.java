@@ -219,6 +219,12 @@ public class SpeechActivity extends AppCompatActivity implements
 
     }
 
+    @Override
+    public void adjustSpeed(float speed) {
+        tts.setSpeechRate(speed);
+        speakStep(stepCount);
+    }
+
     private void finishRecipe() {
         shutdown();
         resetSpeechActivity();
@@ -256,7 +262,7 @@ public class SpeechActivity extends AppCompatActivity implements
             @Override
             public void done(ParseException e) {
                 Toast.makeText(SpeechActivity.this, "Completed", Toast.LENGTH_SHORT).show();
-
+                showConfetti();
             }
         });
     }
@@ -293,7 +299,7 @@ public class SpeechActivity extends AppCompatActivity implements
             public void onInit(int status) {
                 if (status != TextToSpeech.ERROR) {
                     tts.setLanguage(Locale.US);
-                    tts.setSpeechRate(1.0f);
+                    tts.setSpeechRate(1.5f);
                     if (startedRecipe) {
                         beginRecipe();
                         speakStep(stepCount);
@@ -350,6 +356,11 @@ public class SpeechActivity extends AppCompatActivity implements
 
     @Override
     public void replayStep() {
+        repeatTts();
+    }
+
+    @Override
+    public void repeatStep() {
         repeatTts();
     }
 
@@ -555,7 +566,7 @@ public class SpeechActivity extends AppCompatActivity implements
                     vpSteps.setCurrentItem(stepCount + 1);
                 }
                 break;
-            case "finish recipe":
+            case "restart recipe":
                 finishRecipe();
                 break;
             case "repeat step":
