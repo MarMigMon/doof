@@ -2,8 +2,14 @@ package me.mvega.foodapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatSpinner;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -32,6 +38,8 @@ public class FilterPopup {
     private static int maxPrepTime = Integer.MAX_VALUE;
     public static final String KEY_PREFERENCES = "private";
     private static final String KEY_MAX_PREP_TIME = "prep time";
+    private static final String KEY_PREP_TIME_TEXT = "minutes";
+    private String prepTimeText;
 
     // Filter Popup
     @BindView(R.id.cbAppetizer) CheckBox cbAppetizer;
@@ -45,6 +53,7 @@ public class FilterPopup {
     @BindView(R.id.btDone) Button btDone;
     @BindView(R.id.btClear) Button btClear;
     @BindView(R.id.etMaxPrepTime) EditText etMaxPrepTime;
+    @BindView(R.id.spPrepTime) AppCompatSpinner spPrepTime;
 
     FilterPopup(View layout, PopupWindow popup, View button, FeedFragment f) {
         ButterKnife.bind(this, layout);
@@ -71,6 +80,7 @@ public class FilterPopup {
 
         setCheckboxes(ratings);
         setCheckboxes(types);
+        createPrepTimeSpinner();
         setMaxPrepTime();
 
         btDone.setOnClickListener(new View.OnClickListener() {
@@ -86,10 +96,45 @@ public class FilterPopup {
                 clearFilters();
             }
         });
+
+
+    }
+    ///////////////////////
+    // Prep Time Spinner //
+    ///////////////////////
+    private void createPrepTimeSpinner() {
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        String[] prepTimeArray = feedFragment.getResources().getStringArray(R.array.prep_time_array);
+        final ArrayAdapter<String> prepTimeAdapter = new ArrayAdapter<String>(feedFragment.getContext(), R.layout.item_spinner_filter, prepTimeArray) {
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                view.setPadding(0, 0, 0, 0);
+                return view;
+            }
+        };
+        // Specify the layout to use when the list of choices appears
+        prepTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spPrepTime.setAdapter(prepTimeAdapter);
+        // Listens for when the user makes a selection
+        spPrepTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                prepTimeText = (String) adapterView.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     private void setMaxPrepTime() {
         Integer max = prefs.getInt(KEY_MAX_PREP_TIME, 0);
+        spPrepTime.setSelection(prefs.getInt(KEY_PREP_TIME_TEXT, 0));
         if (max > 0) {
             etMaxPrepTime.setText(max.toString());
         }
@@ -133,15 +178,21 @@ public class FilterPopup {
 
     private void filterRecipes() {
         popup.dismiss();
-        Recipe.Query filter = new Recipe.Query();
 
         // Process max prep time entered
         String maxPrepTimeEntered = etMaxPrepTime.getText().toString().trim();
 
         if (!maxPrepTimeEntered.equals("")) {
-            maxPrepTime = Integer.valueOf(maxPrepTimeEntered);
+            int timeEntered = Integer.valueOf(maxPrepTimeEntered);
+            if (prepTimeText.equals("hours")) {
+                maxPrepTime = timeEntered * 60;
+            } else {
+                maxPrepTime = timeEntered;
+            }
+
             prefs.edit()
-                    .putInt(KEY_MAX_PREP_TIME, maxPrepTime)
+                    .putInt(KEY_MAX_PREP_TIME, timeEntered)
+                    .putInt(KEY_PREP_TIME_TEXT, spPrepTime.getSelectedItemPosition())
                     .apply();
         }
 
@@ -188,7 +239,7 @@ public class FilterPopup {
             String name = item.getText().toString();
             if (item.isChecked()) {
                 ParseQuery query = new ParseQuery("Recipe");
-                query.whereGreaterThanOrEqualTo(Recipe.KEY_RATING, lowestRating).whereLessThanOrEqualTo(Recipe.KEY_PREP_TIME, maxPrepTime).whereEqualTo(Recipe.KEY_TYPE, item.getText().toString());
+                query.whereGreaterThanOrEqualTo(Recipe.KEY_RATING, lowestRating).whereLessThanOrEqualTo(Recipe.KEY_PREP_TIME_MINUTES, maxPrepTime).whereEqualTo(Recipe.KEY_TYPE, item.getText().toString());
                 queries.add(query);
                 checked = true;
                 saveChecked(name, true);
@@ -199,7 +250,7 @@ public class FilterPopup {
 
         if (!checked) {
             ParseQuery query = new ParseQuery("Recipe");
-            query.whereGreaterThanOrEqualTo(Recipe.KEY_RATING, lowestRating).whereLessThanOrEqualTo(Recipe.KEY_PREP_TIME, maxPrepTime);
+            query.whereGreaterThanOrEqualTo(Recipe.KEY_RATING, lowestRating).whereLessThanOrEqualTo(Recipe.KEY_PREP_TIME_MINUTES, maxPrepTime);
             queries.add(query);
         }
 

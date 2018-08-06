@@ -223,43 +223,44 @@ public class AddRecipeFragment extends Fragment {
 
                     }
                 });
-
-                ///////////////////////
-                // Prep Time Spinner //
-                ///////////////////////
-
-                // Create an ArrayAdapter using the string array and a default spinner layout
-                String[] prepTimeArray = getResources().getStringArray(R.array.prep_time_array);
-                final ArrayAdapter<String> prepTimeAdapter = new ArrayAdapter<String>(getContext(), R.layout.item_spinner, prepTimeArray) {
-                    @NonNull
-                    @Override
-                    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                        View view = super.getView(position, convertView, parent);
-                        view.setPadding(0, 0, 0, 0);
-                        return view;
-                    }
-                };
-                // Specify the layout to use when the list of choices appears
-                typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                // Apply the adapter to the spinner
-                spPrepTime.setAdapter(prepTimeAdapter);
-                // Listens for when the user makes a selection
-                spPrepTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                        prepTimeText = (String) adapterView.getItemAtPosition(position);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
-
+                createPrepTimeSpinner();
                 checkStoragePermissions();
             }
         });
         handlerThread.quitSafely();
+    }
+
+    ///////////////////////
+    // Prep Time Spinner //
+    ///////////////////////
+    private void createPrepTimeSpinner() {
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        String[] prepTimeArray = getResources().getStringArray(R.array.prep_time_array);
+        final ArrayAdapter<String> prepTimeAdapter = new ArrayAdapter<String>(getContext(), R.layout.item_spinner, prepTimeArray) {
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                view.setPadding(0, 0, 0, 0);
+                return view;
+            }
+        };
+        // Specify the layout to use when the list of choices appears
+        prepTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spPrepTime.setAdapter(prepTimeAdapter);
+        // Listens for when the user makes a selection
+        spPrepTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                prepTimeText = (String) adapterView.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     private void setButtons() {
@@ -911,6 +912,14 @@ public class AddRecipeFragment extends Fragment {
         try {
             Number prepTime = Integer.valueOf(etPrepTime.getText().toString());
             recipe.setPrepTime(prepTime);
+
+            if (prepTimeText == "hours") {
+                recipe.setPrepTimeMinutes((int) prepTime * 60);
+            } else {
+                recipe.setPrepTime(prepTime);
+            }
+
+            // Makes prep time period plural or singular based on prep time value
             if (prepTime.doubleValue() == 1) {
                 recipe.setPrepTimePeriod(prepTimeText.substring(0, prepTimeText.length() - 1));
             } else {
