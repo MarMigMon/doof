@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -38,6 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.app.Activity.RESULT_OK;
+import static com.bumptech.glide.load.resource.bitmap.TransformationUtils.rotateImage;
 import static me.mvega.foodapp.MainActivity.currentUser;
 
 
@@ -261,25 +263,66 @@ public class EditProfileFragment extends Fragment {
                 // by this point we have the camera photo on disk
                 String imagePath = photoFile.getAbsolutePath();
                 Bitmap rawTakenImage = BitmapFactory.decodeFile(new File(imagePath).getAbsolutePath());
-                ivProfile.setImageBitmap(rawTakenImage);
-                Glide.with(getContext()).load(rawTakenImage).apply(RequestOptions.circleCropTransform()).into(ivProfile);
-                user.put("image", prepareImage(rawTakenImage));
-                user.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
-                        } else {
-                            e.printStackTrace();
-                        }
+                try {
+                    ExifInterface ei = new ExifInterface(new File(imagePath).getAbsolutePath());
+                    int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                            ExifInterface.ORIENTATION_UNDEFINED);
+
+                    Bitmap photo;
+                    switch (orientation) {
+                        case ExifInterface.ORIENTATION_ROTATE_90:
+                            photo = rotateImage(rawTakenImage, 90);
+                            break;
+
+                        case ExifInterface.ORIENTATION_ROTATE_180:
+                            photo = rotateImage(rawTakenImage, 180);
+                            break;
+
+                        case ExifInterface.ORIENTATION_ROTATE_270:
+                            photo = rotateImage(rawTakenImage, 270);
+                            break;
+
+                        case ExifInterface.ORIENTATION_NORMAL:
+                        default:
+                            photo = rawTakenImage;
                     }
-                });
+                    ivProfile.setImageBitmap(photo);
+                    Glide.with(getContext()).load(photo).apply(RequestOptions.circleCropTransform()).into(ivProfile);
+                    user.put("image", prepareImage(photo));
+                    user.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
+                            } else {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    ivProfile.setImageBitmap(rawTakenImage);
+                    Glide.with(getContext()).load(rawTakenImage).apply(RequestOptions.circleCropTransform()).into(ivProfile);
+                    user.put("image", prepareImage(rawTakenImage));
+                    user.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
+                            } else {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+
             } else { // Result was a failure
                 Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
         if (resultCode == PICK_PHOTO_CODE) {
-            if (data != null && resultCode == RESULT_OK) {
+//            if (resultCode == RESULT_OK) {
                 Log.d("Update", "gallery photo updated");
                 Uri photoUri = data.getData();
                 // Do something with the photo based on Uri
@@ -302,20 +345,9 @@ public class EditProfileFragment extends Fragment {
                         }
                     }
                 });
-            } else {
-                Toast.makeText(getActivity(), "Picture wasn't uploaded", Toast.LENGTH_SHORT).show();
-            }
-//            Uri photoUri = data.getData();
-//            // Do something with the photo based on Uri
-//            Bitmap selectedImage = null;
-//            try {
-//                selectedImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoUri);
-//            } catch (IOException e) {
-//                e.printStackTrace();
+//            } else {
+//                Toast.makeText(getActivity(), "Picture wasn't uploaded", Toast.LENGTH_SHORT).show();
 //            }
-//            // Load the selected image into a preview
-//            ivPreview.setImageBitmap(selectedImage);
-//            recipeImage = selectedImage;
         } else {
             Log.d("Update", "failure");
         }

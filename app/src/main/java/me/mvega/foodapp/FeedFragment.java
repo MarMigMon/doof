@@ -147,7 +147,6 @@ public class FeedFragment extends Fragment {
 
         // Set adapter
         rvRecipes.setAdapter(recipeAdapter);
-        rvRecipes.addItemDecoration(new SpacesItemDecoration(5));
 
         recipeAdapter.setListener(new RecipeAdapter.AdapterCommunication() {
             @Override
@@ -201,7 +200,7 @@ public class FeedFragment extends Fragment {
         PopupWindow popup = new PopupWindow(getContext());
         View layout = getLayoutInflater().inflate(R.layout.popup_filter, null);
 
-        new FilterPopup(layout, popup, v);
+        new FilterPopup(layout, popup, v, this);
     }
 
     private void searchRecipes(String query) {
@@ -211,7 +210,7 @@ public class FeedFragment extends Fragment {
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
-                if (e == null) {
+                if (e == null && newRecipes != null) {
                     resetAdapter(newRecipes);
                 }
             }
@@ -259,7 +258,7 @@ public class FeedFragment extends Fragment {
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
-                if (e == null) {
+                if (e == null && newRecipes != null) {
                     recipeNames = new ArrayList<>();
                     for (Recipe recipe : newRecipes) {
                         recipeNames.add(recipe.getName());

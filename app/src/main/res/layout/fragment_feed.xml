@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/light_gray">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/search_bar"
@@ -19,7 +20,7 @@
         app:contentInsetRight="0dp"
         app:contentInsetStart="0dp"
         app:elevation="5dp"
-        android:background="@color/colorBackground" >
+        android:background="@color/colorBackground">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -97,7 +98,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@color/light_gray"
-                android:paddingTop="5dp">
+                android:paddingTop="8dp"
+                android:clipToPadding="false">
 
             </android.support.v7.widget.RecyclerView>
 

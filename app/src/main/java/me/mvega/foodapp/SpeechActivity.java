@@ -6,6 +6,8 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -71,6 +73,10 @@ public class SpeechActivity extends AppCompatActivity implements
     private TextToSpeech tts;
     private SpeechRecognizer recognizer;
     private Boolean initializedTts;
+
+    // Handler
+    HandlerThread speakThread;
+    Handler speechHandler;
 
     // Player
     private ParseFile audioFile;
@@ -213,6 +219,17 @@ public class SpeechActivity extends AppCompatActivity implements
 
     }
 
+    @Override
+    public void adjustSpeed(float speed) {
+        tts.setSpeechRate(speed);
+        speakStep(stepCount);
+    }
+
+    private void finishRecipe() {
+        shutdown();
+        resetSpeechActivity();
+    }
+
     private void showConfetti() {
         Log.d("Confetti", "Showing confetti");
         viewKonfetti.build()
@@ -245,7 +262,7 @@ public class SpeechActivity extends AppCompatActivity implements
             @Override
             public void done(ParseException e) {
                 Toast.makeText(SpeechActivity.this, "Completed", Toast.LENGTH_SHORT).show();
-
+                showConfetti();
             }
         });
     }
@@ -282,7 +299,7 @@ public class SpeechActivity extends AppCompatActivity implements
             public void onInit(int status) {
                 if (status != TextToSpeech.ERROR) {
                     tts.setLanguage(Locale.US);
-                    tts.setSpeechRate(0.9f);
+                    tts.setSpeechRate(1.5f);
                     if (startedRecipe) {
                         beginRecipe();
                         speakStep(stepCount);
@@ -312,15 +329,21 @@ public class SpeechActivity extends AppCompatActivity implements
         }
     }
 
-    private void speakStep(int step) {
-        checkIfCompleted(step);
-        if (step < speechCardAdapter.getCount() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            String currStep = instructions.get(step);
-            tts.speak(currStep, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
-        } else {
-            tts.stop();
-            recognizer.stop();
-        }
+    private void speakStep(final int step) {
+        speakThread = new HandlerThread("SpeakStep");
+        speakThread.start();
+        speechHandler = new Handler(speakThread.getLooper());
+        speechHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                checkIfCompleted(step);
+                if (step < speechCardAdapter.getCount() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    String currStep = instructions.get(step);
+                    tts.speak(currStep, TextToSpeech.QUEUE_FLUSH, null, "Instructions");
+                }
+            }
+        });
+        speakThread.quitSafely();
     }
 
     private void checkIfCompleted(int step) {
@@ -336,26 +359,42 @@ public class SpeechActivity extends AppCompatActivity implements
         repeatTts();
     }
 
+    @Override
+    public void repeatStep() {
+        repeatTts();
+    }
+
     private void updateProgressBar(int step) {
         tvStepCount.setText("Step " + step + "/" + totalSteps);
         int progress = (int) (step * 1.0 / totalSteps * 100);
         dbProgress.setProgress(progress);
     }
 
-    @Override
-    public void finishRecipe() {
-        // Stop speech recognition and player or text to speech and reset to start button
-        recognizer.stop();
-        if (player != null) {
-            stopPlayer();
-        }
-        if (initializedTts) {
-            stepCount = 0;
-            tts.stop();
-        }
+    private void shutdown() {
+        HandlerThread handlerThread = new HandlerThread("FinishRecipe");
+        handlerThread.start();
+        // Create a handler attached to the HandlerThread's Looper
+        Handler mHandler = new Handler(handlerThread.getLooper());
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                // Stop speech recognition and player or text to speech
+                recognizer.stop();
+                if (player != null) {
+                    stopPlayer();
+                }
+                if (initializedTts) {
+                    tts.stop();
+                }
+            }
+        });
+        handlerThread.quitSafely();
+    }
 
+    public void resetSpeechActivity() {
         vpSteps.setCurrentItem(0);
         dbProgress.setProgress(0);
+        stepCount = 0;
         tvStepCount.setText("Step " + stepCount + "/" + totalSteps);
 
         // Toggle views
@@ -460,6 +499,12 @@ public class SpeechActivity extends AppCompatActivity implements
         }
 
         stepCount = 0;
+
+        if (speakThread != null) {
+            speakThread.quitSafely();
+        }
+
+        startedRecipe = false;
     }
 
     /**
@@ -521,7 +566,7 @@ public class SpeechActivity extends AppCompatActivity implements
                     vpSteps.setCurrentItem(stepCount + 1);
                 }
                 break;
-            case "finish recipe":
+            case "restart recipe":
                 finishRecipe();
                 break;
             case "repeat step":
@@ -538,8 +583,7 @@ public class SpeechActivity extends AppCompatActivity implements
         ivPause.setVisibility(View.INVISIBLE);
         ivResume.setVisibility(View.VISIBLE);
         isPaused = true;
-        recognizer.stop();
-        tts.stop();
+        shutdown();
     }
 
     private void repeatTts() {

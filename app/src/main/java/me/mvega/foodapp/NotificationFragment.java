@@ -132,7 +132,7 @@ public class NotificationFragment extends Fragment {
 
     private void loadYourNotifications() {
         final Notification.Query notificationQuery = new Notification.Query();
-        notificationQuery.recipeUser(currentUser);
+        notificationQuery.recipeUser(currentUser).whereNotEqualTo("activeUser", currentUser);
         notificationQuery.getTop().newestFirst();
         notificationQuery.include("activeUser.username")
                 .include("activeUser.image")
@@ -141,7 +141,7 @@ public class NotificationFragment extends Fragment {
                 .include("recipe.views");
         notificationQuery.findInBackground(new FindCallback<Notification>() {
             @Override
-            public void done(List<Notification> newNotification, ParseException e) {
+            public void done(final List<Notification> newNotification, ParseException e) {
                 if (e == null) {
                     notificationAdapter.clear();
                     notificationAdapter.addAll(newNotification);
@@ -153,5 +153,4 @@ public class NotificationFragment extends Fragment {
             }
         });
     }
-
 }

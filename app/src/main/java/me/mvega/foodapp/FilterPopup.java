@@ -46,7 +46,7 @@ public class FilterPopup {
     @BindView(R.id.btClear) Button btClear;
     @BindView(R.id.etMaxPrepTime) EditText etMaxPrepTime;
 
-    FilterPopup(View layout, PopupWindow popup, View button) {
+    FilterPopup(View layout, PopupWindow popup, View button, FeedFragment f) {
         ButterKnife.bind(this, layout);
 
         this.popup = popup;
@@ -55,7 +55,7 @@ public class FilterPopup {
 
         types = new CheckBox[]{cbSnack, cbEntree, cbAppetizer, cbDessert};
         ratings = new CheckBox[]{cb5Stars, cb4Stars, cb3Stars, cb2Stars};
-        feedFragment = new FeedFragment();
+        feedFragment = f;
 
         // Set up popup window
         popup.setContentView(layout);
@@ -135,10 +135,6 @@ public class FilterPopup {
         popup.dismiss();
         Recipe.Query filter = new Recipe.Query();
 
-        // Process checkboxes
-        findLowestRating(ratings);
-        ArrayList<ParseQuery<Recipe>> ratingQueries = addTypeQueries(types);
-
         // Process max prep time entered
         String maxPrepTimeEntered = etMaxPrepTime.getText().toString().trim();
 
@@ -149,8 +145,12 @@ public class FilterPopup {
                     .apply();
         }
 
+        // Process checkboxes
+        findLowestRating(ratings);
+        ArrayList<ParseQuery<Recipe>> ratingQueries = addTypeQueries(types);
+
         if (!ratingQueries.isEmpty()) {
-            filter.getTop().withUser().newestFirst().or(ratingQueries).findInBackground(new FindCallback<Recipe>() {
+            Recipe.Query.or(ratingQueries).setLimit(20).include("user").orderByDescending("createdAt").findInBackground(new FindCallback<Recipe>() {
                 @Override
                 public void done(List<Recipe> newRecipes, ParseException e) {
                     lowestRating = 0;

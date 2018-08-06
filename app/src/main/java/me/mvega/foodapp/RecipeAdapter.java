@@ -113,6 +113,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             if (position != RecyclerView.NO_POSITION) {
                 // get the recipe at the position, this won't work if the class is static
                 final Recipe recipe = recipes.get(position);
+                recipe.getUser().get("username");
                 // update view count when recipe is clicked
                 recipe.setViews(recipe.getViews() + 1);
                 recipe.saveInBackground(new SaveCallback() {

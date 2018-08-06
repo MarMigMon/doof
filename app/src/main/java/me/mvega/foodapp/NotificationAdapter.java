@@ -147,7 +147,39 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     nrCommunication.respond(notificationRecipe);
                 }
             }
+            if (v.getId() == itemView.getId()) {
+                int position = getAdapterPosition();
+                // make sure the position is valid, i.e. actually exists in the view
+                if (position != RecyclerView.NO_POSITION) {
+                    // get the recipe at the position, this won't work if the class is static
+                    final Notification notification = notifications.get(position);
+                    Recipe notificationRecipe = (Recipe) notification.getRecipe();
+                    // update view count when recipe is clicked
+                    notificationRecipe.setViews(notificationRecipe.getViews() + 1);
+                    notificationRecipe.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Log.d("Recipe", "Saved");
+                            } else {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    nrCommunication.respond(notificationRecipe);
+                }
+            }
             if (v.getId() == tvActiveUser.getId()) {
+                int position = getAdapterPosition();
+                // make sure the position is valid, i.e. actually exists in the view
+                if (position != RecyclerView.NO_POSITION) {
+                    // get the recipe at the position, this won't work if the class is static
+                    final Notification notification = notifications.get(position);
+                    ParseUser notificationUser = notification.getActiveUser();
+                    nuCommunication.respond(notificationUser);
+                }
+            }
+            if (v.getId() == ivActiveUserImage.getId()) {
                 int position = getAdapterPosition();
                 // make sure the position is valid, i.e. actually exists in the view
                 if (position != RecyclerView.NO_POSITION) {
