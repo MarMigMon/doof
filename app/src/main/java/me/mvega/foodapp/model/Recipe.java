@@ -28,12 +28,7 @@ public class Recipe extends ParseObject {
     private static final String KEY_OBJECT_ID = "objectId";
     private static final String KEY_VIEWS = "views";
     public static final String KEY_USER_RATINGS = "userRatings";
-    private static final String KEY_COMPONENTS = "components";
     private static final int RECIPES_PER_PAGE = 20;
-
-    public List<String> getComponents() {
-        return getList(KEY_COMPONENTS);
-    }
 
     public List<String> getSteps() {
         return getList(KEY_STEPS);

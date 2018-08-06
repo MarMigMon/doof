@@ -211,7 +211,9 @@ public class FeedFragment extends Fragment {
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
-                resetAdapter(newRecipes, e);
+                if (e == null) {
+                    resetAdapter(newRecipes);
+                }
             }
         });
     }
@@ -240,16 +242,12 @@ public class FeedFragment extends Fragment {
         return fragmentFeed;
     }
 
-    public void resetAdapter(List<Recipe> newRecipes, ParseException e) {
-        if (e == null) {
-            recipeAdapter.clear();
-            // ...the data has come back, add new items to your adapter...
-            recipeAdapter.addAll(newRecipes);
-            scrollListener.resetState();
-            swipeContainer.setRefreshing(false);
-        } else {
-            e.printStackTrace();
-        }
+    public void resetAdapter(List<Recipe> newRecipes) {
+        recipeAdapter.clear();
+        // ...the data has come back, add new items to your adapter...
+        recipeAdapter.addAll(newRecipes);
+        scrollListener.resetState();
+        swipeContainer.setRefreshing(false);
     }
 
     public void loadTopRecipes() {
@@ -261,13 +259,17 @@ public class FeedFragment extends Fragment {
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
-                recipeNames = new ArrayList<>();
-                for (Recipe recipe : newRecipes) {
-                    recipeNames.add(recipe.getName());
+                if (e == null) {
+                    recipeNames = new ArrayList<>();
+                    for (Recipe recipe : newRecipes) {
+                        recipeNames.add(recipe.getName());
+                    }
+                    resetAdapter(newRecipes);
+                    initializeSearch();
+                    pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                } else {
+                    e.printStackTrace();
                 }
-                resetAdapter(newRecipes, e);
-                initializeSearch();
-                pbLoading.setVisibility(ProgressBar.INVISIBLE);
             }
         });
     }
