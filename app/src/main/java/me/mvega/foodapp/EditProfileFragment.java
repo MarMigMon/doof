@@ -203,7 +203,6 @@ public class EditProfileFragment extends Fragment {
     private void changeProfilePic() {
         Intent intent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
             startActivityForResult(intent, PICK_PHOTO_CODE);
         }
@@ -321,8 +320,8 @@ public class EditProfileFragment extends Fragment {
                 Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
-        if (resultCode == PICK_PHOTO_CODE) {
-//            if (resultCode == RESULT_OK) {
+        if (requestCode == PICK_PHOTO_CODE) {
+            if (data != null && resultCode == RESULT_OK) {
                 Log.d("Update", "gallery photo updated");
                 Uri photoUri = data.getData();
                 // Do something with the photo based on Uri
@@ -345,9 +344,9 @@ public class EditProfileFragment extends Fragment {
                         }
                     }
                 });
-//            } else {
-//                Toast.makeText(getActivity(), "Picture wasn't uploaded", Toast.LENGTH_SHORT).show();
-//            }
+            } else {
+                Toast.makeText(getActivity(), "Picture wasn't uploaded", Toast.LENGTH_SHORT).show();
+            }
         } else {
             Log.d("Update", "failure");
         }
