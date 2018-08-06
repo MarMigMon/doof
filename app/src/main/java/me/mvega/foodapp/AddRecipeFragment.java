@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -55,7 +54,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -152,9 +150,10 @@ public class AddRecipeFragment extends Fragment {
     private String prepTimeText = "minutes"; // Automatically recognizes the prep-time time period as minutes
 
     private final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
+    private final static String KEY_IMAGE_PATH = "photo";
     private File photoFile;
     private ParseFile imageFile;
-
+    private String imagePath;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -164,8 +163,8 @@ public class AddRecipeFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString(KEY_IMAGE_PATH, imagePath);
         super.onSaveInstanceState(outState);
-        outState.putByteArray("image", recipeImage);
     }
 
     // This event is triggered soon after onCreateView().
@@ -177,15 +176,8 @@ public class AddRecipeFragment extends Fragment {
         ivPreview.setBackgroundResource(R.drawable.image_placeholder);
 
         if (savedInstanceState != null) {
-            recipeImage = savedInstanceState.getByteArray("image");
-            Bitmap bitmap = ((BitmapDrawable) ivPreview.getDrawable()).getBitmap();
-            int width = bitmap.getWidth();
-            int height = bitmap.getHeight();
-            Bitmap.Config configBmp = Bitmap.Config.valueOf(bitmap.getConfig().name());
-            Bitmap bitmap_tmp = Bitmap.createBitmap(width, height, configBmp);
-            ByteBuffer buffer = ByteBuffer.wrap(recipeImage);
-            bitmap_tmp.copyPixelsFromBuffer(buffer);
-            ivPreview.setImageBitmap(bitmap);
+            imagePath = savedInstanceState.getString(KEY_IMAGE_PATH);
+            setSelectedPhoto(new File(imagePath));
         }
 
         // Create a new background thread
@@ -677,6 +669,7 @@ public class AddRecipeFragment extends Fragment {
         }
 
         // Return the file target for the photo based on filename
+        imagePath = mediaStorageDir.getPath() + File.separator + fileName;
         return new File(mediaStorageDir.getPath() + File.separator + fileName);
     }
 
@@ -706,8 +699,6 @@ public class AddRecipeFragment extends Fragment {
 
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                // by this point we have the camera photo on disk
-                String imagePath = photoFile.getAbsolutePath();
                 setSelectedPhoto(new File(imagePath));
             } else { // Result was a failure
                 Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
@@ -776,20 +767,12 @@ public class AddRecipeFragment extends Fragment {
 
             photo = getResizedBitmap(photo);
             ivPreview.setImageBitmap(photo);
-            int size = photo.getRowBytes() * photo.getHeight();
-            ByteBuffer byteBuffer = ByteBuffer.allocate(size);
-            photo.copyPixelsToBuffer(byteBuffer);
-            recipeImage = byteBuffer.array();
 
         } catch (IOException e) {
             e.printStackTrace();
 
             rawTakenImage = getResizedBitmap(rawTakenImage);
             ivPreview.setImageBitmap(rawTakenImage);
-            int size = rawTakenImage.getRowBytes() * rawTakenImage.getHeight();
-            ByteBuffer byteBuffer = ByteBuffer.allocate(size);
-            rawTakenImage.copyPixelsToBuffer(byteBuffer);
-            recipeImage = byteBuffer.array();
         }
     }
 
