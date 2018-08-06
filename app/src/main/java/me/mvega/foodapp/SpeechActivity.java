@@ -171,6 +171,9 @@ public class SpeechActivity extends AppCompatActivity implements
         });
 
         setTextToSpeech();
+        speakThread = new HandlerThread("SpeakStep");
+        speakThread.start();
+        speechHandler = new Handler(speakThread.getLooper());
 
         if (savedInstanceState != null) {
             stepCount = savedInstanceState.getInt(KEY_STEP_COUNT);
@@ -194,11 +197,13 @@ public class SpeechActivity extends AppCompatActivity implements
             public void onPageSelected(int step) {
                 stepCount = step;
                 updateProgressBar(step);
-                if (step > 0) {
-                    speakStep(step);
-                } else if (step == 0) {
-                    if (startedRecipe) {
-                        finishRecipe();
+                if(!isPaused){
+                    if (step > 0) {
+                        speakStep(step);
+                    } else if (step == 0) {
+                        if (startedRecipe) {
+                            finishRecipe();
+                        }
                     }
                 }
             }
@@ -231,7 +236,6 @@ public class SpeechActivity extends AppCompatActivity implements
     }
 
     private void showConfetti() {
-        Log.d("Confetti", "Showing confetti");
         viewKonfetti.build()
                 .addColors(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorSecondary))
                 .setDirection(0.0, 359.0)
@@ -241,7 +245,7 @@ public class SpeechActivity extends AppCompatActivity implements
                 .addShapes(Shape.RECT, Shape.CIRCLE)
                 .addSizes(new Size(12, 5f))
                 .setPosition(-50f, viewKonfetti.getWidth() + 50f, -50f, -50f)
-                .stream(80, 2000L);
+                .stream(80, 1000L);
     }
 
     private void addCompletedRecipe() {
@@ -262,7 +266,6 @@ public class SpeechActivity extends AppCompatActivity implements
             @Override
             public void done(ParseException e) {
                 Toast.makeText(SpeechActivity.this, "Completed", Toast.LENGTH_SHORT).show();
-                showConfetti();
             }
         });
     }
@@ -330,9 +333,6 @@ public class SpeechActivity extends AppCompatActivity implements
     }
 
     private void speakStep(final int step) {
-        speakThread = new HandlerThread("SpeakStep");
-        speakThread.start();
-        speechHandler = new Handler(speakThread.getLooper());
         speechHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -343,14 +343,21 @@ public class SpeechActivity extends AppCompatActivity implements
                 }
             }
         });
-        speakThread.quitSafely();
     }
 
     private void checkIfCompleted(int step) {
-        Log.d("Confetti", "Step is " + step + "and totalSteps is " + totalSteps + "and startedRecipe is " + startedRecipe);
         if (step == totalSteps && startedRecipe) {
-            showConfetti();
-            addCompletedRecipe();
+            HandlerThread completedThread = new HandlerThread("completed");
+            completedThread.start();
+            Handler completedHandler = new Handler(completedThread.getLooper());
+            completedHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    showConfetti();
+                    addCompletedRecipe();
+                }
+            });
+            completedThread.quitSafely();
         }
     }
 
