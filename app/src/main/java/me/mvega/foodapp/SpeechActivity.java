@@ -171,6 +171,9 @@ public class SpeechActivity extends AppCompatActivity implements
         });
 
         setTextToSpeech();
+        speakThread = new HandlerThread("SpeakStep");
+        speakThread.start();
+        speechHandler = new Handler(speakThread.getLooper());
 
         if (savedInstanceState != null) {
             stepCount = savedInstanceState.getInt(KEY_STEP_COUNT);
@@ -194,11 +197,13 @@ public class SpeechActivity extends AppCompatActivity implements
             public void onPageSelected(int step) {
                 stepCount = step;
                 updateProgressBar(step);
-                if (step > 0) {
-                    speakStep(step);
-                } else if (step == 0) {
-                    if (startedRecipe) {
-                        finishRecipe();
+                if(!isPaused){
+                    if (step > 0) {
+                        speakStep(step);
+                    } else if (step == 0) {
+                        if (startedRecipe) {
+                            finishRecipe();
+                        }
                     }
                 }
             }
@@ -328,9 +333,6 @@ public class SpeechActivity extends AppCompatActivity implements
     }
 
     private void speakStep(final int step) {
-        speakThread = new HandlerThread("SpeakStep");
-        speakThread.start();
-        speechHandler = new Handler(speakThread.getLooper());
         speechHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -341,7 +343,6 @@ public class SpeechActivity extends AppCompatActivity implements
                 }
             }
         });
-        speakThread.quitSafely();
     }
 
     private void checkIfCompleted(int step) {
