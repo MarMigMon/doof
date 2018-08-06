@@ -176,8 +176,10 @@ public class AddRecipeFragment extends Fragment {
         ivPreview.setBackgroundResource(R.drawable.image_placeholder);
 
         if (savedInstanceState != null) {
-            imagePath = savedInstanceState.getString(KEY_IMAGE_PATH);
-            setSelectedPhoto(new File(imagePath));
+            imagePath = savedInstanceState.getString(KEY_IMAGE_PATH, "");
+            if (!imagePath.equals("")) {
+                setSelectedPhoto(new File(imagePath));
+            }
         }
 
         // Create a new background thread
