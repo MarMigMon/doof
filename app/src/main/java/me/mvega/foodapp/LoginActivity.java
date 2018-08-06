@@ -50,10 +50,9 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(i);
                 }
             });
-
-
         } else {
             Intent i = new Intent(LoginActivity.this, MainActivity.class);
+            i.putExtra("user", currentUser);
             startActivity(i);
             finish();
 

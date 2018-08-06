@@ -32,12 +32,14 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     @BindView(R.id.mainFrame) FrameLayout mainFrame;
 
 
-    public static ParseUser currentUser = ParseUser.getCurrentUser();
+    public static ParseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        currentUser = getIntent().getParcelableExtra("user");
 
         // Starts activity with feed fragment displayed
         if (savedInstanceState == null) {
@@ -70,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
                                 ProfileFragment profileFragment = new ProfileFragment();
                                 Bundle bundle = new Bundle();
                                 bundle.putParcelable("user", currentUser);
-                                profileFragment.user = currentUser;
                                 profileFragment.setArguments(bundle);
                                 replaceFragment(profileFragment);
                                 return true;

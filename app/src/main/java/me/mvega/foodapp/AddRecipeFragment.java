@@ -140,7 +140,6 @@ public class AddRecipeFragment extends Fragment {
 
     private static final int MAX_SIZE = 720;
     private byte[] recipeImage;
-    private Uri audioUri;
     private final static int PICK_PHOTO_CODE = 1046;
     private final static int PICK_AUDIO_CODE = 1;
     private int stepCount = 1;
@@ -735,7 +734,7 @@ public class AddRecipeFragment extends Fragment {
         } else if (requestCode == PICK_AUDIO_CODE) {
             if (data != null && resultCode == RESULT_OK) {
                 //the selected audio.
-                audioUri = data.getData();
+                Uri audioUri = data.getData();
                 String audioName = getFileName(audioUri);
                 btAudio.setText(audioName);
                 Log.d("AddRecipeFragment", "Picked audio");
@@ -792,7 +791,7 @@ public class AddRecipeFragment extends Fragment {
         }
     }
 
-    public Bitmap getResizedBitmap(Bitmap image) {
+    private Bitmap getResizedBitmap(Bitmap image) {
         int width = image.getWidth();
         if (width > MAX_SIZE) {
             int height = image.getHeight();
@@ -957,7 +956,7 @@ public class AddRecipeFragment extends Fragment {
         final Recipe recipe;
         final boolean newRecipe;
 
-        // checks if this is submission is an edit or a new recipe
+        // checks if this submission is an edit or a new recipe
         if (oldRecipe == null) {
             recipe = new Recipe();
             newRecipe = true;
@@ -970,7 +969,6 @@ public class AddRecipeFragment extends Fragment {
         ArrayList<String> ingredients = parseIngredients();
         String name = etRecipeName.getText().toString();
         String description = etDescription.getText().toString();
-
 
         // Checks to ensure every required field is filled out
         if (name.isEmpty()) {

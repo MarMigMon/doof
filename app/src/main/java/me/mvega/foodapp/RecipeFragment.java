@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -123,11 +125,17 @@ public class RecipeFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     // Switch fragment to edit recipe and then return to this fragment with the edited recipe
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    AddRecipeFragment fragment = new AddRecipeFragment();
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    FragmentTransaction ft = fm.beginTransaction();
+                    final AddRecipeFragment fragment = new AddRecipeFragment();
                     ft.replace(R.id.frameLayout, fragment).commit();
-                    getActivity().getSupportFragmentManager().executePendingTransactions();
-                    fragment.setupEdit(recipe);
+                    fm.executePendingTransactions();
+                    recipe.fetchInBackground(new GetCallback<ParseObject>() {
+                        @Override
+                        public void done(ParseObject object, ParseException e) {
+                            fragment.setupEdit(recipe);
+                        }
+                    });
                 }
             });
         } else {
