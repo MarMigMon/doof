@@ -128,7 +128,7 @@ public class SpeechActivity extends AppCompatActivity implements
         ingredients = TextUtils.join("\n", recipe.getIngredients());
 
         ArrayList<String> components = new ArrayList<>();
-        components.addAll(recipe.getComponents());
+        components.addAll(recipe.getIngredients());
 
         instructions = new ArrayList<>();
         instructions.add(getResources().getString(R.string.before_start_recipe_caption));

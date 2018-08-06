@@ -210,8 +210,8 @@ public class FeedFragment extends Fragment {
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
-                if (newRecipes != null) {
-                    resetAdapter(newRecipes, e);
+                if (e == null && newRecipes != null) {
+                    resetAdapter(newRecipes);
                 }
             }
         });
@@ -241,16 +241,12 @@ public class FeedFragment extends Fragment {
         return fragmentFeed;
     }
 
-    public void resetAdapter(List<Recipe> newRecipes, ParseException e) {
-        if (e == null) {
-            recipeAdapter.clear();
-            // ...the data has come back, add new items to your adapter...
-            recipeAdapter.addAll(newRecipes);
-            scrollListener.resetState();
-            swipeContainer.setRefreshing(false);
-        } else {
-            e.printStackTrace();
-        }
+    public void resetAdapter(List<Recipe> newRecipes) {
+        recipeAdapter.clear();
+        // ...the data has come back, add new items to your adapter...
+        recipeAdapter.addAll(newRecipes);
+        scrollListener.resetState();
+        swipeContainer.setRefreshing(false);
     }
 
     public void loadTopRecipes() {
@@ -262,12 +258,12 @@ public class FeedFragment extends Fragment {
         recipeQuery.findInBackground(new FindCallback<Recipe>() {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
-                if (newRecipes != null) {
+                if (e == null && newRecipes != null) {
                     recipeNames = new ArrayList<>();
                     for (Recipe recipe : newRecipes) {
                         recipeNames.add(recipe.getName());
                     }
-                    resetAdapter(newRecipes, e);
+                    resetAdapter(newRecipes);
                     initializeSearch();
                     pbLoading.setVisibility(ProgressBar.INVISIBLE);
                 } else {

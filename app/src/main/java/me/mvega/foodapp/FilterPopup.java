@@ -206,7 +206,7 @@ public class FilterPopup {
                 public void done(List<Recipe> newRecipes, ParseException e) {
                     lowestRating = 0;
                     maxPrepTime = Integer.MAX_VALUE;
-                    feedFragment.resetAdapter(newRecipes, e);
+                    feedFragment.resetAdapter(newRecipes);
                 }
             });
         }

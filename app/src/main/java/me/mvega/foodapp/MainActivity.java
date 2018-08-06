@@ -68,7 +68,10 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
                             case R.id.tab_profile:
                                 ProfileFragment profileFragment = new ProfileFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("user", currentUser);
                                 profileFragment.user = currentUser;
+                                profileFragment.setArguments(bundle);
                                 replaceFragment(profileFragment);
                                 return true;
 

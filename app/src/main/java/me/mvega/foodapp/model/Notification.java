@@ -77,5 +77,10 @@ public class Notification extends ParseObject {
             whereEqualTo(KEY_RECIPE_USER, user);
             return this;
         }
+
+        public Query activeUser(ParseUser user) {
+            whereEqualTo(KEY_ACTIVE_USER, user);
+            return this;
+        }
     }
 }
