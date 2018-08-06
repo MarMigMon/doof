@@ -155,6 +155,12 @@ public class AddRecipeFragment extends Fragment {
     private ParseFile imageFile;
     private String imagePath;
 
+    private static final String KEY_RECIPE = "recipe";
+    private static final String KEY_EDITING = "editing";
+    private static final String KEY_EDIT_RECIPE = "used to retrieve bool from new instance";
+    // True if a recipe is being edited
+    public Boolean editing;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
@@ -164,7 +170,17 @@ public class AddRecipeFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(KEY_IMAGE_PATH, imagePath);
+        outState.putBoolean(KEY_EDITING, editing);
         super.onSaveInstanceState(outState);
+    }
+
+    public static AddRecipeFragment newInstance(Recipe recipe, Boolean editing) {
+        Bundle args = new Bundle();
+        args.putParcelable(KEY_RECIPE, recipe);
+        args.putBoolean(KEY_EDIT_RECIPE, editing);
+        AddRecipeFragment fragment = new AddRecipeFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     // This event is triggered soon after onCreateView().
@@ -180,6 +196,9 @@ public class AddRecipeFragment extends Fragment {
             if (!imagePath.equals("")) {
                 setSelectedPhoto(new File(imagePath));
             }
+            editing = savedInstanceState.getBoolean(KEY_EDITING, false);
+        } else {
+            editing = getArguments().getBoolean(KEY_EDIT_RECIPE);
         }
 
         // Create a new background thread
@@ -259,6 +278,9 @@ public class AddRecipeFragment extends Fragment {
             }
         });
         handlerThread.quitSafely();
+        if (editing) {
+            setupEdit((Recipe) getArguments().getParcelable(KEY_RECIPE));
+        }
     }
 
     ///////////////////////
@@ -1049,6 +1071,7 @@ public class AddRecipeFragment extends Fragment {
                     if (e == null) {
                         Toast.makeText(getContext(), "Recipe successfully edited!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                        editing = false;
                         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                         RecipeFragment recipeFragment = new RecipeFragment();
                         recipeFragment.recipe = recipe;

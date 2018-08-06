@@ -183,4 +183,11 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
             f.setExitTransition(new Fade());
         }
     }
+
+    @Override
+    public void startEdit(Recipe recipe) {
+        AddRecipeFragment addRecipeFragment = AddRecipeFragment.newInstance(recipe, true);
+        setFadeTransition(addRecipeFragment);
+        replaceFragment(addRecipeFragment);
+    }
 }
