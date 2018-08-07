@@ -155,7 +155,11 @@ public class AddRecipeFragment extends Fragment {
     private File photoFile;
     private ParseFile imageFile;
     private String imagePath;
+
+    // Submitting edited recipe
     private Recipe editedRecipe;
+    private Context context;
+    private MainActivity mainActivity;
 
     // implement listener
     public interface NewRecipeCommunication {
@@ -165,6 +169,8 @@ public class AddRecipeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
+        mainActivity = (MainActivity) context;
         if (context instanceof NewRecipeCommunication) {
             newRecipeListener = (NewRecipeCommunication) context;
         } else {
@@ -247,7 +253,7 @@ public class AddRecipeFragment extends Fragment {
 
                 // Create an ArrayAdapter using the string array and a default spinner layout
                 String[] typeArray = getResources().getStringArray(R.array.type_array);
-                final ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(getContext(), R.layout.item_spinner, typeArray) {
+                final ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(context, R.layout.item_spinner, typeArray) {
                     @Override
                     public boolean isEnabled(int position) { // First item will be used as a hint
                         return position != 0;
@@ -308,7 +314,7 @@ public class AddRecipeFragment extends Fragment {
     private void createPrepTimeSpinner() {
         // Create an ArrayAdapter using the string array and a default spinner layout
         String[] prepTimeArray = getResources().getStringArray(R.array.prep_time_array);
-        final ArrayAdapter<String> prepTimeAdapter = new ArrayAdapter<String>(getContext(), R.layout.item_spinner, prepTimeArray) {
+        final ArrayAdapter<String> prepTimeAdapter = new ArrayAdapter<String>(context, R.layout.item_spinner, prepTimeArray) {
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -344,7 +350,7 @@ public class AddRecipeFragment extends Fragment {
                     Fragment newRecipeFragment = null;
                     newRecipeListener.respond(newRecipeFragment);
                 } catch (IllegalArgumentException e) {
-                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -399,7 +405,7 @@ public class AddRecipeFragment extends Fragment {
                         }
                     });
                 } catch (IllegalArgumentException e) {
-                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -550,7 +556,7 @@ public class AddRecipeFragment extends Fragment {
 
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
             if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                Toast.makeText(getContext(), "Accept permissions to enable adding recipes", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Accept permissions to enable adding recipes", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -572,7 +578,7 @@ public class AddRecipeFragment extends Fragment {
      * Adds a new step (EditText) to the layout for the user to input text
      */
     private void onAddStep() {
-        EditText step = new EditText(getContext());
+        EditText step = new EditText(context);
 
         // Set layout params
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -619,7 +625,7 @@ public class AddRecipeFragment extends Fragment {
      * Adds a new ingredient (EditText) to the layout for the user to input text
      */
     private void onAddIngredient() {
-        EditText ingredient = new EditText(getContext());
+        EditText ingredient = new EditText(context);
 
         // Set layout params
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -690,12 +696,12 @@ public class AddRecipeFragment extends Fragment {
         photoFile = getPhotoFileUri(photoFileName);
 
         // wrap File object into a content provider
-        Uri fileProvider = FileProvider.getUriForFile(getContext(), "me.mvega.fileprovider", photoFile);
+        Uri fileProvider = FileProvider.getUriForFile(context, "me.mvega.fileprovider", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
 
         // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
         // So as long as the result is not null, it's safe to use the intent.
-        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
             // Start the image capture intent to take photo
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
         }
@@ -706,7 +712,7 @@ public class AddRecipeFragment extends Fragment {
         // Use `getExternalFilesDir` on Context to access package-specific directories.
         // This way, we don't need to request external read/write runtime permissions.
         String APP_TAG = "doof";
-        File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), APP_TAG);
+        File mediaStorageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), APP_TAG);
 
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
@@ -756,7 +762,7 @@ public class AddRecipeFragment extends Fragment {
                 Cursor cursor = null;
                 try {
                     String[] proj = {MediaStore.Images.Media.DATA};
-                    cursor = getContext().getContentResolver().query(photoUri, proj, null, null, null);
+                    cursor = context.getContentResolver().query(photoUri, proj, null, null, null);
                     int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                     cursor.moveToFirst();
                     imagePath = cursor.getString(columnIndex);
@@ -837,7 +843,7 @@ public class AddRecipeFragment extends Fragment {
             @Override
             public void done(ParseException e) {
                 if (e != null) {
-                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -980,19 +986,7 @@ public class AddRecipeFragment extends Fragment {
         }
     }
 
-    private void addRecipe(Recipe oldRecipe) throws IllegalArgumentException {
-        final Recipe recipe;
-        final boolean newRecipe;
-
-        // checks if this submission is an edit or a new recipe
-        if (oldRecipe == null) {
-            recipe = new Recipe();
-            newRecipe = true;
-        } else {
-            recipe = oldRecipe;
-            newRecipe = false;
-        }
-
+    private void setFields(Recipe recipe) {
         ArrayList<String> steps = parseInstructions();
         ArrayList<String> ingredients = parseIngredients();
         String name = etRecipeName.getText().toString();
@@ -1059,7 +1053,22 @@ public class AddRecipeFragment extends Fragment {
         if (imageFile != null) {
             recipe.setImage(imageFile);
         }
+    }
 
+    private void addRecipe(Recipe oldRecipe) throws IllegalArgumentException {
+        final Recipe recipe;
+        final boolean newRecipe;
+
+        // checks if this submission is an edit or a new recipe
+        if (oldRecipe == null) {
+            recipe = new Recipe();
+            newRecipe = true;
+        } else {
+            recipe = oldRecipe;
+            newRecipe = false;
+        }
+
+        setFields(recipe);
         pbLoading.setVisibility(ProgressBar.VISIBLE);
 
         if (newRecipe) {
@@ -1070,17 +1079,17 @@ public class AddRecipeFragment extends Fragment {
                 @Override
                 public void done(ParseException e) {
                     if (e == null) {
-                        Toast.makeText(getContext(), "Recipe successfully created!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Recipe successfully created!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
 //                        Fragment addRecipeFragment = getFragmentManager().findFragmentByTag("newRecipe");
 //                        if (addRecipeFragment != null ) {
 //                            getFragmentManager().beginTransaction().remove(addRecipeFragment).commit();
 //                        }
-                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
                         ft.replace(R.id.frameLayout, new FeedFragment());
                         ft.commit();
                     } else {
-                        Toast.makeText(getContext(), "Recipe creation failed!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Recipe creation failed!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
                         e.printStackTrace();
                     }
@@ -1091,16 +1100,16 @@ public class AddRecipeFragment extends Fragment {
                 @Override
                 public void done(ParseException e) {
                     if (e == null) {
-                        Toast.makeText(getContext(), "Recipe successfully edited!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Recipe successfully edited!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
                         editing = false;
-                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
                         RecipeFragment recipeFragment = new RecipeFragment();
                         recipeFragment.recipe = recipe;
                         ft.replace(R.id.frameLayout, recipeFragment);
                         ft.commit();
                     } else {
-                        Toast.makeText(getContext(), "Recipe edit failed!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Recipe edit failed!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
                         e.printStackTrace();
                     }
