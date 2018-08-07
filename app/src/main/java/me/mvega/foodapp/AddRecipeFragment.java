@@ -159,7 +159,7 @@ public class AddRecipeFragment extends Fragment {
     private static final String KEY_EDITING = "editing";
     private static final String KEY_EDIT_RECIPE = "used to retrieve bool from new instance";
     // True if a recipe is being edited
-    public Boolean editing;
+    public Boolean editing = false;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -198,7 +198,9 @@ public class AddRecipeFragment extends Fragment {
             }
             editing = savedInstanceState.getBoolean(KEY_EDITING, false);
         } else {
-            editing = getArguments().getBoolean(KEY_EDIT_RECIPE);
+            if (getArguments() != null) {
+                editing = getArguments().getBoolean(KEY_EDIT_RECIPE);
+            }
         }
 
         // Create a new background thread
