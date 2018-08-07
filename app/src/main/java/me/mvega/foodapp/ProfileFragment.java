@@ -57,6 +57,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     // either dynamically or via XML layout inflation.
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        super.onCreateView(inflater, parent, savedInstanceState);
         return inflater.inflate(R.layout.fragment_profile, parent, false);
     }
 
@@ -236,5 +237,6 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     private void replaceFragment(Fragment f) {
         final FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.userRecipes, f).commit();
+
     }
 }

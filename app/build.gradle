@@ -67,6 +67,8 @@ dependencies {
 //    // Add this line
 //    implementation "com.parse:parse-fcm-android:$parseVersion"
     implementation 'com.android.support:exifinterface:28.0.0-beta01'
+
+    implementation 'com.gu.android:toolargetool:0.1.3@aar'
 }
 
 ant.importBuild 'assets.xml'

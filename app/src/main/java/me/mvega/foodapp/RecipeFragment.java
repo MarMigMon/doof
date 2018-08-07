@@ -101,6 +101,7 @@ public class RecipeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.onCreateView(inflater, parent, savedInstanceState);
 
         // Prevents app crashing when switching orientations
         if (savedInstanceState != null) {
@@ -109,13 +110,13 @@ public class RecipeFragment extends Fragment {
         }
 
         // Defines the xml file for the fragment
-        View mainView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe, null, false);
+        View mainView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe, null);
 
         // Sets up the "PullToZoom" views
         PullToZoomScrollViewEx pullToZoom = mainView.findViewById(R.id.pullToZoomScroll);
-        View zoomView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_image, null, false);
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_content, null, false);
-        View headView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_head, null, false);
+        View zoomView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_image, null);
+        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_content, null);
+        View headView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_recipe_head, null);
 
         // Adds toolbar to headView if the user owns the recipe
         if (recipe.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {

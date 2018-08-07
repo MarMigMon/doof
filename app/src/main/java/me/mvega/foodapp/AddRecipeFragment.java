@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -55,7 +54,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,6 +155,7 @@ public class AddRecipeFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        super.onCreateView(inflater, parent, savedInstanceState);
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_add_recipe, parent, false);
     }
@@ -177,14 +176,10 @@ public class AddRecipeFragment extends Fragment {
 
         if (savedInstanceState != null) {
             recipeImage = savedInstanceState.getByteArray("image");
-            Bitmap bitmap = ((BitmapDrawable) ivPreview.getDrawable()).getBitmap();
-            int width = bitmap.getWidth();
-            int height = bitmap.getHeight();
-            Bitmap.Config configBmp = Bitmap.Config.valueOf(bitmap.getConfig().name());
-            Bitmap bitmap_tmp = Bitmap.createBitmap(width, height, configBmp);
-            ByteBuffer buffer = ByteBuffer.wrap(recipeImage);
-            bitmap_tmp.copyPixelsFromBuffer(buffer);
-            ivPreview.setImageBitmap(bitmap);
+            if (recipeImage != null) {
+                Bitmap b = BitmapFactory.decodeByteArray(recipeImage, 0, recipeImage.length);
+                ivPreview.setImageBitmap(b);
+            }
         }
 
         // Create a new background thread
@@ -754,41 +749,38 @@ public class AddRecipeFragment extends Fragment {
             int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                     ExifInterface.ORIENTATION_UNDEFINED);
 
-            Bitmap photo;
             switch (orientation) {
                 case ExifInterface.ORIENTATION_ROTATE_90:
-                    photo = rotateImage(rawTakenImage, 90);
+                    rawTakenImage = rotateImage(rawTakenImage, 90);
                     break;
 
                 case ExifInterface.ORIENTATION_ROTATE_180:
-                    photo = rotateImage(rawTakenImage, 180);
+                    rawTakenImage = rotateImage(rawTakenImage, 180);
                     break;
 
                 case ExifInterface.ORIENTATION_ROTATE_270:
-                    photo = rotateImage(rawTakenImage, 270);
+                    rawTakenImage = rotateImage(rawTakenImage, 270);
                     break;
 
                 case ExifInterface.ORIENTATION_NORMAL:
                 default:
-                    photo = rawTakenImage;
+                    break;
             }
 
-            photo = getResizedBitmap(photo);
-            ivPreview.setImageBitmap(photo);
-            int size = photo.getRowBytes() * photo.getHeight();
-            ByteBuffer byteBuffer = ByteBuffer.allocate(size);
-            photo.copyPixelsToBuffer(byteBuffer);
-            recipeImage = byteBuffer.array();
+            rawTakenImage = getResizedBitmap(rawTakenImage);
+            ivPreview.setImageBitmap(rawTakenImage);
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            rawTakenImage.compress(Bitmap.CompressFormat.PNG, 100, os);
+            recipeImage = os.toByteArray();
 
         } catch (IOException e) {
             e.printStackTrace();
 
             rawTakenImage = getResizedBitmap(rawTakenImage);
             ivPreview.setImageBitmap(rawTakenImage);
-            int size = rawTakenImage.getRowBytes() * rawTakenImage.getHeight();
-            ByteBuffer byteBuffer = ByteBuffer.allocate(size);
-            rawTakenImage.copyPixelsToBuffer(byteBuffer);
-            recipeImage = byteBuffer.array();
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            rawTakenImage.compress(Bitmap.CompressFormat.PNG, 100, os);
+            recipeImage = os.toByteArray();
         }
     }
 
@@ -837,7 +829,7 @@ public class AddRecipeFragment extends Fragment {
         //Decode with inSampleSize
         o.inSampleSize = scale;
         o.inJustDecodeBounds = false;
-//        o.inPreferredConfig = Bitmap.Config.RGB_565;
+        o.inPreferredConfig = Bitmap.Config.RGB_565;
         fis = new FileInputStream(f);
         b = BitmapFactory.decodeStream(fis, null, o);
         fis.close();
@@ -1085,8 +1077,6 @@ public class AddRecipeFragment extends Fragment {
 //                }
 //            });
 //        }
-
-
     }
 
     /**

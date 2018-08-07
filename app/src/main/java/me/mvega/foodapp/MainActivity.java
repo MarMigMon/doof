@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.gu.toolargetool.TooLargeTool;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -31,13 +32,14 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.mainFrame) FrameLayout mainFrame;
 
-
     public static ParseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        TooLargeTool.startLogging(getApplication());
 
         currentUser = getIntent().getParcelableExtra("user");
 
