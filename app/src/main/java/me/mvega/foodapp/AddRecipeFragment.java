@@ -740,8 +740,8 @@ public class AddRecipeFragment extends Fragment {
                     cursor = getContext().getContentResolver().query(photoUri, proj, null, null, null);
                     int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                     cursor.moveToFirst();
-                    String path = cursor.getString(columnIndex);
-                    setSelectedPhoto(new File(path));
+                    imagePath = cursor.getString(columnIndex);
+                    setSelectedPhoto(new File(imagePath));
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -1139,7 +1139,7 @@ public class AddRecipeFragment extends Fragment {
         addIngredients(recipe.getIngredients());
 
         final ParseFile image = recipe.getImage();
-        if (image != null) {
+        if (image != null && imagePath == null) {
             recipe.getImage().getDataInBackground(new GetDataCallback() {
                 @Override
                 public void done(byte[] data, ParseException e) {
