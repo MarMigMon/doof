@@ -66,6 +66,14 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         }
     }
 
+    public static ProfileFragment newInstance(ParseUser user) {
+
+        Bundle args = new Bundle();
+        args.putParcelable("User", user);
+        ProfileFragment fragment = new ProfileFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     // This event is triggered soon after onCreateView().
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
@@ -76,6 +84,8 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         // Prevents app crashing when switching orientations
         if (savedInstanceState != null) {
             user = savedInstanceState.getParcelable("user");
+        } else {
+            user = getArguments().getParcelable("User");
         }
 
         // gets user's name

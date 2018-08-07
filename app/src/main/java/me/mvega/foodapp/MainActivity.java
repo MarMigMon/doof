@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     @BindView(R.id.mainFrame) FrameLayout mainFrame;
 
 
-    public static ParseUser currentUser = ParseUser.getCurrentUser();
+    public static ParseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
             Fragment f = getSupportFragmentManager().findFragmentByTag(KEY_FRAGMENT);
              replaceFragment(f);
         }
+
+        currentUser = ParseUser.getCurrentUser();
 
         ButterKnife.bind(this);
 
@@ -67,11 +69,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
                                 return true;
 
                             case R.id.tab_profile:
-                                ProfileFragment profileFragment = new ProfileFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("user", currentUser);
-                                profileFragment.user = currentUser;
-                                profileFragment.setArguments(bundle);
+                                ProfileFragment profileFragment = ProfileFragment.newInstance(currentUser);
                                 replaceFragment(profileFragment);
                                 return true;
 

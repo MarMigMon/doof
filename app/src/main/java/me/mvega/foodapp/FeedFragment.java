@@ -90,17 +90,22 @@ public class FeedFragment extends Fragment {
         swipeContainer = view.findViewById(R.id.swipeContainer);
         context = view.getContext();
 
-        pbLoading.setVisibility(ProgressBar.VISIBLE);
-
-        initializeAdapter();
-        initializeEndlessScrolling();
-        setSwipeContainer();
-        loadTopRecipes();
-
-        btFilter.setOnClickListener(new View.OnClickListener() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void onClick(View view) {
-                showFilterPopup(view);
+            public void run() {
+                pbLoading.setVisibility(ProgressBar.VISIBLE);
+
+                initializeAdapter();
+                initializeEndlessScrolling();
+                setSwipeContainer();
+                loadTopRecipes();
+
+                btFilter.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showFilterPopup(view);
+                    }
+                });
             }
         });
     }
