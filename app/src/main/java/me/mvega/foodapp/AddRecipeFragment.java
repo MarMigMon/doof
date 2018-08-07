@@ -3,7 +3,6 @@ package me.mvega.foodapp;
 import android.Manifest;
 import android.animation.Animator;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,6 +20,7 @@ import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.media.ExifInterface;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -50,13 +49,11 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.SaveCallback;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,47 +71,74 @@ public class AddRecipeFragment extends Fragment {
     // listener
     NewRecipeCommunication newRecipeListener;
     // Global Views
-    @BindView(R.id.scrollView) ScrollView scrollView;
-    @BindView(R.id.pbLoading) ProgressBar pbLoading;
+    @BindView(R.id.scrollView)
+    ScrollView scrollView;
+    @BindView(R.id.pbLoading)
+    ProgressBar pbLoading;
 
     // Start of First Page
-    @BindView(R.id.page1) RelativeLayout page1;
-    @BindView(R.id.btImage) Button btImage;
-    @BindView(R.id.ivPreview) ImageView ivPreview;
-    @BindView(R.id.etRecipeName) EditText etRecipeName;
-    @BindView(R.id.spType) AppCompatSpinner spType;
-    @BindView(R.id.etDescription) EditText etDescription;
-    @BindView(R.id.etYield) EditText etYield;
-    @BindView(R.id.etPrepTime) EditText etPrepTime;
-    @BindView(R.id.spPrepTime) AppCompatSpinner spPrepTime;
-    @BindView(R.id.btNext) Button btNext;
+    @BindView(R.id.page1)
+    RelativeLayout page1;
+    @BindView(R.id.btImage)
+    Button btImage;
+    @BindView(R.id.ivPreview)
+    ImageView ivPreview;
+    @BindView(R.id.etRecipeName)
+    EditText etRecipeName;
+    @BindView(R.id.spType)
+    AppCompatSpinner spType;
+    @BindView(R.id.etDescription)
+    EditText etDescription;
+    @BindView(R.id.etYield)
+    EditText etYield;
+    @BindView(R.id.etPrepTime)
+    EditText etPrepTime;
+    @BindView(R.id.spPrepTime)
+    AppCompatSpinner spPrepTime;
+    @BindView(R.id.btNext)
+    Button btNext;
     // End of First Page
 
     // Start of Second Page
-    @BindView(R.id.page2) RelativeLayout page2;
-    @BindView(R.id.tvIngredients) TextView tvIngredients;
-    @BindView(R.id.ingredientsLayout) RelativeLayout ingredientsLayout;
-    @BindView(R.id.ingredient1) EditText ingredient1;
-    @BindView(R.id.ingredientButtonLayout) LinearLayout ingredientButtonLayout;
-    @BindView(R.id.btAddIngredient) Button btAddIngredient;
-    @BindView(R.id.btRemoveIngredient) Button btRemoveIngredient;
+    @BindView(R.id.page2)
+    RelativeLayout page2;
+    @BindView(R.id.tvIngredients)
+    TextView tvIngredients;
+    @BindView(R.id.ingredientsLayout)
+    RelativeLayout ingredientsLayout;
+    @BindView(R.id.ingredient1)
+    EditText ingredient1;
+    @BindView(R.id.ingredientButtonLayout)
+    LinearLayout ingredientButtonLayout;
+    @BindView(R.id.btAddIngredient)
+    Button btAddIngredient;
+    @BindView(R.id.btRemoveIngredient)
+    Button btRemoveIngredient;
 
-    @BindView(R.id.tvInstructions) TextView tvInstructions;
-    @BindView(R.id.instructionsLayout) RelativeLayout instructionsLayout;
-    @BindView(R.id.step1) EditText step1;
-    @BindView(R.id.stepButtonLayout) LinearLayout stepButtonLayout;
-    @BindView(R.id.btAddStep) Button btAddStep;
-    @BindView(R.id.btRemoveStep) Button btRemoveStep;
+    @BindView(R.id.tvInstructions)
+    TextView tvInstructions;
+    @BindView(R.id.instructionsLayout)
+    RelativeLayout instructionsLayout;
+    @BindView(R.id.step1)
+    EditText step1;
+    @BindView(R.id.stepButtonLayout)
+    LinearLayout stepButtonLayout;
+    @BindView(R.id.btAddStep)
+    Button btAddStep;
+    @BindView(R.id.btRemoveStep)
+    Button btRemoveStep;
 
-    @BindView(R.id.btBack) Button btBack;
-    @BindView(R.id.btSubmit) Button btSubmit;
+    @BindView(R.id.btBack)
+    Button btBack;
+    @BindView(R.id.btSubmit)
+    Button btSubmit;
     // End of Second Page
 
     // To be implemented
-    @BindView(R.id.btAudio) Button btAudio;
+    @BindView(R.id.btAudio)
+    Button btAudio;
 
-    private Bitmap recipeImage;
-    private Uri audioUri;
+    private static final int MAX_SIZE = 720;
     private final static int PICK_PHOTO_CODE = 1046;
     private final static int PICK_AUDIO_CODE = 1;
     private int stepCount = 1;
@@ -126,7 +150,10 @@ public class AddRecipeFragment extends Fragment {
     private String prepTimeText = "minutes"; // Automatically recognizes the prep-time time period as minutes
 
     private final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
+    private final static String KEY_IMAGE_PATH = "photo";
     private File photoFile;
+    private ParseFile imageFile;
+    private String imagePath;
 
     // implement listener
     public interface NewRecipeCommunication {
@@ -142,17 +169,33 @@ public class AddRecipeFragment extends Fragment {
             throw new ClassCastException(context.toString() + " must implement AddRecipeFragment.NewRecipeCommunication");
         }
     }
+    private static final String KEY_RECIPE = "recipe";
+    private static final String KEY_EDITING = "editing";
+    private static final String KEY_EDIT_RECIPE = "used to retrieve bool from new instance";
+    // True if a recipe is being edited
+    public Boolean editing = false;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        super.onCreateView(inflater, parent, savedInstanceState);
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_add_recipe, parent, false);
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString(KEY_IMAGE_PATH, imagePath);
+        outState.putBoolean(KEY_EDITING, editing);
         super.onSaveInstanceState(outState);
-        outState.putParcelable("image", recipeImage);
+    }
+
+    public static AddRecipeFragment newInstance(Recipe recipe, Boolean editing) {
+        Bundle args = new Bundle();
+        args.putParcelable(KEY_RECIPE, recipe);
+        args.putBoolean(KEY_EDIT_RECIPE, editing);
+        AddRecipeFragment fragment = new AddRecipeFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     // This event is triggered soon after onCreateView().
@@ -164,8 +207,15 @@ public class AddRecipeFragment extends Fragment {
         ivPreview.setBackgroundResource(R.drawable.image_placeholder);
 
         if (savedInstanceState != null) {
-            recipeImage = savedInstanceState.getParcelable("image");
-            ivPreview.setImageBitmap(recipeImage);
+            imagePath = savedInstanceState.getString(KEY_IMAGE_PATH, "");
+            if (!imagePath.equals("")) {
+                setSelectedPhoto(new File(imagePath));
+            }
+            editing = savedInstanceState.getBoolean(KEY_EDITING, false);
+        } else {
+            if (getArguments() != null) {
+                editing = getArguments().getBoolean(KEY_EDIT_RECIPE);
+            }
         }
 
         // Create a new background thread
@@ -240,43 +290,47 @@ public class AddRecipeFragment extends Fragment {
 
                     }
                 });
-
-                ///////////////////////
-                // Prep Time Spinner //
-                ///////////////////////
-
-                // Create an ArrayAdapter using the string array and a default spinner layout
-                String[] prepTimeArray = getResources().getStringArray(R.array.prep_time_array);
-                final ArrayAdapter<String> prepTimeAdapter = new ArrayAdapter<String>(getContext(), R.layout.item_spinner, prepTimeArray) {
-                    @NonNull
-                    @Override
-                    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                        View view = super.getView(position, convertView, parent);
-                        view.setPadding(0, 0, 0, 0);
-                        return view;
-                    }
-                };
-                // Specify the layout to use when the list of choices appears
-                typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                // Apply the adapter to the spinner
-                spPrepTime.setAdapter(prepTimeAdapter);
-                // Listens for when the user makes a selection
-                spPrepTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                        prepTimeText = (String) adapterView.getItemAtPosition(position);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
-
+                createPrepTimeSpinner();
                 checkStoragePermissions();
             }
         });
         handlerThread.quitSafely();
+        if (editing) {
+            setupEdit((Recipe) getArguments().getParcelable(KEY_RECIPE));
+        }
+    }
+
+    ///////////////////////
+    // Prep Time Spinner //
+    ///////////////////////
+    private void createPrepTimeSpinner() {
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        String[] prepTimeArray = getResources().getStringArray(R.array.prep_time_array);
+        final ArrayAdapter<String> prepTimeAdapter = new ArrayAdapter<String>(getContext(), R.layout.item_spinner, prepTimeArray) {
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                view.setPadding(0, 0, 0, 0);
+                return view;
+            }
+        };
+        // Specify the layout to use when the list of choices appears
+        prepTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spPrepTime.setAdapter(prepTimeAdapter);
+        // Listens for when the user makes a selection
+        spPrepTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                prepTimeText = (String) adapterView.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     private void setButtons() {
@@ -664,6 +718,7 @@ public class AddRecipeFragment extends Fragment {
         }
 
         // Return the file target for the photo based on filename
+        imagePath = mediaStorageDir.getPath() + File.separator + fileName;
         return new File(mediaStorageDir.getPath() + File.separator + fileName);
     }
 
@@ -693,8 +748,6 @@ public class AddRecipeFragment extends Fragment {
 
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                // by this point we have the camera photo on disk
-                String imagePath = photoFile.getAbsolutePath();
                 setSelectedPhoto(new File(imagePath));
             } else { // Result was a failure
                 Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
@@ -704,24 +757,26 @@ public class AddRecipeFragment extends Fragment {
             if (data != null && resultCode == RESULT_OK) {
                 Uri photoUri = data.getData();
                 // Do something with the photo based on Uri
-                Bitmap selectedImage = null;
+                Cursor cursor = null;
                 try {
-                    Bitmap original = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoUri);
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    original.compress(Bitmap.CompressFormat.JPEG, 80, out);
-                    selectedImage = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
-
-                } catch (IOException e) {
+                    String[] proj = {MediaStore.Images.Media.DATA};
+                    cursor = getContext().getContentResolver().query(photoUri, proj, null, null, null);
+                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    cursor.moveToFirst();
+                    imagePath = cursor.getString(columnIndex);
+                    setSelectedPhoto(new File(imagePath));
+                } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
                 }
-                // Load the selected image into a preview
-                ivPreview.setImageBitmap(selectedImage);
-                recipeImage = selectedImage;
             }
         } else if (requestCode == PICK_AUDIO_CODE) {
             if (data != null && resultCode == RESULT_OK) {
                 //the selected audio.
-                audioUri = data.getData();
+                Uri audioUri = data.getData();
                 String audioName = getFileName(audioUri);
                 btAudio.setText(audioName);
                 Log.d("AddRecipeFragment", "Picked audio");
@@ -730,112 +785,149 @@ public class AddRecipeFragment extends Fragment {
     }
 
     private void setSelectedPhoto(File file) {
-        Bitmap rawTakenImage = BitmapFactory.decodeFile(file.getAbsolutePath());
+        Bitmap rawTakenImage = null;
 
         // Tries to appropriately rotates image
-
         try {
-            ExifInterface ei = new ExifInterface(file.getAbsolutePath());
+            rawTakenImage = decodeFile(file);
+
+            android.support.media.ExifInterface ei = new android.support.media.ExifInterface(file.getAbsolutePath());
             int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                     ExifInterface.ORIENTATION_UNDEFINED);
 
-            Bitmap photo;
             switch (orientation) {
                 case ExifInterface.ORIENTATION_ROTATE_90:
-                    photo = rotateImage(rawTakenImage, 90);
+                    rawTakenImage = rotateImage(rawTakenImage, 90);
                     break;
 
                 case ExifInterface.ORIENTATION_ROTATE_180:
-                    photo = rotateImage(rawTakenImage, 180);
+                    rawTakenImage = rotateImage(rawTakenImage, 180);
                     break;
 
                 case ExifInterface.ORIENTATION_ROTATE_270:
-                    photo = rotateImage(rawTakenImage, 270);
+                    rawTakenImage = rotateImage(rawTakenImage, 270);
                     break;
 
                 case ExifInterface.ORIENTATION_NORMAL:
                 default:
-                    photo = rawTakenImage;
+                    break;
             }
-            ivPreview.setImageBitmap(photo);
-            recipeImage = photo;
 
+            rawTakenImage = getResizedBitmap(rawTakenImage);
+            ivPreview.setImageBitmap(rawTakenImage);
         } catch (IOException e) {
             e.printStackTrace();
+
+            rawTakenImage = getResizedBitmap(rawTakenImage);
             ivPreview.setImageBitmap(rawTakenImage);
-            recipeImage = rawTakenImage;
         }
+    }
+
+    private Bitmap getResizedBitmap(Bitmap image) {
+        int width = image.getWidth();
+        if (width > MAX_SIZE) {
+            int height = image.getHeight();
+            float bitmapRatio = (float) width / (float) height;
+            width = MAX_SIZE;
+            height = (int) (MAX_SIZE / bitmapRatio);
+            image = Bitmap.createScaledBitmap(image, width, height, true);
+        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 80, out);
+        byte[] data = out.toByteArray();
+        Bitmap b = BitmapFactory.decodeStream(new ByteArrayInputStream(data));
+        imageFile = new ParseFile("recipeImage", data, "image/jpeg");
+        imageFile.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        return b;
+    }
+
+    private Bitmap decodeFile(File f) throws IOException {
+        Bitmap b;
+
+        //Decode image size
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+
+        FileInputStream fis = new FileInputStream(f);
+        BitmapFactory.decodeStream(fis, null, o);
+        fis.close();
+
+        int scale = 1;
+        if (o.outHeight > MAX_SIZE || o.outWidth > MAX_SIZE) {
+            scale = (int) Math.pow(2, (int) Math.ceil(Math.log(MAX_SIZE /
+                    (double) Math.max(o.outHeight, o.outWidth)) / Math.log(0.5)));
+        }
+
+        //Decode with inSampleSize
+        o.inSampleSize = scale;
+        o.inJustDecodeBounds = false;
+        o.inPreferredConfig = Bitmap.Config.RGB_565;
+        fis = new FileInputStream(f);
+        b = BitmapFactory.decodeStream(fis, null, o);
+        fis.close();
+
+        return b;
     }
 
     private static Bitmap rotateImage(Bitmap source, float angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
-        Bitmap photo = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
                 matrix, true);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        photo.compress(Bitmap.CompressFormat.JPEG, 100, out);
-        return BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
     }
 
-    private ParseFile prepareImage(Bitmap bitmap) {
-        if (bitmap != null) {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            byte[] bitmapBytes = stream.toByteArray();
+//    private ParseFile prepareAudio(Uri audioUri, String filename) {
+//        if (audioUri != null) {
+//            byte[] audioBytes = audioToByteArray(audioUri);
+//            // Create the ParseFile
+//            return new ParseFile(filename, audioBytes);
+//        }
+//        return null;
+//    }
 
-            return new ParseFile("RecipeImage", bitmapBytes);
-        } else {
-            return null;
-        }
-    }
-
-    private ParseFile prepareAudio(Uri audioUri) {
-        if (audioUri != null) {
-            byte[] audioBytes = audioToByteArray(audioUri);
-            // Create the ParseFile
-            ParseFile file = new ParseFile("Audio", audioBytes);
-            Log.d("AddRecipeFragment", "Successfully returned audio file");
-            return file;
-        } else {
-            return null;
-        }
-    }
-
-    private byte[] audioToByteArray(Uri audioUri) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        BufferedInputStream in = null;
-        try {
-            InputStream inputStream = getActivity().getContentResolver().openInputStream(audioUri);
-            in = new BufferedInputStream(inputStream);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        int read;
-        byte[] buff = new byte[1024];
-        try {
-            while ((read = in.read(buff)) > 0) {
-                out.write(buff, 0, read);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (in != null) { //in could not be resolved error by compiler
-                    in.close();
-                }
-                if (out != null) { //out could not be resolved...
-                    out.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return out.toByteArray();
-    }
+//    private byte[] audioToByteArray(Uri audioUri) {
+//        ByteArrayOutputStream out = new ByteArrayOutputStream();
+//        BufferedInputStream in = null;
+//        try {
+//            InputStream inputStream = getActivity().getContentResolver().openInputStream(audioUri);
+//            in = new BufferedInputStream(inputStream);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        int read;
+//        byte[] buff = new byte[1024];
+//        try {
+//            while ((read = in.read(buff)) > 0) {
+//                out.write(buff, 0, read);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            out.flush();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (in != null) { //in could not be resolved error by compiler
+//                    in.close();
+//                }
+//                if (out != null) { //out could not be resolved...
+//                    out.close();
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return out.toByteArray();
+//    }
 
     private ArrayList<String> parseInstructions() {
         ArrayList<String> stepStrings = new ArrayList<>();
@@ -894,21 +986,21 @@ public class AddRecipeFragment extends Fragment {
 
     private void addRecipe(Recipe oldRecipe) throws IllegalArgumentException {
         final Recipe recipe;
-        boolean newRecipe = false;
+        final boolean newRecipe;
 
-        // checks if this is submission is an edit or a new recipe
+        // checks if this submission is an edit or a new recipe
         if (oldRecipe == null) {
             recipe = new Recipe();
             newRecipe = true;
         } else {
             recipe = oldRecipe;
+            newRecipe = false;
         }
 
         ArrayList<String> steps = parseInstructions();
         ArrayList<String> ingredients = parseIngredients();
         String name = etRecipeName.getText().toString();
         String description = etDescription.getText().toString();
-
 
         // Checks to ensure every required field is filled out
         if (name.isEmpty()) {
@@ -936,6 +1028,14 @@ public class AddRecipeFragment extends Fragment {
         try {
             Number prepTime = Integer.valueOf(etPrepTime.getText().toString());
             recipe.setPrepTime(prepTime);
+
+            if (prepTimeText == "hours") {
+                recipe.setPrepTimeMinutes((int) prepTime * 60);
+            } else {
+                recipe.setPrepTime(prepTime);
+            }
+
+            // Makes prep time period plural or singular based on prep time value
             if (prepTime.doubleValue() == 1) {
                 recipe.setPrepTimePeriod(prepTimeText.substring(0, prepTimeText.length() - 1));
             } else {
@@ -960,13 +1060,8 @@ public class AddRecipeFragment extends Fragment {
         } else {
             recipe.setSteps(steps);
         }
-
-        // Empty images and audio are permissible
-        if (recipeImage != null) {
-            recipe.setImage(prepareImage(recipeImage));
-        }
-        if (audioUri != null) {
-            recipe.setMedia(prepareAudio(audioUri));
+        if (imageFile != null) {
+            recipe.setImage(imageFile);
         }
 
         pbLoading.setVisibility(ProgressBar.VISIBLE);
@@ -990,6 +1085,7 @@ public class AddRecipeFragment extends Fragment {
                         ft.commit();
                     } else {
                         Toast.makeText(getContext(), "Recipe creation failed!", Toast.LENGTH_LONG).show();
+                        pbLoading.setVisibility(ProgressBar.INVISIBLE);
                         e.printStackTrace();
                     }
                 }
@@ -1001,6 +1097,7 @@ public class AddRecipeFragment extends Fragment {
                     if (e == null) {
                         Toast.makeText(getContext(), "Recipe successfully edited!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                        editing = false;
                         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                         RecipeFragment recipeFragment = new RecipeFragment();
                         recipeFragment.recipe = recipe;
@@ -1008,11 +1105,22 @@ public class AddRecipeFragment extends Fragment {
                         ft.commit();
                     } else {
                         Toast.makeText(getContext(), "Recipe edit failed!", Toast.LENGTH_LONG).show();
+                        pbLoading.setVisibility(ProgressBar.INVISIBLE);
                         e.printStackTrace();
                     }
                 }
             });
         }
+
+//        if (audioUri != null) {
+//            final ParseFile audio = prepareAudio(audioUri, "audio");
+//            audio.saveInBackground(new SaveCallback() {
+//                @Override
+//                public void done(ParseException e) {
+//                    recipe.setImage(audio);
+//                }
+//            });
+//        }
     }
 
     /**
@@ -1040,7 +1148,6 @@ public class AddRecipeFragment extends Fragment {
         Number prepTime = recipe.getPrepTime();
         String prepTimeString = recipe.getPrepTimeString();
         prepTimeText = prepTimeString.substring(prepTimeString.indexOf(' ') + 1);
-        Log.d("AddRecipeFragment", prepTimeText);
         typeText = recipe.getType();
 
         etRecipeName.setText(name);
@@ -1053,13 +1160,15 @@ public class AddRecipeFragment extends Fragment {
         addSteps(recipe.getSteps());
         addIngredients(recipe.getIngredients());
 
-        ParseFile image = recipe.getImage();
-        if (image != null) {
+        final ParseFile image = recipe.getImage();
+        if (image != null && imagePath == null) {
             recipe.getImage().getDataInBackground(new GetDataCallback() {
                 @Override
                 public void done(byte[] data, ParseException e) {
                     if (data != null) {
-                        ivPreview.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                        final Bitmap b = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        ivPreview.setImageBitmap(b);
+                        imageFile = image;
                     }
                 }
             });

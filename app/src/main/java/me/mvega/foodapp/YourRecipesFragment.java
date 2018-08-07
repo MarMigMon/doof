@@ -62,6 +62,7 @@ public class YourRecipesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
+        super.onCreateView(inflater, parent, savedInstanceState);
 
         if (savedInstanceState != null) {
             user = savedInstanceState.getParcelable("user");

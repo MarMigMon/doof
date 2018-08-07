@@ -55,6 +55,7 @@ public class NotificationFragment extends Fragment {
     // either dynamically or via XML layout inflation.
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        super.onCreateView(inflater, parent, savedInstanceState);
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_notification, parent, false);
     }

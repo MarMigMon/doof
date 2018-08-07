@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.gu.toolargetool.TooLargeTool;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -33,8 +34,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.mainFrame) FrameLayout mainFrame;
 
-
-    public static ParseUser currentUser = ParseUser.getCurrentUser();
+    public static ParseUser currentUser;
 
 
 
@@ -42,6 +42,10 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        TooLargeTool.startLogging(getApplication());
+
+        currentUser = getIntent().getParcelableExtra("user");
 
         // Starts activity with feed fragment displayed
         if (savedInstanceState == null) {
@@ -72,7 +76,9 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
                             case R.id.tab_profile:
                                 ProfileFragment profileFragment = new ProfileFragment();
-                                profileFragment.user = currentUser;
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("user", currentUser);
+                                profileFragment.setArguments(bundle);
                                 replaceFragment(profileFragment);
                                 return true;
 
@@ -182,10 +188,12 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     }
 
     @Override
-    public void respond(ParseUser notificationUser ) {
+    public void respond(ParseUser notificationUser) {
         ProfileFragment profileFragment = new ProfileFragment();
         setFadeTransition(profileFragment);
-        profileFragment.user = notificationUser;
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("user", notificationUser);
+        profileFragment.setArguments(bundle);
         replaceFragment(profileFragment);
     }
 
@@ -216,5 +224,12 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
             f.setEnterTransition(new Fade());
             f.setExitTransition(new Fade());
         }
+    }
+
+    @Override
+    public void startEdit(Recipe recipe) {
+        AddRecipeFragment addRecipeFragment = AddRecipeFragment.newInstance(recipe, true);
+        setFadeTransition(addRecipeFragment);
+        replaceFragment(addRecipeFragment);
     }
 }

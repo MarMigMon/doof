@@ -36,6 +36,7 @@ The following **optional** features are implemented:
   * [ ] Users can record each step themselves to upload audio.
   * [x] Users can add as many steps as they require for the recipe (addStep button)
   * [x] Add and Remove steps buttons autoscroll the screen as they are clicked
+* [x] User can edit and delete their own recipes via the details and profile screens
 * [x] While recipe is being played, there is a user progress bar.
   * [x] Recipe progress persists across configuration changes
   * [x] Steps are displayed in card views in a view pager

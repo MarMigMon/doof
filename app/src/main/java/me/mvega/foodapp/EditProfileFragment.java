@@ -112,7 +112,7 @@ public class EditProfileFragment extends Fragment {
         if (description == null) {
             description = "";
         }
-        if (user.get("description").equals("")) {
+        if (description.equals("")) {
             btAddDescription.setVisibility(View.VISIBLE);
             btAddDescription.setOnClickListener(new View.OnClickListener() {
                 @Override
