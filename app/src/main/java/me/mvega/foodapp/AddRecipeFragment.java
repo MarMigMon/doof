@@ -1119,34 +1119,6 @@ public class AddRecipeFragment extends Fragment {
 //        }
     }
 
-    private void setSubmitBtn(Boolean editing, final Recipe recipe) {
-        if (!editing) {
-            btSubmit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    try {
-                        addRecipe(null);
-                        Fragment newRecipeFragment = null;
-                        newRecipeListener.respond(newRecipeFragment);
-                    } catch (IllegalArgumentException e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-        } else {
-            // Ensures that when a recipe is submitted
-            btSubmit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    try {
-                        addRecipe(recipe);
-                    } catch (IllegalArgumentException e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-        }
-    }
     /**
      * Utilizes the Add Recipe Fragment to edit recipes
      *
