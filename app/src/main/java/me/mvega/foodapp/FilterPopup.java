@@ -195,6 +195,11 @@ public class FilterPopup {
                     .putInt(KEY_MAX_PREP_TIME, timeEntered)
                     .putInt(KEY_PREP_TIME_TEXT, spPrepTime.getSelectedItemPosition())
                     .apply();
+        } else {
+            prefs.edit()
+                    .remove(KEY_MAX_PREP_TIME)
+                    .remove(KEY_PREP_TIME_TEXT)
+                    .apply();
         }
 
         // Process checkboxes
