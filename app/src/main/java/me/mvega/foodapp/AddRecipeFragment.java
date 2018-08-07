@@ -155,6 +155,7 @@ public class AddRecipeFragment extends Fragment {
     private File photoFile;
     private ParseFile imageFile;
     private String imagePath;
+    private Recipe editedRecipe;
 
     // implement listener
     public interface NewRecipeCommunication {
@@ -216,6 +217,7 @@ public class AddRecipeFragment extends Fragment {
         } else {
             if (getArguments() != null) {
                 editing = getArguments().getBoolean(KEY_EDIT_RECIPE);
+                editedRecipe = getArguments().getParcelable(KEY_RECIPE);
             }
         }
 
@@ -226,6 +228,7 @@ public class AddRecipeFragment extends Fragment {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                setButtons(editedRecipe);
 
                 steps = new ArrayList<>();
                 step1.setId(stepCount);
@@ -233,8 +236,6 @@ public class AddRecipeFragment extends Fragment {
                 ingredients = new ArrayList<>();
                 ingredient1.setId(ingredientCount);
                 ingredients.add(ingredient1);
-
-                setButtons();
 
         /*--------------*\
         |    Spinners    |
@@ -297,7 +298,7 @@ public class AddRecipeFragment extends Fragment {
         });
         handlerThread.quitSafely();
         if (editing) {
-            setupEdit((Recipe) getArguments().getParcelable(KEY_RECIPE));
+            setupEdit(editedRecipe);
         }
     }
 
@@ -334,20 +335,14 @@ public class AddRecipeFragment extends Fragment {
         });
     }
 
-    private void setButtons() {
+    private void setButtons(final Recipe recipe) {
         btSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    addRecipe(null);
-//                    MainActivity activity = (MainActivity) getActivity();
-//                    activity.replaceFragment(new AddRecipeFragment());
+                    addRecipe(recipe);
                     Fragment newRecipeFragment = null;
                     newRecipeListener.respond(newRecipeFragment);
-
-//                    ParseUser notificationUser = recipe.getUser();
-//                    recipeUserListener.respond(notificationUser);
-
                 } catch (IllegalArgumentException e) {
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -1124,24 +1119,40 @@ public class AddRecipeFragment extends Fragment {
 //        }
     }
 
+    private void setSubmitBtn(Boolean editing, final Recipe recipe) {
+        if (!editing) {
+            btSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        addRecipe(null);
+                        Fragment newRecipeFragment = null;
+                        newRecipeListener.respond(newRecipeFragment);
+                    } catch (IllegalArgumentException e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        } else {
+            // Ensures that when a recipe is submitted
+            btSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        addRecipe(recipe);
+                    } catch (IllegalArgumentException e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }
+    }
     /**
      * Utilizes the Add Recipe Fragment to edit recipes
      *
      * @param recipe the recipe the user wants to edit
      */
     public void setupEdit(final Recipe recipe) {
-        // Ensures that when a recipe is submitted
-        btSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    addRecipe(recipe);
-                } catch (IllegalArgumentException e) {
-                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
         String name = recipe.getName();
         String description = recipe.getDescription();
         String yieldText = recipe.getYield();
