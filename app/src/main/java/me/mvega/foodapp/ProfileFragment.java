@@ -70,7 +70,6 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     }
 
     public static ProfileFragment newInstance(ParseUser user) {
-
         Bundle args = new Bundle();
         args.putParcelable("User", user);
         ProfileFragment fragment = new ProfileFragment();

@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.gu.toolargetool.TooLargeTool;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -48,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
             showFeed();
         } else {
             Fragment f = getSupportFragmentManager().findFragmentByTag(KEY_FRAGMENT);
-             replaceFragment(f);
+            replaceFragment(f);
         }
 
         currentUser = ParseUser.getCurrentUser();
@@ -184,11 +183,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
     @Override
     public void respond(ParseUser notificationUser) {
-        ProfileFragment profileFragment = new ProfileFragment();
+        ProfileFragment profileFragment = ProfileFragment.newInstance(notificationUser);
         setFadeTransition(profileFragment);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("user", notificationUser);
-        profileFragment.setArguments(bundle);
         replaceFragment(profileFragment);
     }
 
