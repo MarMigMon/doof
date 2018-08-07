@@ -172,10 +172,12 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     }
 
     @Override
-    public void respond(ParseUser notificationUser ) {
+    public void respond(ParseUser notificationUser) {
         ProfileFragment profileFragment = new ProfileFragment();
         setFadeTransition(profileFragment);
-        profileFragment.user = notificationUser;
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("user", notificationUser);
+        profileFragment.setArguments(bundle);
         replaceFragment(profileFragment);
     }
 
@@ -185,5 +187,12 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
             f.setEnterTransition(new Fade());
             f.setExitTransition(new Fade());
         }
+    }
+
+    @Override
+    public void startEdit(Recipe recipe) {
+        AddRecipeFragment addRecipeFragment = AddRecipeFragment.newInstance(recipe, true);
+        setFadeTransition(addRecipeFragment);
+        replaceFragment(addRecipeFragment);
     }
 }

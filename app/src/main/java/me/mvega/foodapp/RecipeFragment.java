@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.TextUtils;
@@ -28,7 +26,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
 import com.parse.FindCallback;
-import com.parse.GetCallback;
+
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -78,6 +76,8 @@ public class RecipeFragment extends Fragment {
     // implement interface
     public interface RecipeUserCommunication {
         void respond(ParseUser notificationUser);
+
+        void startEdit(Recipe recipe);
     }
 
     @Override
@@ -125,18 +125,7 @@ public class RecipeFragment extends Fragment {
             btnEditRecipe.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // Switch fragment to edit recipe and then return to this fragment with the edited recipe
-                    FragmentManager fm = getActivity().getSupportFragmentManager();
-                    FragmentTransaction ft = fm.beginTransaction();
-                    final AddRecipeFragment fragment = new AddRecipeFragment();
-                    ft.replace(R.id.frameLayout, fragment).commit();
-                    fm.executePendingTransactions();
-                    recipe.fetchInBackground(new GetCallback<ParseObject>() {
-                        @Override
-                        public void done(ParseObject object, ParseException e) {
-                            fragment.setupEdit(recipe);
-                        }
-                    });
+                    recipeUserListener.startEdit(recipe);
                 }
             });
         } else {
@@ -304,7 +293,7 @@ public class RecipeFragment extends Fragment {
                     Notification rateNotification = new Notification();
                     rateNotification.setActiveUser(user);
                     rateNotification.setRecipe(recipe);
-                    rateNotification.setRecipeUser( recipe.getUser());
+                    rateNotification.setRecipeUser(recipe.getUser());
                     rateNotification.setRate(true);
                     rateNotification.saveInBackground(new SaveCallback() {
                         @Override

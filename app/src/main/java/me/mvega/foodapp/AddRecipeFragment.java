@@ -137,7 +137,6 @@ public class AddRecipeFragment extends Fragment {
     Button btAudio;
 
     private static final int MAX_SIZE = 720;
-    private byte[] recipeImage;
     private final static int PICK_PHOTO_CODE = 1046;
     private final static int PICK_AUDIO_CODE = 1;
     private int stepCount = 1;
@@ -149,9 +148,16 @@ public class AddRecipeFragment extends Fragment {
     private String prepTimeText = "minutes"; // Automatically recognizes the prep-time time period as minutes
 
     private final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
+    private final static String KEY_IMAGE_PATH = "photo";
     private File photoFile;
     private ParseFile imageFile;
+    private String imagePath;
 
+    private static final String KEY_RECIPE = "recipe";
+    private static final String KEY_EDITING = "editing";
+    private static final String KEY_EDIT_RECIPE = "used to retrieve bool from new instance";
+    // True if a recipe is being edited
+    public Boolean editing = false;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -162,8 +168,18 @@ public class AddRecipeFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString(KEY_IMAGE_PATH, imagePath);
+        outState.putBoolean(KEY_EDITING, editing);
         super.onSaveInstanceState(outState);
-        outState.putByteArray("image", recipeImage);
+    }
+
+    public static AddRecipeFragment newInstance(Recipe recipe, Boolean editing) {
+        Bundle args = new Bundle();
+        args.putParcelable(KEY_RECIPE, recipe);
+        args.putBoolean(KEY_EDIT_RECIPE, editing);
+        AddRecipeFragment fragment = new AddRecipeFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     // This event is triggered soon after onCreateView().
@@ -175,10 +191,14 @@ public class AddRecipeFragment extends Fragment {
         ivPreview.setBackgroundResource(R.drawable.image_placeholder);
 
         if (savedInstanceState != null) {
-            recipeImage = savedInstanceState.getByteArray("image");
-            if (recipeImage != null) {
-                Bitmap b = BitmapFactory.decodeByteArray(recipeImage, 0, recipeImage.length);
-                ivPreview.setImageBitmap(b);
+            imagePath = savedInstanceState.getString(KEY_IMAGE_PATH, "");
+            if (!imagePath.equals("")) {
+                setSelectedPhoto(new File(imagePath));
+            }
+            editing = savedInstanceState.getBoolean(KEY_EDITING, false);
+        } else {
+            if (getArguments() != null) {
+                editing = getArguments().getBoolean(KEY_EDIT_RECIPE);
             }
         }
 
@@ -259,6 +279,9 @@ public class AddRecipeFragment extends Fragment {
             }
         });
         handlerThread.quitSafely();
+        if (editing) {
+            setupEdit((Recipe) getArguments().getParcelable(KEY_RECIPE));
+        }
     }
 
     ///////////////////////
@@ -671,6 +694,7 @@ public class AddRecipeFragment extends Fragment {
         }
 
         // Return the file target for the photo based on filename
+        imagePath = mediaStorageDir.getPath() + File.separator + fileName;
         return new File(mediaStorageDir.getPath() + File.separator + fileName);
     }
 
@@ -700,8 +724,6 @@ public class AddRecipeFragment extends Fragment {
 
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                // by this point we have the camera photo on disk
-                String imagePath = photoFile.getAbsolutePath();
                 setSelectedPhoto(new File(imagePath));
             } else { // Result was a failure
                 Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
@@ -717,8 +739,8 @@ public class AddRecipeFragment extends Fragment {
                     cursor = getContext().getContentResolver().query(photoUri, proj, null, null, null);
                     int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                     cursor.moveToFirst();
-                    String path = cursor.getString(columnIndex);
-                    setSelectedPhoto(new File(path));
+                    imagePath = cursor.getString(columnIndex);
+                    setSelectedPhoto(new File(imagePath));
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -769,18 +791,11 @@ public class AddRecipeFragment extends Fragment {
 
             rawTakenImage = getResizedBitmap(rawTakenImage);
             ivPreview.setImageBitmap(rawTakenImage);
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            rawTakenImage.compress(Bitmap.CompressFormat.PNG, 100, os);
-            recipeImage = os.toByteArray();
-
         } catch (IOException e) {
             e.printStackTrace();
 
             rawTakenImage = getResizedBitmap(rawTakenImage);
             ivPreview.setImageBitmap(rawTakenImage);
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            rawTakenImage.compress(Bitmap.CompressFormat.PNG, 100, os);
-            recipeImage = os.toByteArray();
         }
     }
 
@@ -1054,6 +1069,7 @@ public class AddRecipeFragment extends Fragment {
                     if (e == null) {
                         Toast.makeText(getContext(), "Recipe successfully edited!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                        editing = false;
                         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                         RecipeFragment recipeFragment = new RecipeFragment();
                         recipeFragment.recipe = recipe;
@@ -1117,7 +1133,7 @@ public class AddRecipeFragment extends Fragment {
         addIngredients(recipe.getIngredients());
 
         final ParseFile image = recipe.getImage();
-        if (image != null) {
+        if (image != null && imagePath == null) {
             recipe.getImage().getDataInBackground(new GetDataCallback() {
                 @Override
                 public void done(byte[] data, ParseException e) {
@@ -1125,7 +1141,6 @@ public class AddRecipeFragment extends Fragment {
                         final Bitmap b = BitmapFactory.decodeByteArray(data, 0, data.length);
                         ivPreview.setImageBitmap(b);
                         imageFile = image;
-                        recipeImage = data;
                     }
                 }
             });
