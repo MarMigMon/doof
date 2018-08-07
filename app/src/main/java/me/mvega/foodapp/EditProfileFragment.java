@@ -183,13 +183,13 @@ public class EditProfileFragment extends Fragment {
     private void changeDescription() {
         final String newDescription = etDescription.getText().toString().trim();
         user.put("description", newDescription);
+        description = newDescription;
         user.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
                     Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
                     tvDescription.setText(newDescription);
-                    etDescription.setText(newDescription);
                     tvDescription.setVisibility(View.VISIBLE);
                     etDescription.setVisibility(View.INVISIBLE);
                     btSaveDescription.setVisibility(View.INVISIBLE);

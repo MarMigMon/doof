@@ -3,6 +3,7 @@ package me.mvega.foodapp;
 import android.Manifest;
 import android.animation.Animator;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -68,6 +69,8 @@ public class AddRecipeFragment extends Fragment {
     /* Used to handle permission request */
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 399;
 
+    // listener
+    NewRecipeCommunication newRecipeListener;
     // Global Views
     @BindView(R.id.scrollView)
     ScrollView scrollView;
@@ -137,8 +140,6 @@ public class AddRecipeFragment extends Fragment {
     Button btAudio;
 
     private static final int MAX_SIZE = 720;
-    private byte[] recipeImage;
-    private Uri audioUri;
     private final static int PICK_PHOTO_CODE = 1046;
     private final static int PICK_AUDIO_CODE = 1;
     private int stepCount = 1;
@@ -155,6 +156,20 @@ public class AddRecipeFragment extends Fragment {
     private ParseFile imageFile;
     private String imagePath;
 
+    // implement listener
+    public interface NewRecipeCommunication {
+        void respond(Fragment newRecipeFragment);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof NewRecipeCommunication) {
+            newRecipeListener = (NewRecipeCommunication) context;
+        } else {
+            throw new ClassCastException(context.toString() + " must implement AddRecipeFragment.NewRecipeCommunication");
+        }
+    }
     private static final String KEY_RECIPE = "recipe";
     private static final String KEY_EDITING = "editing";
     private static final String KEY_EDIT_RECIPE = "used to retrieve bool from new instance";
@@ -163,6 +178,7 @@ public class AddRecipeFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        super.onCreateView(inflater, parent, savedInstanceState);
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_add_recipe, parent, false);
     }
@@ -324,6 +340,14 @@ public class AddRecipeFragment extends Fragment {
             public void onClick(View view) {
                 try {
                     addRecipe(null);
+//                    MainActivity activity = (MainActivity) getActivity();
+//                    activity.replaceFragment(new AddRecipeFragment());
+                    Fragment newRecipeFragment = null;
+                    newRecipeListener.respond(newRecipeFragment);
+
+//                    ParseUser notificationUser = recipe.getUser();
+//                    recipeUserListener.respond(notificationUser);
+
                 } catch (IllegalArgumentException e) {
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -753,7 +777,7 @@ public class AddRecipeFragment extends Fragment {
         } else if (requestCode == PICK_AUDIO_CODE) {
             if (data != null && resultCode == RESULT_OK) {
                 //the selected audio.
-                audioUri = data.getData();
+                Uri audioUri = data.getData();
                 String audioName = getFileName(audioUri);
                 btAudio.setText(audioName);
                 Log.d("AddRecipeFragment", "Picked audio");
@@ -772,28 +796,26 @@ public class AddRecipeFragment extends Fragment {
             int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                     ExifInterface.ORIENTATION_UNDEFINED);
 
-            Bitmap photo;
             switch (orientation) {
                 case ExifInterface.ORIENTATION_ROTATE_90:
-                    photo = rotateImage(rawTakenImage, 90);
+                    rawTakenImage = rotateImage(rawTakenImage, 90);
                     break;
 
                 case ExifInterface.ORIENTATION_ROTATE_180:
-                    photo = rotateImage(rawTakenImage, 180);
+                    rawTakenImage = rotateImage(rawTakenImage, 180);
                     break;
 
                 case ExifInterface.ORIENTATION_ROTATE_270:
-                    photo = rotateImage(rawTakenImage, 270);
+                    rawTakenImage = rotateImage(rawTakenImage, 270);
                     break;
 
                 case ExifInterface.ORIENTATION_NORMAL:
                 default:
-                    photo = rawTakenImage;
+                    break;
             }
 
-            photo = getResizedBitmap(photo);
-            ivPreview.setImageBitmap(photo);
-
+            rawTakenImage = getResizedBitmap(rawTakenImage);
+            ivPreview.setImageBitmap(rawTakenImage);
         } catch (IOException e) {
             e.printStackTrace();
 
@@ -802,7 +824,7 @@ public class AddRecipeFragment extends Fragment {
         }
     }
 
-    public Bitmap getResizedBitmap(Bitmap image) {
+    private Bitmap getResizedBitmap(Bitmap image) {
         int width = image.getWidth();
         if (width > MAX_SIZE) {
             int height = image.getHeight();
@@ -847,7 +869,7 @@ public class AddRecipeFragment extends Fragment {
         //Decode with inSampleSize
         o.inSampleSize = scale;
         o.inJustDecodeBounds = false;
-//        o.inPreferredConfig = Bitmap.Config.RGB_565;
+        o.inPreferredConfig = Bitmap.Config.RGB_565;
         fis = new FileInputStream(f);
         b = BitmapFactory.decodeStream(fis, null, o);
         fis.close();
@@ -967,7 +989,7 @@ public class AddRecipeFragment extends Fragment {
         final Recipe recipe;
         final boolean newRecipe;
 
-        // checks if this is submission is an edit or a new recipe
+        // checks if this submission is an edit or a new recipe
         if (oldRecipe == null) {
             recipe = new Recipe();
             newRecipe = true;
@@ -980,7 +1002,6 @@ public class AddRecipeFragment extends Fragment {
         ArrayList<String> ingredients = parseIngredients();
         String name = etRecipeName.getText().toString();
         String description = etDescription.getText().toString();
-
 
         // Checks to ensure every required field is filled out
         if (name.isEmpty()) {
@@ -1056,6 +1077,10 @@ public class AddRecipeFragment extends Fragment {
                     if (e == null) {
                         Toast.makeText(getContext(), "Recipe successfully created!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
+//                        Fragment addRecipeFragment = getFragmentManager().findFragmentByTag("newRecipe");
+//                        if (addRecipeFragment != null ) {
+//                            getFragmentManager().beginTransaction().remove(addRecipeFragment).commit();
+//                        }
                         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                         ft.replace(R.id.frameLayout, new FeedFragment());
                         ft.commit();
@@ -1097,8 +1122,6 @@ public class AddRecipeFragment extends Fragment {
 //                }
 //            });
 //        }
-
-
     }
 
     /**
@@ -1147,7 +1170,6 @@ public class AddRecipeFragment extends Fragment {
                         final Bitmap b = BitmapFactory.decodeByteArray(data, 0, data.length);
                         ivPreview.setImageBitmap(b);
                         imageFile = image;
-                        recipeImage = data;
                     }
                 }
             });

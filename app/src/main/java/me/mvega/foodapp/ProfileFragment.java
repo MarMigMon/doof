@@ -15,8 +15,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.parse.CountCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     // either dynamically or via XML layout inflation.
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        super.onCreateView(inflater, parent, savedInstanceState);
         return inflater.inflate(R.layout.fragment_profile, parent, false);
     }
 
@@ -81,6 +84,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
 
+        user = getArguments().getParcelable("user");
         // Prevents app crashing when switching orientations
         if (savedInstanceState != null) {
             user = savedInstanceState.getParcelable("user");
@@ -88,17 +92,24 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
             user = getArguments().getParcelable("User");
         }
 
-        // gets user's name
-        String userName = user.get("Name").toString();
-        tvUsername.setText(userName);
-        setUserName();
-        setUserDescription();
-        setUserContributions();
-        setUserCompleted();
-        setUserReviewed();
-
-        setProfileImage();
-        setTabs();
+        user.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject object, ParseException e) {
+                if (e == null) {
+                    // gets user's name
+                    String userName = user.get("Name").toString();
+                    setUserName(userName);
+                    setUserDescription();
+                    setUserContributions();
+                    setUserCompleted();
+                    setUserReviewed();
+                    setProfileImage();
+                    setTabs(userName);
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -142,8 +153,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
 
     }
 
-    private void setUserName() {
-        String userName = (String) user.get("Name");
+    private void setUserName(String userName) {
         tvUsername.setText(userName);
     }
 
@@ -165,11 +175,11 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
             Glide.with(getContext()).load(R.drawable.image_placeholder).apply(RequestOptions.circleCropTransform()).into(ivProfile);
     }
 
-    private void setTabs() {
+    private void setTabs(String userName) {
         showYourRecipes(); // Automatically selects Your Recipes tab to start profile screen
 
         // get first part of user's name
-        String[] nameSplit = user.get("Name").toString().split(" ");
+        String[] nameSplit = userName.split(" ");
 
         final TabLayout.Tab yourRecipes = tabLayout.newTab();
         if (user == currentUser) {
@@ -237,5 +247,6 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     private void replaceFragment(Fragment f) {
         final FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.userRecipes, f).commit();
+
     }
 }
