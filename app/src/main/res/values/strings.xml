@@ -7,6 +7,8 @@
     <string name="recipe_ins">Instructions</string>
     <string name="recipe_desc">Description</string>
     <string name="search_bar">Search for a recipe</string>
+    <string name="page_one">Page One</string>
+    <string name="page_two">Page Two</string>
 
     <!--Content Descriptions-->
     <string name="logo">Logo</string>
