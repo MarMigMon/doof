@@ -351,15 +351,15 @@ public class AddRecipeFragment extends Fragment {
             public void onClick(View view) {
                 try {
                     addRecipe(recipe);
-                    Fragment newRecipeFragment = null;
-                    newRecipeListener.respond(newRecipeFragment);
-                    addRecipe(null);
+//                    Fragment newRecipeFragment = null;
+//                    newRecipeListener.respond(newRecipeFragment);
+//                    addRecipe(null);
 
                     etRecipeName.setText(null);
                     etDescription.setText(null);
                     etYield.setText(null);
                     etPrepTime.setText(null);
-                    spType.getItemAtPosition(0);
+                    typeText = spType.getItemAtPosition(0).toString();
                     ingredient1.setText(null);
                     ingredients.clear();
                     ingredientCount = 0;
