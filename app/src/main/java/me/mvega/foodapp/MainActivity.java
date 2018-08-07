@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.gu.toolargetool.TooLargeTool;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -35,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     @BindView(R.id.mainFrame) FrameLayout mainFrame;
 
     public static ParseUser currentUser;
+
     private FragmentManager fragmentManager;
 
 
@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TooLargeTool.startLogging(getApplication());
         fragmentManager = getSupportFragmentManager();
 
 
@@ -54,8 +53,10 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
             showFeed();
         } else {
             Fragment f = getSupportFragmentManager().findFragmentByTag(KEY_FRAGMENT);
-             replaceFragment(f);
+            replaceFragment(f);
         }
+
+        currentUser = ParseUser.getCurrentUser();
 
         ButterKnife.bind(this);
 
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
                                 return true;
 
                             case R.id.tab_profile:
-                                ProfileFragment profileFragment = new ProfileFragment();
+                                ProfileFragment profileFragment = ProfileFragment.newInstance(currentUser);
                                 setFadeTransition(profileFragment);
                                 Bundle bundle = new Bundle();
                                 bundle.putParcelable("user", currentUser);
@@ -191,11 +192,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
     @Override
     public void respond(ParseUser notificationUser) {
-        ProfileFragment profileFragment = new ProfileFragment();
+        ProfileFragment profileFragment = ProfileFragment.newInstance(notificationUser);
         setFadeTransition(profileFragment);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("user", notificationUser);
-        profileFragment.setArguments(bundle);
         replaceFragment(profileFragment);
     }
 

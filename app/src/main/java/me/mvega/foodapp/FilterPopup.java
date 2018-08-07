@@ -40,6 +40,7 @@ public class FilterPopup {
     private static final String KEY_MAX_PREP_TIME = "prep time";
     private static final String KEY_PREP_TIME_TEXT = "minutes";
     private String prepTimeText;
+    private Context context;
 
     // Filter Popup
     @BindView(R.id.cbAppetizer) CheckBox cbAppetizer;
@@ -59,7 +60,7 @@ public class FilterPopup {
         ButterKnife.bind(this, layout);
 
         this.popup = popup;
-        Context context = button.getContext();
+        context = button.getContext();
         prefs = context.getSharedPreferences(KEY_PREFERENCES, Context.MODE_PRIVATE);
 
         types = new CheckBox[]{cbSnack, cbEntree, cbAppetizer, cbDessert};
@@ -105,7 +106,7 @@ public class FilterPopup {
     private void createPrepTimeSpinner() {
         // Create an ArrayAdapter using the string array and a default spinner layout
         String[] prepTimeArray = feedFragment.getResources().getStringArray(R.array.prep_time_array);
-        final ArrayAdapter<String> prepTimeAdapter = new ArrayAdapter<String>(feedFragment.getContext(), R.layout.item_spinner_filter, prepTimeArray) {
+        final ArrayAdapter<String> prepTimeAdapter = new ArrayAdapter<String>(context, R.layout.item_spinner_filter, prepTimeArray) {
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

@@ -40,7 +40,7 @@ public class FeedFragment extends Fragment {
     private static EndlessRecyclerViewScrollListener scrollListener;
     private LinearLayoutManager linearLayoutManager;
     private ArrayList<String> recipeNames;
-    private Context context;
+    private MainActivity mainActivity;
 
     @BindView(R.id.rvRecipes)
     RecyclerView rvRecipes;
@@ -76,6 +76,7 @@ public class FeedFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mainActivity = (MainActivity) context;
         if (context instanceof FragmentCommunication) {
             listenerFragment = (FragmentCommunication) context;
         } else {
@@ -89,19 +90,23 @@ public class FeedFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         swipeContainer = view.findViewById(R.id.swipeContainer);
-        context = view.getContext();
 
-        pbLoading.setVisibility(ProgressBar.VISIBLE);
-
-        initializeAdapter();
-        initializeEndlessScrolling();
-        setSwipeContainer();
-        loadTopRecipes();
-
-        btFilter.setOnClickListener(new View.OnClickListener() {
+        mainActivity.runOnUiThread(new Runnable() {
             @Override
-            public void onClick(View view) {
-                showFilterPopup(view);
+            public void run() {
+                pbLoading.setVisibility(ProgressBar.VISIBLE);
+
+                initializeAdapter();
+                initializeEndlessScrolling();
+                setSwipeContainer();
+                loadTopRecipes();
+
+                btFilter.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showFilterPopup(view);
+                    }
+                });
             }
         });
     }
@@ -143,7 +148,7 @@ public class FeedFragment extends Fragment {
         recipeAdapter = new RecipeAdapter(recipes);
 
         // Layout Manager
-        linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager = new LinearLayoutManager(mainActivity);
         rvRecipes.setLayoutManager(linearLayoutManager);
 
         // Set adapter
@@ -158,7 +163,7 @@ public class FeedFragment extends Fragment {
     }
 
     private void initializeSearch() {
-        ArrayAdapter<String> searchAdapter = new ArrayAdapter<>(getContext(), R.layout.autocomplete_dropdown, recipeNames);
+        ArrayAdapter<String> searchAdapter = new ArrayAdapter<>(mainActivity, R.layout.autocomplete_dropdown, recipeNames);
 
         // Will start suggesting searches after one character is typed
         search.setThreshold(1);
@@ -198,7 +203,7 @@ public class FeedFragment extends Fragment {
 
     // Display anchored popup menu based on view selected
     private void showFilterPopup(View v) {
-        PopupWindow popup = new PopupWindow(getContext());
+        PopupWindow popup = new PopupWindow(mainActivity);
         View layout = getLayoutInflater().inflate(R.layout.popup_filter, null);
 
         new FilterPopup(layout, popup, v, this);
@@ -275,7 +280,7 @@ public class FeedFragment extends Fragment {
     }
 
     private void clearPreferences() {
-        SharedPreferences preferences = context.getSharedPreferences(FilterPopup.KEY_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences preferences = mainActivity.getSharedPreferences(FilterPopup.KEY_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
         editor.apply();
