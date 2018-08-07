@@ -3,6 +3,7 @@ package me.mvega.foodapp;
 import android.Manifest;
 import android.animation.Animator;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -70,6 +71,8 @@ public class AddRecipeFragment extends Fragment {
     /* Used to handle permission request */
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 399;
 
+    // listener
+    NewRecipeCommunication newRecipeListener;
     // Global Views
     @BindView(R.id.scrollView) ScrollView scrollView;
     @BindView(R.id.pbLoading) ProgressBar pbLoading;
@@ -125,6 +128,20 @@ public class AddRecipeFragment extends Fragment {
     private final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     private File photoFile;
 
+    // implement listener
+    public interface NewRecipeCommunication {
+        void respond(Fragment newRecipeFragment);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof NewRecipeCommunication) {
+            newRecipeListener = (NewRecipeCommunication) context;
+        } else {
+            throw new ClassCastException(context.toString() + " must implement AddRecipeFragment.NewRecipeCommunication");
+        }
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -268,6 +285,14 @@ public class AddRecipeFragment extends Fragment {
             public void onClick(View view) {
                 try {
                     addRecipe(null);
+//                    MainActivity activity = (MainActivity) getActivity();
+//                    activity.replaceFragment(new AddRecipeFragment());
+                    Fragment newRecipeFragment = null;
+                    newRecipeListener.respond(newRecipeFragment);
+
+//                    ParseUser notificationUser = recipe.getUser();
+//                    recipeUserListener.respond(notificationUser);
+
                 } catch (IllegalArgumentException e) {
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -956,6 +981,10 @@ public class AddRecipeFragment extends Fragment {
                     if (e == null) {
                         Toast.makeText(getContext(), "Recipe successfully created!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
+//                        Fragment addRecipeFragment = getFragmentManager().findFragmentByTag("newRecipe");
+//                        if (addRecipeFragment != null ) {
+//                            getFragmentManager().beginTransaction().remove(addRecipeFragment).commit();
+//                        }
                         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                         ft.replace(R.id.frameLayout, new FeedFragment());
                         ft.commit();
