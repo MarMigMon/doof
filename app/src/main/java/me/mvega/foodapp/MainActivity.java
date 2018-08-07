@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     @BindView(R.id.mainFrame) FrameLayout mainFrame;
 
     public static ParseUser currentUser;
-
+    private FragmentManager fragmentManager;
 
 
     @Override
@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         setContentView(R.layout.activity_main);
 
         TooLargeTool.startLogging(getApplication());
+        fragmentManager = getSupportFragmentManager();
+
 
         currentUser = getIntent().getParcelableExtra("user");
 
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
                             case R.id.tab_profile:
                                 ProfileFragment profileFragment = new ProfileFragment();
+                                setFadeTransition(profileFragment);
                                 Bundle bundle = new Bundle();
                                 bundle.putParcelable("user", currentUser);
                                 profileFragment.setArguments(bundle);
@@ -123,13 +126,12 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
     public void showAddRecipe() {
         Log.d("Add Recipe", "Runs on tab click");
-        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment addRecipeFragment = fragmentManager.findFragmentByTag("newRecipe");
         // if fragment doesn't exist yet, create one
         if (addRecipeFragment == null) {
             fragmentTransaction.addToBackStack("newRecipe");
-            fragmentTransaction.add(R.id.frameLayout, new AddRecipeFragment(), "newRecipe").commit();
+            fragmentTransaction.replace(R.id.frameLayout, new AddRecipeFragment(), "newRecipe").commit();
             Log.d("create fragment", "addRecipe == null");
         } else {
             fragmentTransaction.replace(R.id.frameLayout, addRecipeFragment, "newRecipe").commit();
@@ -144,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
     public void replaceFragment(Fragment f) {
         // Begin the transaction
-        final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         // Replace the contents of the container with the new fragment and complete the changes added above
         fragmentTransaction.addToBackStack(KEY_FRAGMENT);
         fragmentTransaction.replace(R.id.frameLayout, f, KEY_FRAGMENT).commit();
@@ -199,16 +201,18 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
 //    @Override
     public void respond(Fragment newRecipeFragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment addRecipeFragment = fragmentManager.findFragmentByTag("newRecipe");
         Log.d("new recipe listener", "responsive listener");
         if (addRecipeFragment != null) {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.remove(addRecipeFragment).commit();
-            fragmentManager.popBackStack();
+            addRecipeFragment.onDestroy();
+//            while (fragmentManager.popBackStack()){
+
+//            }
             Log.d("Fragment success", "replaced");
+            showAddRecipe();
         }
-        showAddRecipe();
 //        Fragment addRecipeFragment = null;
 //        frg = getFragmentManager().findFragmentByTag("Your_Fragment_TAG");
 //        final FragmentTransaction ft = getFragmentManager().beginTransaction();

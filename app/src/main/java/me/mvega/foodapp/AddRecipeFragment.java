@@ -3,6 +3,7 @@ package me.mvega.foodapp;
 import android.Manifest;
 import android.animation.Animator;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -67,6 +68,10 @@ import static me.mvega.foodapp.MainActivity.currentUser;
 public class AddRecipeFragment extends Fragment {
     /* Used to handle permission request */
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 399;
+
+
+//    @BindView(R.id.navigation_bar)
+//    BottomNavigationView bottomNavigationView;
 
     // listener
     NewRecipeCommunication newRecipeListener;
@@ -339,14 +344,18 @@ public class AddRecipeFragment extends Fragment {
             public void onClick(View view) {
                 try {
                     addRecipe(null);
-//                    MainActivity activity = (MainActivity) getActivity();
-//                    activity.replaceFragment(new AddRecipeFragment());
-                    Fragment newRecipeFragment = null;
-                    newRecipeListener.respond(newRecipeFragment);
 
-//                    ParseUser notificationUser = recipe.getUser();
-//                    recipeUserListener.respond(notificationUser);
-
+                    etRecipeName.setText(null);
+                    etDescription.setText(null);
+                    etYield.setText(null);
+                    etPrepTime.setText(null);
+                    spType.getItemAtPosition(0);
+                    ingredient1.setText(null);
+                    ingredients.clear();
+                    ingredientCount = 0;
+                    step1.setText(null);
+                    steps.clear();
+                    stepCount = 0;
                 } catch (IllegalArgumentException e) {
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -1083,6 +1092,10 @@ public class AddRecipeFragment extends Fragment {
                         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                         ft.replace(R.id.frameLayout, new FeedFragment());
                         ft.commit();
+//                        switch (bottomNavigationView) {
+//                            case R.id.tab_feed:
+//                                return true;
+//                        }
                     } else {
                         Toast.makeText(getContext(), "Recipe creation failed!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
