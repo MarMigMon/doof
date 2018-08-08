@@ -198,7 +198,7 @@ public class SpeechActivity extends AppCompatActivity implements
                 stepCount = step;
                 updateProgressBar(step);
                 if(!isPaused){
-                    if (step > 0) {
+                    if (step > 0 && startedRecipe) {
                         speakStep(step);
                     } else if (step == 0) {
                         if (startedRecipe) {
@@ -273,13 +273,9 @@ public class SpeechActivity extends AppCompatActivity implements
     @Override
     public void startRecipe() {
         stepCount = 1;
+        startedRecipe = true;
         vpSteps.setCurrentItem(1);
         beginRecipe();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            speakStep(1);
-        } else {
-            Toast.makeText(SpeechActivity.this, "Failed to play audio. Minimum API requirements not met", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -303,6 +299,7 @@ public class SpeechActivity extends AppCompatActivity implements
                 if (status != TextToSpeech.ERROR) {
                     tts.setLanguage(Locale.US);
                     tts.setSpeechRate(1.5f);
+                    initializedTts = true;
                     if (startedRecipe) {
                         beginRecipe();
                         speakStep(stepCount);
@@ -313,8 +310,6 @@ public class SpeechActivity extends AppCompatActivity implements
     }
 
     private void beginRecipe() {
-        startedRecipe = true;
-
         // Toggle views
         ivStop.setVisibility(View.VISIBLE);
         ivPause.setVisibility(View.VISIBLE);
@@ -327,7 +322,6 @@ public class SpeechActivity extends AppCompatActivity implements
             startPlayer();
             Toast.makeText(SpeechActivity.this, "Listening for start or stop", Toast.LENGTH_SHORT).show();
         } else {
-            initializedTts = true;
             startRecognition(TTS_SEARCH);
         }
     }
@@ -399,6 +393,7 @@ public class SpeechActivity extends AppCompatActivity implements
     }
 
     public void resetSpeechActivity() {
+        startedRecipe = false;
         vpSteps.setCurrentItem(0);
         dbProgress.setProgress(0);
         stepCount = 0;
