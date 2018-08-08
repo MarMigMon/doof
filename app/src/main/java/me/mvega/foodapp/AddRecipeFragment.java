@@ -73,8 +73,8 @@ public class AddRecipeFragment extends Fragment {
 //    @BindView(R.id.navigation_bar)
 //    BottomNavigationView bottomNavigationView;
 
-    // listener
-    NewRecipeCommunication newRecipeListener;
+//    // listener
+//    NewRecipeCommunication newRecipeListener;
     // Global Views
     @BindView(R.id.scrollView)
     ScrollView scrollView;
@@ -165,22 +165,13 @@ public class AddRecipeFragment extends Fragment {
     private Context context;
     private MainActivity mainActivity;
 
-    // implement listener
-    public interface NewRecipeCommunication {
-        void respond(Fragment newRecipeFragment);
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
         mainActivity = (MainActivity) context;
-        if (context instanceof NewRecipeCommunication) {
-            newRecipeListener = (NewRecipeCommunication) context;
-        } else {
-            throw new ClassCastException(context.toString() + " must implement AddRecipeFragment.NewRecipeCommunication");
-        }
     }
+
     private static final String KEY_RECIPE = "recipe";
     private static final String KEY_EDITING = "editing";
     private static final String KEY_EDIT_RECIPE = "used to retrieve bool from new instance";
@@ -351,10 +342,8 @@ public class AddRecipeFragment extends Fragment {
             public void onClick(View view) {
                 try {
                     addRecipe(recipe);
-//                    Fragment newRecipeFragment = null;
-//                    newRecipeListener.respond(newRecipeFragment);
-//                    addRecipe(null);
 
+                    ivPreview.setImageBitmap(null);
                     etRecipeName.setText(null);
                     etDescription.setText(null);
                     etYield.setText(null);

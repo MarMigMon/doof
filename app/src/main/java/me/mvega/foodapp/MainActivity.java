@@ -26,7 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
-public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication, ProfileFragment.ProfileFragmentCommunication, NotificationFragment.NotificationRecipeFragmentCommunication, NotificationFragment.NotificationUserFragmentCommunication, RecipeFragment.RecipeUserCommunication, AddRecipeFragment.NewRecipeCommunication {
+public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication, ProfileFragment.ProfileFragmentCommunication, NotificationFragment.NotificationRecipeFragmentCommunication, NotificationFragment.NotificationUserFragmentCommunication, RecipeFragment.RecipeUserCommunication {
 
     private static final String KEY_FRAGMENT = "main";
     @BindView(R.id.navigation_bar) BottomNavigationView bottomNavigationView;
@@ -80,9 +80,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
                             case R.id.tab_profile:
                                 ProfileFragment profileFragment = ProfileFragment.newInstance(currentUser);
                                 setFadeTransition(profileFragment);
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("user", currentUser);
-                                profileFragment.setArguments(bundle);
                                 replaceFragment(profileFragment);
                                 return true;
 
@@ -138,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
             fragmentTransaction.replace(R.id.frameLayout, addRecipeFragment, "newRecipe").commit();
             Log.d("replace fragment", "replaces fragment");
         }
-//        replaceFragment(new AddRecipeFragment());
     }
 
     private void showNotification() {
@@ -197,28 +193,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         replaceFragment(profileFragment);
     }
 
-//    @Override
-    public void respond(Fragment newRecipeFragment) {
-        Fragment addRecipeFragment = fragmentManager.findFragmentByTag("newRecipe");
-        Log.d("new recipe listener", "responsive listener");
-        if (addRecipeFragment != null) {
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.remove(addRecipeFragment).commit();
-            addRecipeFragment.onDestroy();
-//            while (fragmentManager.popBackStack()){
-
-//            }
-            Log.d("Fragment success", "replaced");
-            showAddRecipe();
-        }
-//        Fragment addRecipeFragment = null;
-//        frg = getFragmentManager().findFragmentByTag("Your_Fragment_TAG");
-//        final FragmentTransaction ft = getFragmentManager().beginTransaction();
-//        ft.detach(frg);
-//        ft.attach(frg);
-//        ft.commit();
-//        replaceFragment(addRecipeFragment);
-    }
 
     private void setFadeTransition(Fragment f) {
         // Set transitions if minimum api requirements are met
