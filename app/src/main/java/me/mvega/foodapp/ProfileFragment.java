@@ -93,7 +93,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
             user = getArguments().getParcelable("User");
         }
 
-        user.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+        user.fetchInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject object, ParseException e) {
                 if (e == null) {

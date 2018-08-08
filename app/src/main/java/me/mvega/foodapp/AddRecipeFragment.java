@@ -69,6 +69,10 @@ public class AddRecipeFragment extends Fragment {
     /* Used to handle permission request */
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 399;
 
+
+//    @BindView(R.id.navigation_bar)
+//    BottomNavigationView bottomNavigationView;
+
     // listener
     NewRecipeCommunication newRecipeListener;
     // Global Views
@@ -347,8 +351,21 @@ public class AddRecipeFragment extends Fragment {
             public void onClick(View view) {
                 try {
                     addRecipe(recipe);
-                    Fragment newRecipeFragment = null;
-                    newRecipeListener.respond(newRecipeFragment);
+//                    Fragment newRecipeFragment = null;
+//                    newRecipeListener.respond(newRecipeFragment);
+//                    addRecipe(null);
+
+                    etRecipeName.setText(null);
+                    etDescription.setText(null);
+                    etYield.setText(null);
+                    etPrepTime.setText(null);
+                    typeText = spType.getItemAtPosition(0).toString();
+                    ingredient1.setText(null);
+                    ingredients.clear();
+                    ingredientCount = 0;
+                    step1.setText(null);
+                    steps.clear();
+                    stepCount = 0;
                 } catch (IllegalArgumentException e) {
                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -1088,6 +1105,10 @@ public class AddRecipeFragment extends Fragment {
                         FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
                         ft.replace(R.id.frameLayout, new FeedFragment());
                         ft.commit();
+//                        switch (bottomNavigationView) {
+//                            case R.id.tab_feed:
+//                                return true;
+//                        }
                     } else {
                         Toast.makeText(context, "Recipe creation failed!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
