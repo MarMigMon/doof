@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -71,6 +72,7 @@ public class RecipeFragment extends Fragment {
     @BindView(R.id.ivImage) ImageView ivImage;
     @BindView(R.id.btPlay) ImageButton btPlay;
     @BindView(R.id.btFavorite) ImageButton btFavorite;
+    @BindView(R.id.pbLoading) ProgressBar pbLoading;
 
     //    MarkerUpdatesReceiver markerUpdatesReceiver;
 
@@ -159,6 +161,8 @@ public class RecipeFragment extends Fragment {
         user = ParseUser.getCurrentUser();
 
         ButterKnife.bind(this, view);
+
+        pbLoading.setVisibility(View.VISIBLE);
 
         ArrayList<String> steps = (ArrayList<String>) recipe.getSteps();
         recipeId = recipe.getObjectId();
@@ -262,6 +266,7 @@ public class RecipeFragment extends Fragment {
         } else {
             Glide.with(getContext()).load(R.drawable.image_placeholder).into(ivImage);
         }
+        pbLoading.setVisibility(View.INVISIBLE);
 
         float rating = recipe.getRating().floatValue();
         recipeRating.setRating(rating);
