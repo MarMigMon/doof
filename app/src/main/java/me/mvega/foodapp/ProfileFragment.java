@@ -50,6 +50,8 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     @BindView(R.id.tvDescription)
     TextView tvDescription;
 
+    private static int page;
+
     public interface ProfileFragmentCommunication {
         void respond(Recipe recipe);
     }
@@ -73,7 +75,8 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
 
     public static ProfileFragment newInstance(ParseUser user) {
         Bundle args = new Bundle();
-        args.putParcelable("User", user);
+        args.putParcelable("user", user);
+        args.putInt("page", page);
         ProfileFragment fragment = new ProfileFragment();
         fragment.setArguments(args);
         return fragment;
@@ -89,8 +92,10 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         // Prevents app crashing when switching orientations
         if (savedInstanceState != null) {
             user = savedInstanceState.getParcelable("user");
+            page = savedInstanceState.getInt("page");
         } else {
-            user = getArguments().getParcelable("User");
+            user = getArguments().getParcelable("user");
+            page = 0;
         }
 
         user.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
@@ -117,6 +122,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("user", user);
+        outState.putInt("page", page);
     }
 
     private void setUserContributions() {
@@ -193,7 +199,8 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         tabLayout.addTab(yourRecipes, 0, true);
         tabLayout.addTab(favorites, 1, false);
         tabLayout.addTab(completed, 2, false);
-        yourRecipes.select();
+        // select tab
+        tabLayout.getTabAt(page).select();
 
         // handle tab selection
         tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
@@ -201,10 +208,13 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.equals(yourRecipes)) {
                     showYourRecipes();
+                    page = 0;
                 } else if (tab.equals(favorites)) {
                     showFavorites();
+                    page = 1;
                 } else if (tab.equals(completed)) {
                     showCompleted();
+                    page = 2;
                 }
             }
 
