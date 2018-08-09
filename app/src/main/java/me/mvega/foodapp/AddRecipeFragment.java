@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +37,8 @@ import static me.mvega.foodapp.MainActivity.currentUser;
 
 public class AddRecipeFragment extends Fragment implements AddRecipePageOne.PageOneFragmentCommunication, AddRecipePageTwo.PageTwoFragmentCommunication {
 
-    // listener
-    private NewRecipeCommunication newRecipeListener;
+//    // listener
+//    private NewRecipeCommunication newRecipeListener;
 
     // Global Views
     @BindView(R.id.scrollView)
@@ -59,32 +58,20 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
     private ParseFile imageFile;
 
 
-
     // Submitting edited recipe
     private Recipe editedRecipe;
     private Context context;
     private MainActivity mainActivity;
-
-    // implement listener
-    public interface NewRecipeCommunication {
-        void respond(Fragment newRecipeFragment);
-    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
         mainActivity = (MainActivity) context;
-        if (context instanceof NewRecipeCommunication) {
-            newRecipeListener = (NewRecipeCommunication) context;
-        } else {
-            throw new ClassCastException(context.toString() + " must implement AddRecipeFragment.NewRecipeCommunication");
-        }
     }
 
     private static final String KEY_RECIPE = "recipe";
     private static final String KEY_EDITING = "editing";
-    private static final String KEY_EDIT_RECIPE = "used to retrieve bool from new instance";
     private static final String KEY_NAME = "name";
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_YIELD = "yield";
@@ -114,13 +101,14 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putBoolean(KEY_EDITING, editing);
+        outState.putParcelable(KEY_RECIPE, editedRecipe);
         super.onSaveInstanceState(outState);
     }
 
     public static AddRecipeFragment newInstance(Recipe recipe, Boolean editing) {
         Bundle args = new Bundle();
         args.putParcelable(KEY_RECIPE, recipe);
-        args.putBoolean(KEY_EDIT_RECIPE, editing);
+        args.putBoolean(KEY_EDITING, editing);
         AddRecipeFragment fragment = new AddRecipeFragment();
         fragment.setArguments(args);
         return fragment;
@@ -134,19 +122,22 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
 
         if (savedInstanceState != null) {
             editing = savedInstanceState.getBoolean(KEY_EDITING, false);
+            editedRecipe = savedInstanceState.getParcelable(KEY_RECIPE);
         } else {
             if (getArguments() != null) {
-                editing = getArguments().getBoolean(KEY_EDIT_RECIPE);
+                editing = getArguments().getBoolean(KEY_EDITING);
                 editedRecipe = getArguments().getParcelable(KEY_RECIPE);
             }
         }
 
         vpCreation.setAdapter(new RecipePagerAdapter(getChildFragmentManager()));
 
-        pageOneBundle.putBoolean(KEY_EDIT_RECIPE, editing);
+        pageOneBundle.putBoolean(KEY_EDITING, editing);
+        pageOneBundle.putParcelable(KEY_RECIPE, editedRecipe);
         pageOne = AddRecipePageOne.newInstance(pageOneBundle);
 
-        pageTwoBundle.putBoolean(KEY_EDIT_RECIPE, editing);
+        pageTwoBundle.putBoolean(KEY_EDITING, editing);
+        pageTwoBundle.putParcelable(KEY_RECIPE, editedRecipe);
         pageTwo = AddRecipePageTwo.newInstance(pageTwoBundle);
 
         vpCreation.setCurrentItem(0);
@@ -180,8 +171,8 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
     }
 
     @Override
-    public void getImage(String imagePath) {
-        setSelectedPhoto(new File(imagePath));
+    public Bitmap getImage(String imagePath) {
+        return setSelectedPhoto(new File(imagePath));
     }
 
     @Override
@@ -216,14 +207,13 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
                     if (e == null) {
                         Toast.makeText(context, "Recipe successfully created!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
-//                        Fragment addRecipeFragment = getFragmentManager().findFragmentByTag("newRecipe");
-//                        if (addRecipeFragment != null ) {
-//                            getFragmentManager().beginTransaction().remove(addRecipeFragment).commit();
-//                        }
                         FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
                         mainActivity.bottomNavigationView.setSelectedItemId(R.id.tab_feed);
                         ft.replace(R.id.frameLayout, new FeedFragment());
                         ft.commit();
+                        // Resets the pages for the next recipe
+                        pageOne = null;
+                        pageTwo = null;
                     } else {
                         Toast.makeText(context, "Recipe creation failed!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
@@ -245,6 +235,9 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
                         recipeFragment.recipe = recipe;
                         ft.replace(R.id.frameLayout, recipeFragment);
                         ft.commit();
+                        // Resets the pages for the next recipe
+                        pageOne = null;
+                        pageTwo = null;
                     } else {
                         Toast.makeText(context, "Recipe edit failed!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
@@ -321,7 +314,7 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
         }
     }
 
-    private void setSelectedPhoto(File file) {
+    private Bitmap setSelectedPhoto(File file) {
         Bitmap rawTakenImage = null;
 
         // Tries to appropriately rotates image
@@ -349,14 +342,10 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
                 default:
                     break;
             }
-
-            rawTakenImage = getResizedBitmap(rawTakenImage);
-            pageOne.ivPreview.setImageBitmap(rawTakenImage);
+            return getResizedBitmap(rawTakenImage);
         } catch (IOException e) {
             e.printStackTrace();
-
-            rawTakenImage = getResizedBitmap(rawTakenImage);
-            pageOne.ivPreview.setImageBitmap(rawTakenImage);
+            return getResizedBitmap(rawTakenImage);
         }
     }
 

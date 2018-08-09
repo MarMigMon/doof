@@ -183,7 +183,7 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         String[] nameSplit = userName.split(" ");
 
         final TabLayout.Tab yourRecipes = tabLayout.newTab();
-        if (user == currentUser) {
+        if (user.getObjectId().equals(currentUser.getObjectId())) {
             yourRecipes.setText("Your Recipes");
         } else {
             yourRecipes.setText(nameSplit[0] + "'s recipes");

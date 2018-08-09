@@ -2,8 +2,6 @@ package me.mvega.foodapp;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -71,11 +69,11 @@ public class AddRecipePageTwo extends Fragment {
 
     private static final String KEY_RECIPE = "recipe";
     private static final String KEY_EDITING = "editing";
-    private static final String KEY_EDIT_RECIPE = "used to retrieve bool from new instance";
     private static final String KEY_STEPS = "steps";
     private static final String KEY_INGREDIENTS = "ingredients";
     // True if a recipe is being edited
     private Boolean editing = false;
+    private Recipe editedRecipe;
 
     private PageTwoFragmentCommunication addRecipeListenerFragment;
 
@@ -95,7 +93,6 @@ public class AddRecipePageTwo extends Fragment {
         return fragmentSecond;
     }
 
-
     // Store instance variables based on arguments passed
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,25 +109,49 @@ public class AddRecipePageTwo extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putBoolean(KEY_EDITING, editing);
+        outState.putParcelable(KEY_RECIPE, editedRecipe);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
 
         if (savedInstanceState != null) {
             editing = savedInstanceState.getBoolean(KEY_EDITING, false);
+            editedRecipe = savedInstanceState.getParcelable(KEY_RECIPE);
         } else {
             if (getArguments() != null) {
-                editing = getArguments().getBoolean(KEY_EDIT_RECIPE);
+                editing = getArguments().getBoolean(KEY_EDITING);
+                editedRecipe = getArguments().getParcelable(KEY_RECIPE);
             }
         }
 
         // Create a new background thread
-        HandlerThread handlerThread = new HandlerThread("Setup");
-        handlerThread.start();
-        Handler mHandler = new Handler(handlerThread.getLooper());
-        mHandler.post(new Runnable() {
+//        HandlerThread handlerThread = new HandlerThread("Setup");
+//        handlerThread.start();
+//        Handler mHandler = new Handler(handlerThread.getLooper());
+//        mHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                steps = new ArrayList<>();
+//                step1.setId(stepCount);
+//                steps.add(step1);
+//                ingredients = new ArrayList<>();
+//                ingredient1.setId(ingredientCount);
+//                ingredients.add(ingredient1);
+//
+//                setButtons();
+//            }
+//        });
+//        handlerThread.quitSafely();
+
+        new Thread(new Runnable() {
             @Override
             public void run() {
-
                 steps = new ArrayList<>();
                 step1.setId(stepCount);
                 steps.add(step1);
@@ -140,17 +161,16 @@ public class AddRecipePageTwo extends Fragment {
 
                 setButtons();
             }
-        });
-        handlerThread.quitSafely();
+        }).start();
+
         if (editing) {
-            setupEdit((Recipe) getParentFragment().getArguments().getParcelable(KEY_RECIPE));
+            setupEdit(editedRecipe);
         }
     }
 
     private void onAttachToParentFragment(Fragment childFragment) {
         try {
             addRecipeListenerFragment = (PageTwoFragmentCommunication) childFragment;
-
         } catch (ClassCastException e) {
             throw new ClassCastException(
                     childFragment.toString() + " must implement OnPlayerSelectionSetListener");

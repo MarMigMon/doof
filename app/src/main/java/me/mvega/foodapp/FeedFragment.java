@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,8 @@ public class FeedFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private ArrayList<String> recipeNames;
     private MainActivity mainActivity;
+    public static Boolean filtering = false;
+    private FilterPopup filter;
 
     @BindView(R.id.rvRecipes)
     RecyclerView rvRecipes;
@@ -62,6 +65,10 @@ public class FeedFragment extends Fragment {
     // implement interface
     public interface FragmentCommunication {
         void respond(Recipe recipe, ImageView image);
+    }
+
+    public interface FilterCommunication {
+        ParseQuery loadMoreRecipes(Recipe.Query query, int page);
     }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
@@ -127,19 +134,35 @@ public class FeedFragment extends Fragment {
 
     private void loadNextDataFromApi(int page, String query) {
         Recipe.Query recipeQuery = new Recipe.Query();
-        if (query.equals("")) {
-            recipeQuery.newestFirst().getTop().withUser().skipToPage(page);
-        } else {
-            recipeQuery.newestFirst().getTop().withUser().containsQuery(Recipe.KEY_NAME, query).skipToPage(page);
-        }
+        if (filtering) {
+            filter.loadMoreRecipes(recipeQuery, page).findInBackground(new FindCallback() {
+                @Override
+                public void done(List newRecipes, ParseException e) {
+                    if (e == null) {
+                        Log.i("Infinite scrolling", "Loaded " + newRecipes.size());
+                        recipeAdapter.addAll(newRecipes);
+                    }
+                }
 
-        recipeQuery.findInBackground(new FindCallback<Recipe>() {
-            @Override
-            public void done(List<Recipe> newRecipes, ParseException e) {
-                Log.i("Infinite scrolling", "Loaded " + newRecipes.size());
-                recipeAdapter.addAll(newRecipes);
+                @Override
+                public void done(Object o, Throwable throwable) {
+
+                }
+            });
+        } else {
+            if (query.equals("")) {
+                recipeQuery.newestFirst().getTop().withUser().skipToPage(page);
+            } else {
+                recipeQuery.newestFirst().getTop().withUser().containsQuery(Recipe.KEY_NAME, query).skipToPage(page);
             }
-        });
+            recipeQuery.findInBackground(new FindCallback<Recipe>() {
+                @Override
+                public void done(List<Recipe> newRecipes, ParseException e) {
+                    Log.i("Infinite scrolling", "Loaded " + newRecipes.size());
+                    recipeAdapter.addAll(newRecipes);
+                }
+            });
+        }
     }
 
     private void initializeAdapter() {
@@ -162,8 +185,30 @@ public class FeedFragment extends Fragment {
         });
     }
 
+    private ArrayList<String> getAllRecipeNames() {
+        recipeNames = new ArrayList<>();
+        Recipe.Query recipeQuery = new Recipe.Query();
+        recipeQuery.withUser().newestFirst();
+        recipeQuery.findInBackground(new FindCallback<Recipe>() {
+            @Override
+            public void done(List<Recipe> newRecipes, ParseException e) {
+                if (e == null && newRecipes != null) {
+                    for (Recipe recipe : newRecipes) {
+                        recipeNames.add(recipe.getName());
+                    }
+                    pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        return recipeNames;
+    }
+
     private void initializeSearch() {
-        ArrayAdapter<String> searchAdapter = new ArrayAdapter<>(mainActivity, R.layout.autocomplete_dropdown, recipeNames);
+
+        ArrayAdapter<String> searchAdapter = new ArrayAdapter<String>(mainActivity, R.layout.autocomplete_dropdown, getAllRecipeNames());
 
         // Will start suggesting searches after one character is typed
         search.setThreshold(1);
@@ -206,7 +251,7 @@ public class FeedFragment extends Fragment {
         PopupWindow popup = new PopupWindow(mainActivity);
         View layout = getLayoutInflater().inflate(R.layout.popup_filter, null);
 
-        new FilterPopup(layout, popup, v, this);
+        filter = new FilterPopup(layout, popup, v, this);
     }
 
     private void searchRecipes(String query) {
@@ -257,6 +302,7 @@ public class FeedFragment extends Fragment {
 
     public void loadTopRecipes() {
         clearPreferences();
+        filtering = false;
         EndlessRecyclerViewScrollListener.query = "";
 
         Recipe.Query recipeQuery = new Recipe.Query();
@@ -265,10 +311,6 @@ public class FeedFragment extends Fragment {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
                 if (e == null && newRecipes != null) {
-                    recipeNames = new ArrayList<>();
-                    for (Recipe recipe : newRecipes) {
-                        recipeNames.add(recipe.getName());
-                    }
                     resetAdapter(newRecipes);
                     initializeSearch();
                     pbLoading.setVisibility(ProgressBar.INVISIBLE);

@@ -12,8 +12,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -80,18 +78,17 @@ public class AddRecipePageOne extends Fragment {
 
     private static final String KEY_RECIPE = "recipe";
     private static final String KEY_EDITING = "editing";
-    private static final String KEY_EDIT_RECIPE = "used to retrieve bool from new instance";
     private static final String KEY_NAME = "name";
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_YIELD = "yield";
     private static final String KEY_PREP_TIME = "prepTime";
-    private static final String KEY_TYPE = "type";
     private static final String KEY_IMAGE_PATH = "photo";
     private static final String KEY_PREP_TIME_TEXT = "prepTimeText";
     private static final String KEY_TYPE_TEXT = "typeText";
 
     // True if a recipe is being edited
     private Boolean editing = false;
+    private Recipe editedRecipe;
 
     private PageOneFragmentCommunication addRecipeListenerFragment;
 
@@ -99,7 +96,7 @@ public class AddRecipePageOne extends Fragment {
     public interface PageOneFragmentCommunication {
         void next(Bundle bundle);
 
-        void getImage(String imagePath);
+        Bitmap getImage(String imagePath);
     }
 
     // newInstance constructor for creating fragment with arguments
@@ -127,43 +124,60 @@ public class AddRecipePageOne extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(KEY_IMAGE_PATH, imagePath);
+        outState.putBoolean(KEY_EDITING, editing);
+        outState.putParcelable(KEY_RECIPE, editedRecipe);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
-
-        ivPreview.setBackgroundResource(R.drawable.image_placeholder);
+        final Bitmap image;
 
         if (savedInstanceState != null) {
             imagePath = savedInstanceState.getString(KEY_IMAGE_PATH, "");
             if (!imagePath.equals("")) {
-                addRecipeListenerFragment.getImage(imagePath);
+                image = addRecipeListenerFragment.getImage(imagePath);
+            } else {
+                image = null;
             }
             editing = savedInstanceState.getBoolean(KEY_EDITING, false);
+            editedRecipe = savedInstanceState.getParcelable(KEY_RECIPE);
         } else {
             if (getArguments() != null) {
-                editing = getArguments().getBoolean(KEY_EDIT_RECIPE);
+                editing = getArguments().getBoolean(KEY_EDITING);
+                editedRecipe = getArguments().getParcelable(KEY_RECIPE);
             }
+            image = null;
         }
 
         // Create a new background thread
-        HandlerThread handlerThread = new HandlerThread("Setup");
-        handlerThread.start();
-        Handler mHandler = new Handler(handlerThread.getLooper());
-        mHandler.post(new Runnable() {
+//        HandlerThread handlerThread = new HandlerThread("Setup");
+//        handlerThread.start();
+//        Handler mHandler = new Handler(handlerThread.getLooper());
+//        mHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                setButtons();
+//                checkStoragePermissions();
+//            }
+//        });
+//        handlerThread.quitSafely();
+
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                setButtons();
                 checkStoragePermissions();
+                setButtons();
+                setImage(image);
             }
-        });
-        handlerThread.quitSafely();
+        }).start();
+
         createTypeSpinner();
         createPrepTimeSpinner();
+
         if (editing) {
-            setupEdit((Recipe) getParentFragment().getArguments().getParcelable(KEY_RECIPE));
+            setupEdit(editedRecipe);
         }
     }
 
@@ -355,7 +369,7 @@ public class AddRecipePageOne extends Fragment {
 
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                addRecipeListenerFragment.getImage(imagePath);
+                setImage(addRecipeListenerFragment.getImage(imagePath));
             } else { // Result was a failure
                 Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
@@ -371,7 +385,7 @@ public class AddRecipePageOne extends Fragment {
                     int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                     cursor.moveToFirst();
                     imagePath = cursor.getString(columnIndex);
-                    addRecipeListenerFragment.getImage(imagePath);
+                    setImage(addRecipeListenerFragment.getImage(imagePath));
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -380,6 +394,14 @@ public class AddRecipePageOne extends Fragment {
                     }
                 }
             }
+        }
+    }
+
+    public void setImage(Bitmap image) {
+        if (image != null) {
+            ivPreview.setImageBitmap(image);
+        } else {
+            ivPreview.setBackgroundResource(R.drawable.image_placeholder);
         }
     }
 
