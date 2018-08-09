@@ -357,7 +357,9 @@ public class SpeechActivity extends AppCompatActivity implements
 
     @Override
     public void replayStep() {
-        repeatTts();
+        if (startedRecipe) {
+            repeatTts();
+        }
     }
 
     @Override

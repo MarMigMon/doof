@@ -8,7 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -28,6 +30,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     private AdapterCommunication mCommunication;
     private final List<Recipe> recipes;
     private Context context;
+    private int lastPosition = -1;
 
     // communicates information from adapter to fragment
     public interface AdapterCommunication {
@@ -59,6 +62,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         Recipe recipe = recipes.get(position);
 //        ParseUser user = recipe.getUser();
 
+        setAnimation(holder.itemView, position);
+
         // populate the view according to this data
         holder.tvName.setText(recipe.getName()); // TODO get recipe name
         holder.tvType.setText(recipe.getType()); // TODO get recipe type
@@ -71,11 +76,23 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             String imageUrl = picture.getUrl();
             Glide.with(context).load(imageUrl).into(holder.ivRecipe);
         } else holder.ivRecipe.setImageResource(R.drawable.image_placeholder);
+        holder.pbLoading.setVisibility(View.INVISIBLE);
 
         if (recipe.getRating() != null) {
             holder.ratingBar.setRating(recipe.getRating().floatValue());
         } else {
             holder.ratingBar.setRating(0);
+        }
+
+    }
+
+    private void setAnimation(View viewToAnimate, int position)
+    {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition)
+        {
+            viewToAnimate.startAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
+            lastPosition = position;
         }
     }
 
@@ -93,6 +110,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         @BindView(R.id.tvPrepTime) TextView tvPrepTime;
         @BindView(R.id.recipeRatingBar) RatingBar ratingBar;
         @BindView(R.id.tvViewCount) TextView tvViewCount;
+        @BindView(R.id.pbLoading) ProgressBar pbLoading;
 
         ViewHolder(View itemView) {
             super(itemView);
