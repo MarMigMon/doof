@@ -169,12 +169,12 @@ public class AddRecipePageOne extends Fragment {
             public void run() {
                 checkStoragePermissions();
                 setButtons();
-                setImage(image);
             }
         }).start();
 
         createTypeSpinner();
         createPrepTimeSpinner();
+        setImage(image);
 
         if (editing) {
             setupEdit(editedRecipe);
@@ -400,8 +400,6 @@ public class AddRecipePageOne extends Fragment {
     public void setImage(Bitmap image) {
         if (image != null) {
             ivPreview.setImageBitmap(image);
-        } else {
-            ivPreview.setBackgroundResource(R.drawable.image_placeholder);
         }
     }
 

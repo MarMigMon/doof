@@ -127,9 +127,9 @@
         style="@style/Widget.AppCompat.Spinner.Underlined"
         android:layout_width="match_parent"
         android:layout_height="45dp"
+        android:layout_below="@id/etPrepTimeLayout"
         android:layout_marginTop="11dp"
         android:gravity="top"
-        android:layout_below="@id/etPrepTimeLayout"
         android:spinnerMode="dropdown"
         app:backgroundTint="@color/sunflower" />
 
