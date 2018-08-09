@@ -57,7 +57,6 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
     private static final int MAX_SIZE = 720;
     private ParseFile imageFile;
 
-
     // Submitting edited recipe
     private Recipe editedRecipe;
     private Context context;
@@ -207,13 +206,15 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
                     if (e == null) {
                         Toast.makeText(context, "Recipe successfully created!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
-                        FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
                         mainActivity.bottomNavigationView.setSelectedItemId(R.id.tab_feed);
+                        FragmentManager fm = mainActivity.getSupportFragmentManager();
+                        FragmentTransaction ft = fm.beginTransaction();
                         ft.replace(R.id.frameLayout, new FeedFragment());
                         ft.commit();
                         // Resets the pages for the next recipe
-                        pageOne = null;
-                        pageTwo = null;
+                        vpCreation.setCurrentItem(0);
+
+
                     } else {
                         Toast.makeText(context, "Recipe creation failed!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
@@ -229,15 +230,16 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
                         Toast.makeText(context, "Recipe successfully edited!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
                         editing = false;
-                        FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
                         mainActivity.bottomNavigationView.setSelectedItemId(R.id.tab_feed);
-                        RecipeFragment recipeFragment = new RecipeFragment();
-                        recipeFragment.recipe = recipe;
-                        ft.replace(R.id.frameLayout, recipeFragment);
+                        FragmentManager fm = mainActivity.getSupportFragmentManager();
+                        FragmentTransaction ft = fm.beginTransaction();
+                        ft.replace(R.id.frameLayout, new FeedFragment());
+
                         ft.commit();
                         // Resets the pages for the next recipe
-                        pageOne = null;
-                        pageTwo = null;
+                        vpCreation.setCurrentItem(0);
+
+
                     } else {
                         Toast.makeText(context, "Recipe edit failed!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);

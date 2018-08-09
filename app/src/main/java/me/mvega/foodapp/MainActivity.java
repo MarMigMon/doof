@@ -43,8 +43,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         setContentView(R.layout.activity_main);
 
         fragmentManager = getSupportFragmentManager();
-
-
         currentUser = getIntent().getParcelableExtra("user");
 
         // Starts activity with feed fragment displayed
