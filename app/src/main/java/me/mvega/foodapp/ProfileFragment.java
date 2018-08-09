@@ -49,9 +49,11 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     TabLayout tabLayout;
     @BindView(R.id.tvDescription)
     TextView tvDescription;
+    @BindView(R.id.btEditProfile) TextView btEditProfile;
 
     public interface ProfileFragmentCommunication {
         void respond(Recipe recipe);
+        void editProfile();
     }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
@@ -109,6 +111,13 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
                 } else {
                     e.printStackTrace();
                 }
+            }
+        });
+
+        btEditProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                yourRecipesListenerFragment.editProfile();
             }
         });
     }
