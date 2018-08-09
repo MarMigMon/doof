@@ -31,7 +31,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,8 +48,6 @@ import static android.app.Activity.RESULT_OK;
 
 public class AddRecipePageOne extends Fragment {
 
-    @BindView(R.id.page1)
-    RelativeLayout page1;
     @BindView(R.id.btImage)
     Button btImage;
     @BindView(R.id.ivPreview)
@@ -79,7 +76,6 @@ public class AddRecipePageOne extends Fragment {
     private final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     private final static int PICK_PHOTO_CODE = 1046;
 
-    private ParseFile imageFile;
     private String imagePath;
 
     private static final String KEY_RECIPE = "recipe";
@@ -121,8 +117,9 @@ public class AddRecipePageOne extends Fragment {
 
     // Inflate the view for the fragment based on layout XML
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        super.onCreateView(inflater, container, savedInstanceState);
         onAttachToParentFragment(getParentFragment());
         return inflater.inflate(R.layout.page_first_add_recipe, container, false);
     }
@@ -159,12 +156,12 @@ public class AddRecipePageOne extends Fragment {
             @Override
             public void run() {
                 setButtons();
-                createTypeSpinner();
-                createPrepTimeSpinner();
                 checkStoragePermissions();
             }
         });
         handlerThread.quitSafely();
+        createTypeSpinner();
+        createPrepTimeSpinner();
         if (editing) {
             setupEdit((Recipe) getParentFragment().getArguments().getParcelable(KEY_RECIPE));
         }
@@ -241,14 +238,6 @@ public class AddRecipePageOne extends Fragment {
                 }
                 return view;
             }
-
-            @NonNull
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                view.setPadding(0, 0, 0, 0);
-                return view;
-            }
         };
         // Specify the layout to use when the list of choices appears
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -277,15 +266,7 @@ public class AddRecipePageOne extends Fragment {
     private void createPrepTimeSpinner() {
         // Create an ArrayAdapter using the string array and a default spinner layout
         String[] prepTimeArray = getResources().getStringArray(R.array.prep_time_array);
-        final ArrayAdapter<String> prepTimeAdapter = new ArrayAdapter<String>(getContext(), R.layout.item_spinner, prepTimeArray) {
-            @NonNull
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                view.setPadding(0, 0, 0, 0);
-                return view;
-            }
-        };
+        final ArrayAdapter<String> prepTimeAdapter = new ArrayAdapter<>(getContext(), R.layout.item_spinner, prepTimeArray);
         // Specify the layout to use when the list of choices appears
         prepTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
@@ -434,11 +415,10 @@ public class AddRecipePageOne extends Fragment {
         if (typeText.isEmpty()) {
             throw new IllegalArgumentException("Please select a type from the type drop-down.");
         } else {
-            bundle.putString(KEY_TYPE, typeText);
+            bundle.putString(KEY_TYPE_TEXT, typeText);
         }
         bundle.putString(KEY_IMAGE_PATH, imagePath); // Stores the location of the image
         bundle.putString(KEY_PREP_TIME_TEXT, prepTimeText);
-        bundle.putString(KEY_TYPE_TEXT, typeText);
 
         addRecipeListenerFragment.next(bundle);
     }
@@ -473,7 +453,6 @@ public class AddRecipePageOne extends Fragment {
                     if (data != null) {
                         final Bitmap b = BitmapFactory.decodeByteArray(data, 0, data.length);
                         ivPreview.setImageBitmap(b);
-                        imageFile = image;
                     }
                 }
             });

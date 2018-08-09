@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.gu.toolargetool.TooLargeTool;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -36,14 +35,10 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
     public static ParseUser currentUser;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        TooLargeTool.startLogging(getApplication());
 
         currentUser = getIntent().getParcelableExtra("user");
 
@@ -52,8 +47,10 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
             showFeed();
         } else {
             Fragment f = getSupportFragmentManager().findFragmentByTag(KEY_FRAGMENT);
-             replaceFragment(f);
+            replaceFragment(f);
         }
+
+        currentUser = ParseUser.getCurrentUser();
 
         ButterKnife.bind(this);
 
@@ -75,10 +72,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
                                 return true;
 
                             case R.id.tab_profile:
-                                ProfileFragment profileFragment = new ProfileFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("user", currentUser);
-                                profileFragment.setArguments(bundle);
+                                ProfileFragment profileFragment = ProfileFragment.newInstance(currentUser);
                                 replaceFragment(profileFragment);
                                 return true;
 
@@ -122,20 +116,20 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     }
 
     public void showAddRecipe() {
-        Log.d("Add Recipe", "Runs on tab click");
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment addRecipeFragment = fragmentManager.findFragmentByTag("newRecipe");
-        // if fragment doesn't exist yet, create one
-        if (addRecipeFragment == null) {
-            fragmentTransaction.addToBackStack("newRecipe");
-            fragmentTransaction.add(R.id.frameLayout, new AddRecipeFragment(), "newRecipe").commit();
-            Log.d("create fragment", "addRecipe == null");
-        } else {
-            fragmentTransaction.replace(R.id.frameLayout, addRecipeFragment, "newRecipe").commit();
-            Log.d("replace fragment", "replaces fragment");
-        }
-//        replaceFragment(new AddRecipeFragment());
+//        Log.d("Add Recipe", "Runs on tab click");
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        Fragment addRecipeFragment = fragmentManager.findFragmentByTag("newRecipe");
+//        // if fragment doesn't exist yet, create one
+//        if (addRecipeFragment == null) {
+//            fragmentTransaction.addToBackStack("newRecipe");
+//            fragmentTransaction.add(R.id.frameLayout, new AddRecipeFragment(), "newRecipe").commit();
+//            Log.d("create fragment", "addRecipe == null");
+//        } else {
+//            fragmentTransaction.replace(R.id.frameLayout, addRecipeFragment, "newRecipe").commit();
+//            Log.d("replace fragment", "replaces fragment");
+//        }
+        replaceFragment(new AddRecipeFragment());
     }
 
     private void showNotification() {
@@ -189,11 +183,8 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
     @Override
     public void respond(ParseUser notificationUser) {
-        ProfileFragment profileFragment = new ProfileFragment();
+        ProfileFragment profileFragment = ProfileFragment.newInstance(notificationUser);
         setFadeTransition(profileFragment);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("user", notificationUser);
-        profileFragment.setArguments(bundle);
         replaceFragment(profileFragment);
     }
 

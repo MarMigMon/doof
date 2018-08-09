@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/page2"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp">
+    android:paddingTop="8dp"
+    android:paddingEnd="20dp"
+    android:paddingStart="20dp">
 
     <TextView
         android:id="@+id/tvIngredients"

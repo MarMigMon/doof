@@ -66,14 +66,16 @@ public class SpeechCardFragmentPlain extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        Integer stepCount = getArguments().getInt(KEY_STEP_COUNT);
-        String currStep = getArguments().getString(KEY_STEP, "");
-        String ingredients = getArguments().getString(KEY_INGREDIENTS, "");
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            Integer stepCount = arguments.getInt(KEY_STEP_COUNT);
+            String currStep = arguments.getString(KEY_STEP, "");
+            String ingredients = arguments.getString(KEY_INGREDIENTS, "");
 
-        tvInstructions.setText(currStep);
-        tvStepCount.setText(stepCount.toString());
-        tvIngredients.setText(ingredients);
-
+            tvInstructions.setText(currStep);
+            tvStepCount.setText(stepCount.toString());
+            tvIngredients.setText(ingredients);
+        }
         ibReplay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

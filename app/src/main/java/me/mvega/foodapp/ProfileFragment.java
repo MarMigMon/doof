@@ -33,6 +33,7 @@ import static me.mvega.foodapp.MainActivity.currentUser;
 public class ProfileFragment extends Fragment implements YourRecipesFragment.YourRecipesFragmentCommunication {
 
     private ProfileFragmentCommunication yourRecipesListenerFragment;
+    private Context context;
     ParseUser user;
     @BindView(R.id.ivProfile)
     ImageView ivProfile;
@@ -63,12 +64,20 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
 
     @Override
     public void onAttach(Context context) {
+        this.context = context;
         super.onAttach(context);
         if (context instanceof ProfileFragmentCommunication) {
             yourRecipesListenerFragment = (ProfileFragmentCommunication) context;
         }
     }
 
+    public static ProfileFragment newInstance(ParseUser user) {
+        Bundle args = new Bundle();
+        args.putParcelable("User", user);
+        ProfileFragment fragment = new ProfileFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     // This event is triggered soon after onCreateView().
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
@@ -80,6 +89,8 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         // Prevents app crashing when switching orientations
         if (savedInstanceState != null) {
             user = savedInstanceState.getParcelable("user");
+        } else {
+            user = getArguments().getParcelable("User");
         }
 
         user.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
@@ -160,9 +171,9 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         ParseFile profileImage = user.getParseFile("image");
         if (profileImage != null) {
             String imageUrl = profileImage.getUrl();
-            Glide.with(getContext()).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(ivProfile);
+            Glide.with(context).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(ivProfile);
         } else
-            Glide.with(getContext()).load(R.drawable.image_placeholder).apply(RequestOptions.circleCropTransform()).into(ivProfile);
+            Glide.with(context).load(R.drawable.image_placeholder).apply(RequestOptions.circleCropTransform()).into(ivProfile);
     }
 
     private void setTabs(String userName) {

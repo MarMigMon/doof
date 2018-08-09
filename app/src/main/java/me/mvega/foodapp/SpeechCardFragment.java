@@ -65,8 +65,10 @@ public class SpeechCardFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        String currStep = getArguments().getString(KEY_STEP, "");
-        tvInstructions.setText(currStep);
+        if (getArguments() != null) {
+            String currStep = getArguments().getString(KEY_STEP, "");
+            tvInstructions.setText(currStep);
+        }
 
         HandlerThread speedThread = new HandlerThread("Speed");
         speedThread.start();

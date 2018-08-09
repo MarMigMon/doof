@@ -27,8 +27,6 @@ import me.mvega.foodapp.model.Recipe;
 
 public class AddRecipePageTwo extends Fragment {
 
-    @BindView(R.id.page2)
-    RelativeLayout page2;
     @BindView(R.id.tvIngredients)
     TextView tvIngredients;
     @BindView(R.id.ingredientsLayout)
@@ -84,7 +82,9 @@ public class AddRecipePageTwo extends Fragment {
     // implement interface
     public interface PageTwoFragmentCommunication {
         void back(Bundle bundle);
+
         void submit(Bundle bundle);
+
         void scrollDownTextField(boolean reverse, int distance);
     }
 
@@ -104,8 +104,9 @@ public class AddRecipePageTwo extends Fragment {
 
     // Inflate the view for the fragment based on layout XML
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        super.onCreateView(inflater, container, savedInstanceState);
         onAttachToParentFragment(getParentFragment());
         return inflater.inflate(R.layout.page_second_add_recipe, container, false);
     }
@@ -162,6 +163,8 @@ public class AddRecipePageTwo extends Fragment {
             public void onClick(View view) {
                 try {
                     Bundle bundle = new Bundle();
+                    bundle.putStringArrayList(KEY_INGREDIENTS, parseIngredients());
+                    bundle.putStringArrayList(KEY_STEPS, parseInstructions());
                     addRecipeListenerFragment.submit(bundle);
                 } catch (IllegalArgumentException e) {
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -172,7 +175,8 @@ public class AddRecipePageTwo extends Fragment {
         btBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Bundle bundle = new Bundle();
+                addRecipeListenerFragment.back(bundle);
             }
         });
 
@@ -248,7 +252,6 @@ public class AddRecipePageTwo extends Fragment {
 
         return ingredientStrings;
     }
-
 
 
     @Override
