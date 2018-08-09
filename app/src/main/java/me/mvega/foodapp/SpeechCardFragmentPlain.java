@@ -24,7 +24,7 @@ public class SpeechCardFragmentPlain extends Fragment {
     @BindView(R.id.tvStepCount) TextView tvStepCount;
     @BindView(R.id.tvStepLabel) TextView tvStepLabel;
     @BindView(R.id.tvIngredients) TextView tvIngredients;
-    @BindView(R.id.ivReplay)
+    @BindView(R.id.ibReplay)
     ImageButton ibReplay;
 
     SpeechCardFragmentPlain.SpeechFragmentCommunication listenerFragment;

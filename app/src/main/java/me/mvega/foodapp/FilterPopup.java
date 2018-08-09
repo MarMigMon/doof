@@ -212,7 +212,7 @@ public class FilterPopup implements FeedFragment.FilterCommunication {
 
         if (filterTimeEntered || ratingsChecked || typesChecked) {
             Recipe.Query filter = new Recipe.Query();
-            filter.getTop().newestFirst().withUser().or(ratingQueries).findInBackground(new FindCallback<Recipe>() {
+            filter.getTop().newestFirst().or(ratingQueries).include("user").findInBackground(new FindCallback<Recipe>() {
                 @Override
                 public void done(List<Recipe> newRecipes, ParseException e) {
                     lowestRating = 0;
@@ -229,7 +229,7 @@ public class FilterPopup implements FeedFragment.FilterCommunication {
     private ParseQuery executeFilterQueries(Recipe.Query query, int page) {
         lowestRating = 0;
         maxPrepTime = Integer.MAX_VALUE;
-        return query.getTop().newestFirst().withUser().skipToPage(page).or(ratingQueries);
+        return query.getTop().newestFirst().skipToPage(page).or(ratingQueries).include("user");
     }
 
     @Override
