@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingEnd="20dp"
+    android:paddingStart="20dp">
+
+    <RelativeLayout
+        android:id="@+id/imageLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:id="@+id/btImage"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/round_button_light"
+            android:padding="10dp"
+            android:text="UPLOAD IMAGE" />
+
+        <ImageView
+            android:id="@+id/ivPreview"
+            android:layout_width="match_parent"
+            android:layout_height="203dp"
+            android:contentDescription="@string/recipe_image"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_placeholder" />
+    </RelativeLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/etRecipeNameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageLayout"
+        android:layout_marginTop="5dp">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/etRecipeName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/recipe_name"
+            android:inputType="text"
+            android:singleLine="true" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/etDescriptionLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etRecipeNameLayout">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/etDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/recipe_desc"
+            android:inputType="textMultiLine"
+            android:singleLine="true" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/etYieldLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/etDescriptionLayout"
+        android:layout_toStartOf="@id/yieldText">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/etYield"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Yield"
+            android:inputType="number" />
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:id="@+id/yieldText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/etYieldLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="3dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
+        android:text="servings"
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/etPrepTimeLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/etYieldLayout"
+        android:layout_toStartOf="@id/spPrepTime">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/etPrepTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Prep Time"
+            android:inputType="number" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/spPrepTime"
+        style="@style/Widget.AppCompat.Spinner.Underlined"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_alignBottom="@id/etPrepTimeLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="5dp"
+        android:gravity="top|end"
+        android:spinnerMode="dropdown"
+        android:textAlignment="textEnd"
+        app:backgroundTint="@color/sunflower" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/spType"
+        style="@style/Widget.AppCompat.Spinner.Underlined"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="11dp"
+        android:gravity="top"
+        android:layout_below="@id/etPrepTimeLayout"
+        android:spinnerMode="dropdown"
+        app:backgroundTint="@color/sunflower" />
+
+    <Button
+        android:id="@+id/btNext"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/spType"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/round_button"
+        android:padding="10dp"
+        android:text="NEXT" />
+</RelativeLayout>

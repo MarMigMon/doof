@@ -54,6 +54,7 @@ public class RecipeFragment extends Fragment {
     private String recipeId;
     private int stepCount = 0;
     private static final String KEY_FAVORITE = "favorites";
+    private MainActivity mainActivity;
 
     @BindView(R.id.tvName) TextView tvName;
     @BindView(R.id.tvUsername) TextView tvUsername;
@@ -85,6 +86,7 @@ public class RecipeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mainActivity = (MainActivity) context;
         if (context instanceof RecipeUserCommunication) {
             recipeUserListener = (RecipeUserCommunication) context;
         } else {
@@ -127,6 +129,7 @@ public class RecipeFragment extends Fragment {
             btnEditRecipe.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    mainActivity.bottomNavigationView.setSelectedItemId(R.id.tab_add);
                     recipeUserListener.startEdit(recipe);
                 }
             });
