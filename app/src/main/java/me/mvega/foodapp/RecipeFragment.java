@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -53,6 +54,7 @@ public class RecipeFragment extends Fragment {
     private String recipeId;
     private int stepCount = 0;
     private static final String KEY_FAVORITE = "favorites";
+    private MainActivity mainActivity;
 
     @BindView(R.id.tvName) TextView tvName;
     @BindView(R.id.tvUsername) TextView tvUsername;
@@ -70,6 +72,7 @@ public class RecipeFragment extends Fragment {
     @BindView(R.id.ivImage) ImageView ivImage;
     @BindView(R.id.btPlay) ImageButton btPlay;
     @BindView(R.id.btFavorite) ImageButton btFavorite;
+    @BindView(R.id.pbLoading) ProgressBar pbLoading;
 
     //    MarkerUpdatesReceiver markerUpdatesReceiver;
 
@@ -83,6 +86,7 @@ public class RecipeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mainActivity = (MainActivity) context;
         if (context instanceof RecipeUserCommunication) {
             recipeUserListener = (RecipeUserCommunication) context;
         } else {
@@ -125,6 +129,7 @@ public class RecipeFragment extends Fragment {
             btnEditRecipe.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    mainActivity.bottomNavigationView.setSelectedItemId(R.id.tab_add);
                     recipeUserListener.startEdit(recipe);
                 }
             });
@@ -156,6 +161,8 @@ public class RecipeFragment extends Fragment {
         user = ParseUser.getCurrentUser();
 
         ButterKnife.bind(this, view);
+
+        pbLoading.setVisibility(View.VISIBLE);
 
         ArrayList<String> steps = (ArrayList<String>) recipe.getSteps();
         recipeId = recipe.getObjectId();
@@ -259,6 +266,7 @@ public class RecipeFragment extends Fragment {
         } else {
             Glide.with(getContext()).load(R.drawable.image_placeholder).into(ivImage);
         }
+        pbLoading.setVisibility(View.INVISIBLE);
 
         float rating = recipe.getRating().floatValue();
         recipeRating.setRating(rating);

@@ -74,8 +74,14 @@ public class SpeechCardFragmentPlain extends Fragment {
 
             tvInstructions.setText(currStep);
             tvStepCount.setText(stepCount.toString());
-            tvIngredients.setText(ingredients);
+            if (ingredients.equals("")) {
+                tvIngredients.setText("n/a");
+            } else {
+                tvIngredients.setText(ingredients);
+            }
+
         }
+
         ibReplay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

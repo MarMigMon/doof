@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,9 +49,13 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     TabLayout tabLayout;
     @BindView(R.id.tvDescription)
     TextView tvDescription;
+    @BindView(R.id.btEditProfile) TextView btEditProfile;
+
+    private static int page;
 
     public interface ProfileFragmentCommunication {
         void respond(Recipe recipe);
+        void editProfile();
     }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
@@ -74,7 +77,8 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
 
     public static ProfileFragment newInstance(ParseUser user) {
         Bundle args = new Bundle();
-        args.putParcelable("User", user);
+        args.putParcelable("user", user);
+        args.putInt("page", page);
         ProfileFragment fragment = new ProfileFragment();
         fragment.setArguments(args);
         return fragment;
@@ -90,8 +94,10 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         // Prevents app crashing when switching orientations
         if (savedInstanceState != null) {
             user = savedInstanceState.getParcelable("user");
+            page = savedInstanceState.getInt("page");
         } else {
-            user = getArguments().getParcelable("User");
+            user = getArguments().getParcelable("user");
+            page = 0;
         }
 
         user.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
@@ -112,15 +118,20 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
                 }
             }
         });
+
+        btEditProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                yourRecipesListenerFragment.editProfile();
+            }
+        });
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("user", user);
-        Fragment tabFragment = this.getFragmentManager().findFragmentById(R.id.profileTabs);
-        outState.putString("tabFragment", tabFragment.getTag());
-        Log.e("layout-saving", tabFragment.getTag());
+        outState.putInt("page", page);
     }
 
     private void setUserContributions() {
@@ -197,7 +208,8 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
         tabLayout.addTab(yourRecipes, 0, true);
         tabLayout.addTab(favorites, 1, false);
         tabLayout.addTab(completed, 2, false);
-        yourRecipes.select();
+        // select tab
+        tabLayout.getTabAt(page).select();
 
         // handle tab selection
         tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
@@ -205,10 +217,13 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.equals(yourRecipes)) {
                     showYourRecipes();
+                    page = 0;
                 } else if (tab.equals(favorites)) {
                     showFavorites();
+                    page = 1;
                 } else if (tab.equals(completed)) {
                     showCompleted();
+                    page = 2;
                 }
             }
 

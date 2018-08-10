@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.Explode;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.Menu;
@@ -44,8 +43,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         setContentView(R.layout.activity_main);
 
         fragmentManager = getSupportFragmentManager();
-
-
         currentUser = getIntent().getParcelableExtra("user");
 
         // Starts activity with feed fragment displayed
@@ -114,10 +111,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         finish();
     }
 
-    public void onEditProfileAction(MenuItem mi) {
-        replaceFragment(new EditProfileFragment());
-    }
-
     private void showFeed() {
         replaceFragment(FeedFragment.newInstance());
     }
@@ -141,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     }
 
     public void replaceFragment(Fragment f) {
+        setFadeTransition(f);
         // Begin the transaction
         final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         // Replace the contents of the container with the new fragment and complete the changes added above
@@ -157,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
             recipeFragment.setSharedElementEnterTransition(new Fade());
             recipeFragment.setEnterTransition(new Fade());
             recipeFragment.setExitTransition(new Fade());
-            recipeFragment.setSharedElementReturnTransition(new Explode());
+            recipeFragment.setSharedElementReturnTransition(new Fade());
         }
 
         recipeFragment.recipe = recipe;
@@ -173,14 +167,12 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     public void respond(Recipe recipe) {
         RecipeFragment recipeFragment = new RecipeFragment();
         recipeFragment.recipe = recipe;
-        setFadeTransition(recipeFragment);
         replaceFragment(recipeFragment);
     }
 
     @Override
     public void respond (ParseObject notificationRecipe) {
         RecipeFragment recipeFragment = new RecipeFragment();
-        setFadeTransition(recipeFragment);
         recipeFragment.recipe = (Recipe) notificationRecipe;
         replaceFragment(recipeFragment);
     }
@@ -188,7 +180,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     @Override
     public void respond(ParseUser notificationUser) {
         ProfileFragment profileFragment = ProfileFragment.newInstance(notificationUser);
-        setFadeTransition(profileFragment);
         replaceFragment(profileFragment);
     }
 
@@ -204,7 +195,11 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     @Override
     public void startEdit(Recipe recipe) {
         AddRecipeFragment addRecipeFragment = AddRecipeFragment.newInstance(recipe, true);
-        setFadeTransition(addRecipeFragment);
         replaceFragment(addRecipeFragment);
+    }
+
+    @Override
+    public void editProfile() {
+        replaceFragment(new EditProfileFragment());
     }
 }

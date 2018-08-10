@@ -185,8 +185,30 @@ public class FeedFragment extends Fragment {
         });
     }
 
+    private ArrayList<String> getAllRecipeNames() {
+        recipeNames = new ArrayList<>();
+        Recipe.Query recipeQuery = new Recipe.Query();
+        recipeQuery.withUser().newestFirst();
+        recipeQuery.findInBackground(new FindCallback<Recipe>() {
+            @Override
+            public void done(List<Recipe> newRecipes, ParseException e) {
+                if (e == null && newRecipes != null) {
+                    for (Recipe recipe : newRecipes) {
+                        recipeNames.add(recipe.getName());
+                    }
+                    pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        return recipeNames;
+    }
+
     private void initializeSearch() {
-        ArrayAdapter<String> searchAdapter = new ArrayAdapter<>(mainActivity, R.layout.autocomplete_dropdown, recipeNames);
+
+        ArrayAdapter<String> searchAdapter = new ArrayAdapter<String>(mainActivity, R.layout.autocomplete_dropdown, getAllRecipeNames());
 
         // Will start suggesting searches after one character is typed
         search.setThreshold(1);
@@ -289,10 +311,6 @@ public class FeedFragment extends Fragment {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
                 if (e == null && newRecipes != null) {
-                    recipeNames = new ArrayList<>();
-                    for (Recipe recipe : newRecipes) {
-                        recipeNames.add(recipe.getName());
-                    }
                     resetAdapter(newRecipes);
                     initializeSearch();
                     pbLoading.setVisibility(ProgressBar.INVISIBLE);

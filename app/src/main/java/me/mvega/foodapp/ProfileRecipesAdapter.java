@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
     private ProfileAdapterCommunication pCommunication;
     private final List<Recipe> recipes;
     private Context context;
+    private int lastPosition = -1;
 
     // pass in the Recipes array in the constructor
     public ProfileRecipesAdapter(List<Recipe> recipes) {
@@ -59,6 +61,7 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
         // get the data according to position
         Recipe recipe = recipes.get(position);
 
+        setAnimation(holder.itemView, position);
         // populate the view according to this data
         holder.tvName.setText(recipe.getName()); // TODO get recipe name
         holder.tvPrepTime.setText(recipe.getPrepTimeString()); // TODO get recipe prep time
@@ -72,6 +75,16 @@ public class ProfileRecipesAdapter extends RecyclerView.Adapter<ProfileRecipesAd
 
         float rating = recipe.getRating().floatValue(); // TODO get recipe rating
         holder.ratingBar.setRating(rating);
+    }
+
+    private void setAnimation(View viewToAnimate, int position)
+    {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition)
+        {
+            viewToAnimate.startAnimation(AnimationUtils.loadAnimation(context, R.anim.profile_item_animation_fall_down));
+            lastPosition = position;
+        }
     }
 
     @Override

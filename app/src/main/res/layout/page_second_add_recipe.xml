@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="8dp"
+    android:paddingEnd="20dp"
+    android:paddingStart="20dp">
+
+    <TextView
+        android:id="@+id/tvIngredients"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="Ingredients"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:id="@+id/ingredientsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvIngredients"
+        android:animateLayoutChanges="true">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardIngredient1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:contentPaddingBottom="16dp"
+            app:contentPaddingTop="16dp"
+            app:contentPaddingLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            app:cardElevation="1dp">
+
+            <EditText
+                android:id="@+id/ingredient1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ingredient 1"
+                android:inputType="textMultiLine"
+                android:textSize="18sp"
+                android:background="@color/white"/>
+
+        </android.support.v7.widget.CardView>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btAddIngredient"
+        android:layout_below="@+id/ingredientsLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        android:background="@drawable/round_button_light"
+        android:text="Add Ingredient" />
+
+    <TextView
+        android:id="@+id/tvInstructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btAddIngredient"
+        android:layout_marginTop="20dp"
+        android:text="Instructions"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:id="@+id/instructionsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvInstructions"
+        android:animateLayoutChanges="true">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardStep1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:contentPaddingBottom="16dp"
+            app:contentPaddingTop="16dp"
+            app:contentPaddingLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            app:cardElevation="1dp">
+
+            <EditText
+                android:id="@+id/step1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Step 1"
+                android:inputType="textMultiLine"
+                android:textSize="18sp"
+                android:background="@color/white"/>
+
+        </android.support.v7.widget.CardView>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btAddStep"
+        android:layout_below="@+id/instructionsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/round_button_light"
+        android:text="Add Step" />
+
+    <Button
+        android:id="@+id/btAudio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btAddStep"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:background="@drawable/round_button"
+        android:text="Upload Audio"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/btAddStep"
+        android:layout_margin="10dp"
+        android:background="@drawable/round_button"
+        android:text="SUBMIT" />
+
+    <Button
+        android:id="@+id/btBack"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/btAddStep"
+        android:layout_margin="10dp"
+        android:background="@drawable/round_button_light"
+        android:padding="10dp"
+        android:text="BACK" />
+
+</RelativeLayout>
