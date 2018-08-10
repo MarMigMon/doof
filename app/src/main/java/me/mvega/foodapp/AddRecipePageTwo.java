@@ -325,7 +325,9 @@ public class AddRecipePageTwo extends Fragment {
         // Show error when userProfile is not the currentUser's profile
         // Add cancel option and message
         alertDialog.setCancelable(true);
-        alertDialog.setMessage(Html.fromHtml("Delete?"));
+
+        String itemText = ((EditText) step).getText().toString();
+        alertDialog.setMessage(Html.fromHtml("Delete <b>" + truncate(itemText) + "</b> ?"));
 
         // Configure dialog button (OK)
         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
@@ -376,6 +378,15 @@ public class AddRecipePageTwo extends Fragment {
         alertDialog.show();
 
         }
+
+    private String truncate(String string) {
+        if (string.length() > 20) {
+            return string.substring(0, 20) + "...";
+        } else {
+            return string;
+        }
+    }
+
 
     /**
      * Pre-fills the fragment's ingredients with the given list
