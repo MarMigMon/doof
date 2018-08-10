@@ -80,7 +80,9 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:text="User handle"
+                android:textColor="@color/colorSecondaryDark"
                 android:textSize="14sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/recipeRatingBar" />
 
@@ -108,7 +110,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_toEndOf="@+id/recipeRatingBar"
                 android:text="0 Ratings"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 app:layout_constraintStart_toEndOf="@+id/recipeRatingBar"
                 app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
@@ -230,9 +232,11 @@
                 android:id="@+id/userRatingMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Rate this recipe!"
                 android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="@+id/userRatingBar"
                 app:layout_constraintStart_toStartOf="@+id/userRatingBar"
                 app:layout_constraintTop_toTopOf="parent" />
 
