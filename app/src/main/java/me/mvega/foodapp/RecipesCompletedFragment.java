@@ -1,8 +1,10 @@
 package me.mvega.foodapp;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -10,7 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -38,15 +42,11 @@ public class RecipesCompletedFragment extends Fragment {
     @BindView(R.id.pbLoading)
     ProgressBar pbLoading;
     ParseUser user;
-
-//    // implement interface
-//    public interface YourRecipesFragmentCommunication {
-//        void respond(Recipe recipe);
-//    }
-//
-//    public void setYourRecipeListener(YourRecipesFragment.YourRecipesFragmentCommunication yourRecipesListener) {
-//        this.profileListenerFragment = (YourRecipesFragment.YourRecipesFragmentCommunication) yourRecipesListener;
-//    }
+    @BindView(R.id.ivPlaceholder)
+    ImageView ivPlaceholder;
+    @BindView(R.id.tvNoRecipes)
+    TextView tvNoRecipes;
+    Context context;
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -86,6 +86,8 @@ public class RecipesCompletedFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
+        ivPlaceholder.setVisibility(View.INVISIBLE);
+        tvNoRecipes.setVisibility(View.INVISIBLE);
         pbLoading.setVisibility(ProgressBar.VISIBLE);
 
         // find the Recycler View
@@ -114,10 +116,14 @@ public class RecipesCompletedFragment extends Fragment {
             }
         });
 
+        loadCompleted();
+
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.detach(RecipesCompletedFragment.this).attach(RecipesCompletedFragment.this).commit();
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
@@ -129,8 +135,6 @@ public class RecipesCompletedFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
-        loadCompleted();
     }
 
     private void loadCompleted() {
@@ -165,11 +169,15 @@ public class RecipesCompletedFragment extends Fragment {
                 }
             });
         } else {
+            pbLoading.setVisibility(ProgressBar.GONE);
+            rvRecipes.setVisibility(View.GONE);
+
+            ivPlaceholder.setVisibility(View.VISIBLE);
+            tvNoRecipes.setVisibility(View.VISIBLE);
             // Remember to CLEAR OUT old items before appending in the new ones
             profileRecipesAdapter.clear();
             // Now we call setRefreshing(false) to signal refresh has finished
             swipeContainer.setRefreshing(false);
-            pbLoading.setVisibility(ProgressBar.INVISIBLE);
         }
     }
 }

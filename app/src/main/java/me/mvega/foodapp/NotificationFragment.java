@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,10 +12,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -30,12 +36,17 @@ import static me.mvega.foodapp.MainActivity.currentUser;
 
 public class NotificationFragment extends Fragment {
 
+    private Context context;
     @BindView(R.id.swipeContainerNotifications)
     SwipeRefreshLayout swipeContainerNotifications;
     @BindView(R.id.rvNotifications)
     RecyclerView rvNotifications;
     @BindView(R.id.pbLoading)
     ProgressBar pbLoading;
+    @BindView(R.id.ivUserImage)
+    ImageView ivUserImage;
+    @BindView(R.id.tvNoNotifications)
+    TextView tvNoNotifications;
 
     private NotificationAdapter notificationAdapter;
     private NotificationRecipeFragmentCommunication notificationRecipeListenerFragment;
@@ -60,8 +71,10 @@ public class NotificationFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_notification, parent, false);
     }
 
+
     @Override
     public void onAttach(Context context) {
+        this.context = context;
         super.onAttach(context);
         if (context instanceof NotificationRecipeFragmentCommunication) {
             notificationRecipeListenerFragment = (NotificationRecipeFragmentCommunication) context;
@@ -76,34 +89,54 @@ public class NotificationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
+        ivUserImage.setVisibility(View.INVISIBLE);
+        tvNoNotifications.setVisibility(View.INVISIBLE);
         pbLoading.setVisibility(ProgressBar.VISIBLE);
 
-        ArrayList<Notification> notifications = new ArrayList<>();
-        notificationAdapter = new NotificationAdapter(notifications);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        rvNotifications.setLayoutManager(linearLayoutManager);
-        rvNotifications.setAdapter(notificationAdapter);
-
-        notificationAdapter.setNotificationRecipeListener(new NotificationAdapter.NotificationAdapterRecipeCommunication() {
-            @Override
-            public void respond(ParseObject notificationRecipe) {
-                notificationRecipeListenerFragment.respond(notificationRecipe);
-            }
-        });
-
-        notificationAdapter.setNotificationUserListener(new NotificationAdapter.NotificationAdapterUserCommunication() {
-            @Override
-            public void respond(ParseUser notificationUser) {
-                notificationUserListenerFragment.respond(notificationUser);
-            }
-        });
-
-        RecyclerView.ItemDecoration itemDecoration = new
-                DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-        rvNotifications.addItemDecoration(itemDecoration);
+//        ivUserImage.setVisibility(View.INVISIBLE);
+//        tvNoNotifications.setVisibility(View.INVISIBLE);
+//
+//        pbLoading.setVisibility(ProgressBar.VISIBLE);
+//
+//        ArrayList<Notification> notifications = new ArrayList<>();
+//        notificationAdapter = new NotificationAdapter(notifications);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+//        rvNotifications.setLayoutManager(linearLayoutManager);
+//        rvNotifications.setAdapter(notificationAdapter);
+//
+//        notificationAdapter.setNotificationRecipeListener(new NotificationAdapter.NotificationAdapterRecipeCommunication() {
+//            @Override
+//            public void respond(ParseObject notificationRecipe) {
+//                notificationRecipeListenerFragment.respond(notificationRecipe);
+//            }
+//        });
+//
+//        notificationAdapter.setNotificationUserListener(new NotificationAdapter.NotificationAdapterUserCommunication() {
+//            @Override
+//            public void respond(ParseUser notificationUser) {
+//                notificationUserListenerFragment.respond(notificationUser);
+//            }
+//        });
+//
+//        RecyclerView.ItemDecoration itemDecoration = new
+//                DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+//        rvNotifications.addItemDecoration(itemDecoration);
 
         loadYourNotifications();
         setSwipeContainer();
+////            ButterKnife.bind(this, view);
+//        pbLoading.setVisibility(ProgressBar.INVISIBLE);
+//        rvNotifications.setVisibility(View.INVISIBLE);
+//
+//        ivUserImage.setVisibility(View.VISIBLE);
+//        ParseFile profileImage = currentUser.getParseFile("image");
+//        if (profileImage != null) {
+//            String imageUrl = profileImage.getUrl();
+//            Glide.with(context).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(ivUserImage);
+//        } else
+//            Glide.with(context).load(R.drawable.image_placeholder).apply(RequestOptions.circleCropTransform()).into(ivUserImage);
+//
+//        tvNoNotifications.setVisibility(View.VISIBLE);
     }
 
 
@@ -112,9 +145,13 @@ public class NotificationFragment extends Fragment {
         swipeContainerNotifications.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.detach(NotificationFragment.this).attach(NotificationFragment.this).commit();
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
+
+//                notificationAdapter.addAll(newNotification);
                 loadYourNotifications();
             }
         });
@@ -131,7 +168,7 @@ public class NotificationFragment extends Fragment {
         return fragmentNotification;
     }
 
-    private void loadYourNotifications() {
+    public void loadYourNotifications() {
         final Notification.Query notificationQuery = new Notification.Query();
         notificationQuery.recipeUser(currentUser).whereNotEqualTo("activeUser", currentUser);
         notificationQuery.getTop().newestFirst();
@@ -144,10 +181,54 @@ public class NotificationFragment extends Fragment {
             @Override
             public void done(final List<Notification> newNotification, ParseException e) {
                 if (e == null) {
-                    notificationAdapter.clear();
-                    notificationAdapter.addAll(newNotification);
-                    swipeContainerNotifications.setRefreshing(false);
-                    pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                    if (newNotification.size() != 0) {
+                        ArrayList<Notification> notifications = new ArrayList<>();
+                        notificationAdapter = new NotificationAdapter(notifications);
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                        rvNotifications.setLayoutManager(linearLayoutManager);
+                        rvNotifications.setAdapter(notificationAdapter);
+
+                        notificationAdapter.setNotificationRecipeListener(new NotificationAdapter.NotificationAdapterRecipeCommunication() {
+                            @Override
+                            public void respond(ParseObject notificationRecipe) {
+                                notificationRecipeListenerFragment.respond(notificationRecipe);
+                            }
+                        });
+
+                        notificationAdapter.setNotificationUserListener(new NotificationAdapter.NotificationAdapterUserCommunication() {
+                            @Override
+                            public void respond(ParseUser notificationUser) {
+                                notificationUserListenerFragment.respond(notificationUser);
+                            }
+                        });
+
+                        RecyclerView.ItemDecoration itemDecoration = new
+                                DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+                        rvNotifications.addItemDecoration(itemDecoration);
+
+                        notificationAdapter.clear();
+                        notificationAdapter.addAll(newNotification);
+                        swipeContainerNotifications.setRefreshing(false);
+                        pbLoading.setVisibility(ProgressBar.INVISIBLE);
+
+                    } else {
+                        pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                        rvNotifications.setVisibility(View.INVISIBLE);
+
+                        ivUserImage.setVisibility(View.VISIBLE);
+                        ParseFile profileImage = currentUser.getParseFile("image");
+                        if (profileImage != null) {
+                            String imageUrl = profileImage.getUrl();
+                            Glide.with(context).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(ivUserImage);
+                        } else
+                            Glide.with(context).load(R.drawable.image_placeholder).apply(RequestOptions.circleCropTransform()).into(ivUserImage);
+
+                        tvNoNotifications.setVisibility(View.VISIBLE);
+
+                        swipeContainerNotifications.setRefreshing(false);
+                        pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                    }
+
                 } else {
                     e.printStackTrace();
                 }

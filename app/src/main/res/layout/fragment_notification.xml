@@ -34,4 +34,34 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ivUserImage"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="181dp"
+            app:srcCompat="@drawable/ic_profile"
+            tools:layout_editor_absoluteX="147dp"
+            tools:layout_editor_absoluteY="180dp" />
+
+        <TextView
+            android:id="@+id/tvNoNotifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="235dp"
+            android:text="No notifications to show"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            tools:layout_editor_absoluteX="62dp"
+            tools:layout_editor_absoluteY="292dp" />
+    </RelativeLayout>
+
 </FrameLayout>

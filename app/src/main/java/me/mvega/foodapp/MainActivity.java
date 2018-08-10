@@ -123,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     }
 
     public void showAddRecipe() {
-        Log.d("Add Recipe", "Runs on tab click");
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment addRecipeFragment = fragmentManager.findFragmentByTag("newRecipe");
         // if fragment doesn't exist yet, create one
