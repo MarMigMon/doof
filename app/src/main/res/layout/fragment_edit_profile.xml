@@ -102,7 +102,6 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/round_button_light"
         android:text="Add Description"
-        android:textSize="12sp"
         android:visibility="invisible" />
 
 </RelativeLayout>

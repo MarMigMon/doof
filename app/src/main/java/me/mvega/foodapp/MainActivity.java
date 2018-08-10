@@ -133,8 +133,16 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         replaceFragment(NotificationFragment.newInstance());
     }
 
-    public void replaceFragment(Fragment f) {
+    public void replaceFragmentWithTransition(Fragment f) {
         setFadeTransition(f);
+        // Begin the transaction
+        final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        // Replace the contents of the container with the new fragment and complete the changes added above
+        fragmentTransaction.addToBackStack(KEY_FRAGMENT);
+        fragmentTransaction.replace(R.id.frameLayout, f, KEY_FRAGMENT).commit();
+    }
+
+    public void replaceFragment(Fragment f) {
         // Begin the transaction
         final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         // Replace the contents of the container with the new fragment and complete the changes added above
@@ -167,20 +175,20 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     public void respond(Recipe recipe) {
         RecipeFragment recipeFragment = new RecipeFragment();
         recipeFragment.recipe = recipe;
-        replaceFragment(recipeFragment);
+        replaceFragmentWithTransition(recipeFragment);
     }
 
     @Override
     public void respond (ParseObject notificationRecipe) {
         RecipeFragment recipeFragment = new RecipeFragment();
         recipeFragment.recipe = (Recipe) notificationRecipe;
-        replaceFragment(recipeFragment);
+        replaceFragmentWithTransition(recipeFragment);
     }
 
     @Override
     public void respond(ParseUser notificationUser) {
         ProfileFragment profileFragment = ProfileFragment.newInstance(notificationUser);
-        replaceFragment(profileFragment);
+        replaceFragmentWithTransition(profileFragment);
     }
 
 
@@ -195,11 +203,11 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     @Override
     public void startEdit(Recipe recipe) {
         AddRecipeFragment addRecipeFragment = AddRecipeFragment.newInstance(recipe, true);
-        replaceFragment(addRecipeFragment);
+        replaceFragmentWithTransition(addRecipeFragment);
     }
 
     @Override
     public void editProfile() {
-        replaceFragment(new EditProfileFragment());
+        replaceFragmentWithTransition(new EditProfileFragment());
     }
 }

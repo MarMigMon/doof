@@ -33,13 +33,12 @@
                 android:layout_height="35dp"
                 android:background="@drawable/et_search"
                 android:ems="10"
-                android:textSize="12sp"
                 android:hint="@string/search_bar"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/search_btn"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-            </AutoCompleteTextView>
+                app:layout_constraintTop_toTopOf="parent"></AutoCompleteTextView>
 
             <Button
                 android:id="@+id/search_btn"

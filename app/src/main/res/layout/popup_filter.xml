@@ -11,7 +11,8 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        android:elevation="2dp">
 
         <Button
             android:id="@+id/btClear"
@@ -26,30 +27,16 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tvFilter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="13dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="Filter"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toTopOf="@+id/tvType"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
             android:id="@+id/tvType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:text="Type"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvFilter" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <CheckBox
             android:id="@+id/cbSnack"
@@ -58,10 +45,10 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="10dp"
             android:text="Snack"
-            android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@+id/cbAppetizer"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvType" />
+            app:layout_constraintTop_toBottomOf="@+id/tvType"
+            app:layout_constraintVertical_chainStyle="spread_inside" />
 
         <CheckBox
             android:id="@+id/cbAppetizer"
@@ -69,7 +56,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="Appetizer"
-            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cbSnack" />
 
@@ -79,7 +65,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="Entree"
-            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cbAppetizer" />
 
@@ -89,7 +74,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="Dessert"
-            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cbEntree" />
 
@@ -98,9 +82,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:text="Max Prep Time"
-            android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cbDessert" />
@@ -113,7 +96,7 @@
             android:layout_marginStart="16dp"
             android:hint="Time"
             android:inputType="number"
-            android:textSize="12sp"
+            android:textSize="14sp"
             app:layout_constraintEnd_toStartOf="@+id/spPrepTime"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvMaxPrepTime" />
@@ -135,9 +118,8 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:text="Rating"
-            android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etMaxPrepTime" />
@@ -149,7 +131,6 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="10dp"
             android:text="5 stars"
-            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvRating" />
 
@@ -159,7 +140,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="4+ stars"
-            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cb5Stars" />
 
@@ -169,7 +149,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="3+ stars"
-            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cb4Stars" />
 
@@ -179,7 +158,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="2+ stars"
-            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cb3Stars" />
 
@@ -190,7 +168,7 @@
             android:layout_below="@+id/tvFilter"
             android:layout_marginBottom="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:background="@drawable/round_button"
             android:padding="5dp"
             android:text="Done"
