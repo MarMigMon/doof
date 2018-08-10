@@ -1,17 +1,21 @@
 package me.mvega.foodapp;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
+import android.text.Html;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,27 +33,22 @@ public class AddRecipePageTwo extends Fragment {
     TextView tvIngredients;
     @BindView(R.id.ingredientsLayout)
     RelativeLayout ingredientsLayout;
+    @BindView(R.id.cardIngredient1) CardView cardIngredient1;
     @BindView(R.id.ingredient1)
     EditText ingredient1;
-    @BindView(R.id.ingredientButtonLayout)
-    LinearLayout ingredientButtonLayout;
     @BindView(R.id.btAddIngredient)
     Button btAddIngredient;
-    @BindView(R.id.btRemoveIngredient)
-    Button btRemoveIngredient;
 
     @BindView(R.id.tvInstructions)
     TextView tvInstructions;
     @BindView(R.id.instructionsLayout)
     RelativeLayout instructionsLayout;
-    @BindView(R.id.step1)
-    EditText step1;
-    @BindView(R.id.stepButtonLayout)
-    LinearLayout stepButtonLayout;
+    @BindView(R.id.cardStep1)
+    CardView cardStep1;
+    @BindView(R.id.step1) EditText step1;
+
     @BindView(R.id.btAddStep)
     Button btAddStep;
-    @BindView(R.id.btRemoveStep)
-    Button btRemoveStep;
 
     @BindView(R.id.btBack)
     Button btBack;
@@ -74,6 +73,7 @@ public class AddRecipePageTwo extends Fragment {
     // True if a recipe is being edited
     private Boolean editing = false;
     private Recipe editedRecipe;
+    private Context mContext;
 
     private PageTwoFragmentCommunication addRecipeListenerFragment;
 
@@ -84,6 +84,12 @@ public class AddRecipePageTwo extends Fragment {
         void submit(Bundle bundle);
 
         void scrollDownTextField(boolean reverse, int distance);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     // newInstance constructor for creating fragment with arguments
@@ -129,34 +135,16 @@ public class AddRecipePageTwo extends Fragment {
             }
         }
 
-        // Create a new background thread
-//        HandlerThread handlerThread = new HandlerThread("Setup");
-//        handlerThread.start();
-//        Handler mHandler = new Handler(handlerThread.getLooper());
-//        mHandler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                steps = new ArrayList<>();
-//                step1.setId(stepCount);
-//                steps.add(step1);
-//                ingredients = new ArrayList<>();
-//                ingredient1.setId(ingredientCount);
-//                ingredients.add(ingredient1);
-//
-//                setButtons();
-//            }
-//        });
-//        handlerThread.quitSafely();
-
         new Thread(new Runnable() {
             @Override
             public void run() {
                 steps = new ArrayList<>();
-                step1.setId(stepCount);
+                cardStep1.setId(stepCount);
+
+
                 steps.add(step1);
                 ingredients = new ArrayList<>();
-                ingredient1.setId(ingredientCount);
+                cardIngredient1.setId(ingredientCount);
                 ingredients.add(ingredient1);
 
                 setButtons();
@@ -187,7 +175,7 @@ public class AddRecipePageTwo extends Fragment {
                     bundle.putStringArrayList(KEY_STEPS, parseInstructions());
                     addRecipeListenerFragment.submit(bundle);
                 } catch (IllegalArgumentException e) {
-                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -204,21 +192,7 @@ public class AddRecipePageTwo extends Fragment {
             @Override
             public void onClick(View view) {
                 onAddStep();
-                // Adds the "remove step" button so the user can remove the last added step
-                btRemoveStep.setVisibility(View.VISIBLE);
                 addRecipeListenerFragment.scrollDownTextField(false, step1.getHeight());
-            }
-        });
-
-        btRemoveStep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onRemoveStep();
-                // Removes "remove step" button if there is only one step left
-                if (steps.size() == 1) {
-                    btRemoveStep.setVisibility(View.GONE);
-                }
-                addRecipeListenerFragment.scrollDownTextField(true, step1.getHeight());
             }
         });
 
@@ -226,23 +200,10 @@ public class AddRecipePageTwo extends Fragment {
             @Override
             public void onClick(View view) {
                 onAddIngredient();
-                // Adds the "remove ingredient" button so the user can remove the last added ingredient
-                btRemoveIngredient.setVisibility(View.VISIBLE);
                 addRecipeListenerFragment.scrollDownTextField(false, step1.getHeight());
             }
         });
 
-        btRemoveIngredient.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onRemoveIngredient();
-                // Removes "remove ingredient" button if there is only one ingredient left
-                if (ingredients.size() == 1) {
-                    btRemoveIngredient.setVisibility(View.GONE);
-                }
-                addRecipeListenerFragment.scrollDownTextField(true, step1.getHeight());
-            }
-        });
     }
 
     private ArrayList<String> parseInstructions() {
@@ -281,7 +242,7 @@ public class AddRecipePageTwo extends Fragment {
 
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
             if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                Toast.makeText(getContext(), "Accept permissions to enable adding recipes", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "Accept permissions to enable adding recipes", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -303,35 +264,118 @@ public class AddRecipePageTwo extends Fragment {
      * Adds a new step (EditText) to the layout for the user to input text
      */
     private void onAddStep() {
-        EditText step = new EditText(getContext());
-
         // Set layout params
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.BELOW, stepCount);
 
-        // Set up new EditText view
+        EditText step = new EditText(mContext);
+
+        // Initialize a new CardView
+        CardView card = formatStep(new CardView(mContext), params);
         stepCount += 1;
-        step.setId(stepCount);
+        card.setId(stepCount);
+
+        // Set up new EditText view
         step.setHint("Step " + stepCount);
-        step.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        step.setInputType(InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE);
+        step.setSingleLine(false);
         step.setLayoutParams(params);
+        step.setBackgroundColor(getResources().getColor(R.color.white));
+        step.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                showDeleteDialog(view, steps, false);
+                return true;
+            }
+        });
 
         // Add step
         steps.add(step);
-        instructionsLayout.addView(step);
+        card.addView(step);
+        instructionsLayout.addView(card);
+    }
+
+    private CardView formatStep(CardView card, RelativeLayout.LayoutParams params) {
+        card.setLayoutParams(params);
+
+        // Set cardView content padding
+        card.setContentPadding(16, 16, 16, 16);
+
+        // Set CardView elevation
+        card.setCardElevation(2);
+
+        //Setting Params for Cardview Margins
+        ViewGroup.MarginLayoutParams cardViewMarginParams = (ViewGroup.MarginLayoutParams) card.getLayoutParams();
+        cardViewMarginParams.setMargins(0, 8, 0, 8);
+        card.requestLayout();
+
+
+
+        return card;
     }
 
     /**
-     * Removes the last added step (EditText) from the instructions layout
+     * Removes the selected step from the instructions layout
      */
-    private void onRemoveStep() {
-        EditText lastStep = steps.get(steps.size() - 1);
-        steps.remove(lastStep);
-        stepCount -= 1;
-        instructionsLayout.removeView(lastStep);
-    }
+
+    public void showDeleteDialog(final View step, final ArrayList<EditText> items, final Boolean ingredient) {
+        // Create alert dialog
+        final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+        // Show error when userProfile is not the currentUser's profile
+        // Add cancel option and message
+        alertDialog.setCancelable(true);
+        alertDialog.setMessage(Html.fromHtml("Delete?"));
+
+        // Configure dialog button (OK)
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        CardView card = (CardView) step.getParent();
+                        Boolean change = false;
+                        for (int i = 0; i < items.size(); i++) {
+                            EditText currentItem = (EditText) items.get(i);
+                            CardView currentCard = (CardView) currentItem.getParent();
+                            if (currentCard.getId() == card.getId()) {
+                                change = true;
+                            } else if (change) {
+                                int currId = currentCard.getId();
+                                currentCard.setId(currId - 1);
+                                if (ingredient) {
+                                    currentItem.setHint("Ingredient " + (currId - 1001));
+                                } else {
+                                    currentItem.setHint("Step " + (currId - 1));
+                                }
+                                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) currentCard.getLayoutParams();
+                                params.addRule(RelativeLayout.BELOW, currId - 2);
+                                currentCard.requestLayout();
+                            }
+                        }
+                        items.remove(step);
+
+                        if (ingredient) {
+                            ingredientsLayout.removeView(card);
+                            ingredientCount -= 1;
+                        } else {
+                            instructionsLayout.removeView(card);
+                            stepCount -= 1;
+                        }
+                    }
+                });
+
+        // Configure dialog button (CANCEL)
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+             });
+
+        // Display the dialog
+        alertDialog.show();
+
+        }
 
     /**
      * Pre-fills the fragment's ingredients with the given list
@@ -350,7 +394,7 @@ public class AddRecipePageTwo extends Fragment {
      * Adds a new ingredient (EditText) to the layout for the user to input text
      */
     private void onAddIngredient() {
-        EditText ingredient = new EditText(getContext());
+        EditText ingredient = new EditText(mContext);
 
         // Set layout params
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -358,16 +402,29 @@ public class AddRecipePageTwo extends Fragment {
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.BELOW, ingredientCount);
 
-        // Set up new EditText view
+        // Initialize a new CardView
+        CardView card = formatStep(new CardView(mContext), params);
         ingredientCount += 1;
-        ingredient.setId(ingredientCount);
+        card.setId(ingredientCount);
+
+        // Set up new EditText view
         ingredient.setHint("Ingredient " + (ingredientCount - 1000));
         ingredient.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        ingredient.setSingleLine(false);
+        ingredient.setBackgroundColor(getResources().getColor(R.color.white));
         ingredient.setLayoutParams(params);
+        ingredient.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                showDeleteDialog(view, ingredients, true);
+                return true;
+            }
+        });
 
         // Add ingredient
         ingredients.add(ingredient);
-        ingredientsLayout.addView(ingredient);
+        card.addView(ingredient);
+        ingredientsLayout.addView(card);
     }
 
     /**
@@ -397,7 +454,7 @@ public class AddRecipePageTwo extends Fragment {
                     bundle.putStringArrayList(KEY_INGREDIENTS, parseIngredients());
                     addRecipeListenerFragment.submit(bundle);
                 } catch (IllegalArgumentException e) {
-                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });
