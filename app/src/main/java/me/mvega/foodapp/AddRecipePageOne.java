@@ -35,8 +35,10 @@ import android.widget.Toast;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseFileUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -104,12 +106,6 @@ public class AddRecipePageOne extends Fragment {
         AddRecipePageOne fragmentFirst = new AddRecipePageOne();
         fragmentFirst.setArguments(bundle);
         return fragmentFirst;
-    }
-
-    // Store instance variables based on arguments passed
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     // Inflate the view for the fragment based on layout XML
@@ -473,6 +469,13 @@ public class AddRecipePageOne extends Fragment {
                     if (data != null) {
                         final Bitmap b = BitmapFactory.decodeByteArray(data, 0, data.length);
                         ivPreview.setImageBitmap(b);
+                        try {
+                            final File f = new File(getContext().getCacheDir(), "recipeImage.bmp");
+                            ParseFileUtils.writeByteArrayToFile(f, data);
+                            imagePath = f.getAbsolutePath();
+                        } catch (IOException k) {
+                            k.printStackTrace();
+                        }
                     }
                 }
             });

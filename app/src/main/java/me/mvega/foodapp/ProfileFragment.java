@@ -78,7 +78,6 @@ public class ProfileFragment extends Fragment implements YourRecipesFragment.You
     public static ProfileFragment newInstance(ParseUser user) {
         Bundle args = new Bundle();
         args.putParcelable("user", user);
-        args.putInt("page", page);
         ProfileFragment fragment = new ProfileFragment();
         fragment.setArguments(args);
         return fragment;
