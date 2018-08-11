@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +27,7 @@ import me.mvega.foodapp.model.Recipe;
 public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication, ProfileFragment.ProfileFragmentCommunication, NotificationFragment.NotificationRecipeFragmentCommunication, NotificationFragment.NotificationUserFragmentCommunication, RecipeFragment.RecipeUserCommunication {
 
     private static final String KEY_FRAGMENT = "main";
+    private static final String KEY_ADD_RECIPE = "addRecipe";
     @BindView(R.id.navigation_bar) BottomNavigationView bottomNavigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.mainFrame) FrameLayout mainFrame;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     public static ParseUser currentUser;
 
     private FragmentManager fragmentManager;
-
+    public AddRecipeFragment addRecipeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +45,12 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         fragmentManager = getSupportFragmentManager();
         currentUser = getIntent().getParcelableExtra("user");
 
-        // Starts activity with feed fragment displayed
         if (savedInstanceState == null) {
             showFeed();
         } else {
-            Fragment f = getSupportFragmentManager().findFragmentByTag(KEY_FRAGMENT);
-            replaceFragment(f);
+            int topOfBackStack = fragmentManager.getBackStackEntryCount() - 1;
+            Fragment f = fragmentManager.findFragmentByTag(fragmentManager.getBackStackEntryAt(topOfBackStack).getName());
+            refreshFragment(f);
         }
 
         currentUser = ParseUser.getCurrentUser();
@@ -75,9 +75,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
                                 return true;
 
                             case R.id.tab_profile:
-                                ProfileFragment profileFragment = ProfileFragment.newInstance(currentUser);
-                                setFadeTransition(profileFragment);
-                                replaceFragment(profileFragment);
+                                showProfile();
                                 return true;
 
                             case R.id.tab_notification:
@@ -89,6 +87,29 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
                         }
                     }
                 });
+
+        bottomNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
+            @Override
+            public void onNavigationItemReselected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.tab_feed:
+                        refreshFragment(FeedFragment.newInstance());
+                        break;
+
+                    case R.id.tab_profile:
+                        refreshFragment(ProfileFragment.newInstance(currentUser));
+                        break;
+
+                    case R.id.tab_notification:
+                        refreshFragment(NotificationFragment.newInstance());
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        });
+
         View shadow = new View(this);
         shadow.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
                 15));
@@ -116,21 +137,24 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     }
 
     public void showAddRecipe() {
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment addRecipeFragment = fragmentManager.findFragmentByTag("newRecipe");
-        // if fragment doesn't exist yet, create one
+        addRecipeFragment = (AddRecipeFragment) fragmentManager.findFragmentByTag(KEY_ADD_RECIPE);
         if (addRecipeFragment == null) {
-            fragmentTransaction.addToBackStack("newRecipe");
-            fragmentTransaction.replace(R.id.frameLayout, new AddRecipeFragment(), "newRecipe").commit();
-            Log.d("create fragment", "addRecipe == null");
-        } else {
-            fragmentTransaction.replace(R.id.frameLayout, addRecipeFragment, "newRecipe").commit();
-            Log.d("replace fragment", "replaces fragment");
+            addRecipeFragment = new AddRecipeFragment();
         }
+        setFadeTransition(addRecipeFragment);
+        // Begin the transaction
+        final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        // Replace the contents of the container with the new fragment and complete the changes added above
+        fragmentTransaction.addToBackStack(KEY_ADD_RECIPE);
+        fragmentTransaction.replace(R.id.frameLayout, addRecipeFragment, KEY_ADD_RECIPE).commit();
     }
 
     private void showNotification() {
         replaceFragment(NotificationFragment.newInstance());
+    }
+
+    private void showProfile() {
+        replaceFragment(ProfileFragment.newInstance(currentUser));
     }
 
     public void replaceFragmentWithTransition(Fragment f) {
@@ -140,6 +164,13 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         // Replace the contents of the container with the new fragment and complete the changes added above
         fragmentTransaction.addToBackStack(KEY_FRAGMENT);
         fragmentTransaction.replace(R.id.frameLayout, f, KEY_FRAGMENT).commit();
+    }
+    private void refreshFragment(Fragment f) {
+        setFadeTransition(f);
+        // Begin the transaction
+        final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        // Replace the contents of the container with the new fragment and complete the changes added above
+        fragmentTransaction.replace(R.id.frameLayout, f).commit();
     }
 
     public void replaceFragment(Fragment f) {
@@ -202,8 +233,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
     @Override
     public void startEdit(Recipe recipe) {
-        AddRecipeFragment addRecipeFragment = AddRecipeFragment.newInstance(recipe, true);
-        replaceFragmentWithTransition(addRecipeFragment);
+        replaceFragmentWithTransition(AddRecipeFragment.newInstance(recipe, true));
     }
 
     @Override

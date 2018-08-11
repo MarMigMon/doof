@@ -99,12 +99,6 @@ public class AddRecipePageTwo extends Fragment {
         return fragmentSecond;
     }
 
-    // Store instance variables based on arguments passed
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     // Inflate the view for the fragment based on layout XML
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -116,14 +110,38 @@ public class AddRecipePageTwo extends Fragment {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_EDITING, editing);
         outState.putParcelable(KEY_RECIPE, editedRecipe);
-        super.onSaveInstanceState(outState);
+        getArguments().putStringArrayList(KEY_INGREDIENTS, parseIngredients());
+        getArguments().putStringArrayList(KEY_STEPS, parseInstructions());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ArrayList<String> steps = getArguments().getStringArrayList(KEY_STEPS);
+        if (steps != null) {
+            addSteps(steps);
+        }
+        ArrayList<String> ingredients = getArguments().getStringArrayList(KEY_INGREDIENTS);
+        if (ingredients != null) {
+            addIngredients(ingredients);
+        }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
+
+        if (steps == null)
+            steps = new ArrayList<>();
+        if (ingredients == null)
+            ingredients = new ArrayList<>();
+        cardStep1.setId(stepCount);
+        steps.add(step1);
+        cardIngredient1.setId(ingredientCount);
+        ingredients.add(ingredient1);
 
         if (savedInstanceState != null) {
             editing = savedInstanceState.getBoolean(KEY_EDITING, false);
@@ -138,15 +156,6 @@ public class AddRecipePageTwo extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                steps = new ArrayList<>();
-                cardStep1.setId(stepCount);
-
-
-                steps.add(step1);
-                ingredients = new ArrayList<>();
-                cardIngredient1.setId(ingredientCount);
-                ingredients.add(ingredient1);
-
                 setButtons();
             }
         }).start();
@@ -210,10 +219,12 @@ public class AddRecipePageTwo extends Fragment {
         ArrayList<String> stepStrings = new ArrayList<>();
         String stepText;
 
-        for (int i = 0; i < steps.size(); i++) {
-            stepText = steps.get(i).getText().toString().trim();
-            if (!stepText.equals("")) {
-                stepStrings.add(stepText);
+        if (steps != null) {
+            for (int i = 0; i < steps.size(); i++) {
+                stepText = steps.get(i).getText().toString().trim();
+                if (!stepText.equals("")) {
+                    stepStrings.add(stepText);
+                }
             }
         }
 
@@ -224,10 +235,12 @@ public class AddRecipePageTwo extends Fragment {
         ArrayList<String> ingredientStrings = new ArrayList<>();
         String ingredientText;
 
-        for (int i = 0; i < ingredients.size(); i++) {
-            ingredientText = ingredients.get(i).getText().toString().trim();
-            if (!ingredientText.equals("")) {
-                ingredientStrings.add(ingredientText);
+        if (ingredients != null) {
+            for (int i = 0; i < ingredients.size(); i++) {
+                ingredientText = ingredients.get(i).getText().toString().trim();
+                if (!ingredientText.equals("")) {
+                    ingredientStrings.add(ingredientText);
+                }
             }
         }
 
@@ -253,10 +266,12 @@ public class AddRecipePageTwo extends Fragment {
      * @param instructions steps for recipe
      */
     private void addSteps(List<String> instructions) {
-        step1.setText(instructions.get(0));
-        for (String instruction : instructions.subList(1, instructions.size())) {
-            onAddStep();
-            steps.get(stepCount - 1).setText(instruction);
+        if (!instructions.isEmpty()) {
+            step1.setText(instructions.get(0));
+            for (String instruction : instructions.subList(1, instructions.size())) {
+                onAddStep();
+                steps.get(stepCount - 1).setText(instruction);
+            }
         }
     }
 
@@ -394,10 +409,12 @@ public class AddRecipePageTwo extends Fragment {
      * @param components ingredients for recipe
      */
     private void addIngredients(List<String> components) {
-        ingredient1.setText(components.get(0));
-        for (String ingredient : components.subList(1, components.size())) {
-            onAddIngredient();
-            ingredients.get(ingredientCount - 1001).setText(ingredient);
+        if (!components.isEmpty()) {
+            ingredient1.setText(components.get(0));
+            for (String ingredient : components.subList(1, components.size())) {
+                onAddIngredient();
+                ingredients.get(ingredientCount - 1001).setText(ingredient);
+            }
         }
     }
 

@@ -35,8 +35,10 @@ import android.widget.Toast;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseFileUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -106,12 +108,6 @@ public class AddRecipePageOne extends Fragment {
         return fragmentFirst;
     }
 
-    // Store instance variables based on arguments passed
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     // Inflate the view for the fragment based on layout XML
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -150,19 +146,6 @@ public class AddRecipePageOne extends Fragment {
             }
             image = null;
         }
-
-        // Create a new background thread
-//        HandlerThread handlerThread = new HandlerThread("Setup");
-//        handlerThread.start();
-//        Handler mHandler = new Handler(handlerThread.getLooper());
-//        mHandler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                setButtons();
-//                checkStoragePermissions();
-//            }
-//        });
-//        handlerThread.quitSafely();
 
         new Thread(new Runnable() {
             @Override
@@ -473,6 +456,13 @@ public class AddRecipePageOne extends Fragment {
                     if (data != null) {
                         final Bitmap b = BitmapFactory.decodeByteArray(data, 0, data.length);
                         ivPreview.setImageBitmap(b);
+                        try {
+                            final File f = new File(getContext().getCacheDir(), "recipeImage.bmp");
+                            ParseFileUtils.writeByteArrayToFile(f, data);
+                            imagePath = f.getAbsolutePath();
+                        } catch (IOException k) {
+                            k.printStackTrace();
+                        }
                     }
                 }
             });

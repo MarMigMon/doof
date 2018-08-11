@@ -62,13 +62,6 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
     private Context context;
     private MainActivity mainActivity;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.context = context;
-        mainActivity = (MainActivity) context;
-    }
-
     private static final String KEY_RECIPE = "recipe";
     private static final String KEY_EDITING = "editing";
     private static final String KEY_NAME = "name";
@@ -89,6 +82,13 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
     private Number prepTime;
     private String prepTimeText;
     private String typeText;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+        mainActivity = (MainActivity) context;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -131,15 +131,22 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
 
         vpCreation.setAdapter(new RecipePagerAdapter(getChildFragmentManager()));
 
-        pageOneBundle.putBoolean(KEY_EDITING, editing);
-        pageOneBundle.putParcelable(KEY_RECIPE, editedRecipe);
-        pageOne = AddRecipePageOne.newInstance(pageOneBundle);
+        if (pageOne == null && pageTwo == null) {
+            pageOneBundle.putBoolean(KEY_EDITING, editing);
+            pageOneBundle.putParcelable(KEY_RECIPE, editedRecipe);
+            pageOne = AddRecipePageOne.newInstance(pageOneBundle);
 
-        pageTwoBundle.putBoolean(KEY_EDITING, editing);
-        pageTwoBundle.putParcelable(KEY_RECIPE, editedRecipe);
-        pageTwo = AddRecipePageTwo.newInstance(pageTwoBundle);
+            pageTwoBundle.putBoolean(KEY_EDITING, editing);
+            pageTwoBundle.putParcelable(KEY_RECIPE, editedRecipe);
+            pageTwo = AddRecipePageTwo.newInstance(pageTwoBundle);
+        }
 
-        vpCreation.setCurrentItem(0);
+        vpCreation.post(new Runnable() {
+            @Override
+            public void run() {
+                vpCreation.setCurrentItem(0);
+            }
+        });
     }
 
     @Override
@@ -213,8 +220,7 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
                         ft.commit();
                         // Resets the pages for the next recipe
                         vpCreation.setCurrentItem(0);
-
-
+                        mainActivity.addRecipeFragment = null;
                     } else {
                         Toast.makeText(context, "Recipe creation failed!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
@@ -234,12 +240,9 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
                         FragmentManager fm = mainActivity.getSupportFragmentManager();
                         FragmentTransaction ft = fm.beginTransaction();
                         ft.replace(R.id.frameLayout, new FeedFragment());
-
                         ft.commit();
                         // Resets the pages for the next recipe
                         vpCreation.setCurrentItem(0);
-
-
                     } else {
                         Toast.makeText(context, "Recipe edit failed!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
