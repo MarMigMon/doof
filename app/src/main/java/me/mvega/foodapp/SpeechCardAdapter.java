@@ -45,7 +45,7 @@ class SpeechCardAdapter extends FragmentPagerAdapter {
     private String matchesIngredient(String currStep) {
         String[] stepSplit = currStep.toLowerCase().replaceAll("[,./]", "").split(" ");
         StringBuilder matchingIngredients = new StringBuilder();
-        String[] filter = {"and", "or", "from", "tbsp", "TB", "cup", "into", "a", "to", "c", "the", "tsp"};
+        String[] filter = {"and", "or", "from", "tbsp", "TB", "cup", "into", "a", "to", "c", "the", "tsp", "teaspoon", "tablespoon", "of"};
         List<String> filterList = Arrays.asList(filter);
 
         for (String component : components) {
