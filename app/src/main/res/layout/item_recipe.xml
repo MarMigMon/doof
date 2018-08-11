@@ -41,6 +41,7 @@
                 android:layout_marginStart="8dp"
                 android:text="Prep Time"
                 android:textAppearance="@style/BodyText"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivTime" />
 
@@ -53,7 +54,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="4dp"
                 android:text="Recipe Description"
-                android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/ivRecipe"
@@ -68,6 +68,7 @@
                 android:layout_marginTop="16dp"
                 android:text="Recipe Name"
                 android:textAppearance="@style/HeaderText"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/ivRecipe"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -92,6 +93,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="Recipe Type"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/ivRecipe"
                 app:layout_constraintTop_toBottomOf="@+id/recipeRatingBar" />
@@ -104,6 +106,7 @@
                 android:layout_marginBottom="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="views"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
@@ -115,6 +118,7 @@
                 android:layout_marginBottom="16dp"
                 android:layout_marginEnd="3dp"
                 android:text="0"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tvViewsLabel" />
 
@@ -122,7 +126,7 @@
                 android:id="@+id/ivTime"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="17dp"
                 android:layout_marginStart="16dp"
                 android:contentDescription="@string/time_icon"
                 android:src="@drawable/ic_time"
@@ -134,7 +138,7 @@
                 android:id="@+id/ivViews"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="17dp"
                 android:layout_marginEnd="8dp"
                 android:contentDescription="@string/views_icon"
                 android:src="@drawable/ic_visibility_black_24dp"

@@ -1,9 +1,11 @@
 package me.mvega.foodapp;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -44,7 +47,12 @@ public class YourRecipesFragment extends Fragment {
     RecyclerView rvRecipes;
     @BindView(R.id.swipeContainer)
     SwipeRefreshLayout swipeContainer;
+    @BindView(R.id.ivPlaceholder)
+    ImageView ivPlaceholder;
+    @BindView(R.id.tvNoRecipes)
+    TextView tvNoRecipes;
     ParseUser user;
+    Context context;
 
     // implement interface
     public interface YourRecipesFragmentCommunication {
@@ -95,102 +103,105 @@ public class YourRecipesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
+        ivPlaceholder.setVisibility(View.INVISIBLE);
+        tvNoRecipes.setVisibility(View.INVISIBLE);
         pbLoading.setVisibility(ProgressBar.VISIBLE);
-
-        // find the Recycler View
-        RecyclerView rvRecipes = view.findViewById(R.id.rvRecipes);
-        // initialize the ArrayList (data source)
-        ArrayList<Recipe> recipes = new ArrayList<>();
-
-        // construct the adapter from this data source
-        profileRecipesAdapter = new ProfileRecipesAdapter(recipes);
-        // RecyclerView setup (layout manager, use adapter)
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
-        rvRecipes.setLayoutManager(layoutManager);
-        //set the adapter
-        rvRecipes.setAdapter(profileRecipesAdapter);
-        rvRecipes.addItemDecoration(new SpacesItemDecoration(32));
-
-        profileRecipesAdapter.setProfileListener(new ProfileRecipesAdapter.ProfileAdapterCommunication() {
-            @Override
-            public void respond(Recipe recipe) {
-                profileListenerFragment.respond(recipe);
-            }
-
-            @Override
-            public void showDeleteDialog(final Recipe recipe) {
-                // Create alert dialog
-                final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-                // Show error when userProfile is not the currentUser's profile
-                if (user == currentUser) {
-                    // Add cancel option and message
-                    alertDialog.setCancelable(true);
-                    alertDialog.setMessage(Html.fromHtml("Are you sure you want to delete <b>" + recipe.getName() + "</b>?"));
-
-                    // Configure dialog button (OK)
-                    alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(final DialogInterface dialog, int which) {
-                                    // Delete recipe
-                                    recipe.deleteInBackground(new DeleteCallback() {
-                                        @Override
-                                        public void done(ParseException e) {
-                                            if (e == null) {
-                                                loadYourRecipes();
-                                                reduceContributed();
-                                                dialog.dismiss();
-                                            } else {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    });
-                                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Notification");
-                                    query.whereEqualTo("recipe", recipe);
-                                    query.findInBackground(new FindCallback<ParseObject>() {
-                                        @Override
-                                        public void done(List<ParseObject> notifications, ParseException e) {
-                                            if (e == null) {
-                                                for (ParseObject notification : notifications) {
-                                                    notification.deleteInBackground();
-                                                }
-                                            } else {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-
-                    // Configure dialog button (CANCEL)
-                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(final DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-
-                    // Display the dialog
-                    alertDialog.show();
-                } else {
-                    alertDialog.setCancelable(true);
-                    alertDialog.setMessage(Html.fromHtml("You can't delete <b>" + recipe.getUser().get("Name") + "</b>'s recipe! "));
-                    // Configure dialog button (OOPS)
-                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "OOPS!",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(final DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-
-                    // Display the dialog
-                    alertDialog.show();
-                }
-            }
-        });
+//        pbLoading.setVisibility(ProgressBar.VISIBLE);
+//
+//        // find the Recycler View
+//        RecyclerView rvRecipes = view.findViewById(R.id.rvRecipes);
+//        // initialize the ArrayList (data source)
+//        ArrayList<Recipe> recipes = new ArrayList<>();
+//
+//        // construct the adapter from this data source
+//        profileRecipesAdapter = new ProfileRecipesAdapter(recipes);
+//        // RecyclerView setup (layout manager, use adapter)
+//        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+//        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+//        rvRecipes.setLayoutManager(layoutManager);
+//        //set the adapter
+//        rvRecipes.setAdapter(profileRecipesAdapter);
+//        rvRecipes.addItemDecoration(new SpacesItemDecoration(32));
+//
+//        profileRecipesAdapter.setProfileListener(new ProfileRecipesAdapter.ProfileAdapterCommunication() {
+//            @Override
+//            public void respond(Recipe recipe) {
+//                profileListenerFragment.respond(recipe);
+//            }
+//
+//            @Override
+//            public void showDeleteDialog(final Recipe recipe) {
+//                // Create alert dialog
+//                final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+//                // Show error when userProfile is not the currentUser's profile
+//                if (user == currentUser) {
+//                    // Add cancel option and message
+//                    alertDialog.setCancelable(true);
+//                    alertDialog.setMessage(Html.fromHtml("Are you sure you want to delete <b>" + recipe.getName() + "</b>?"));
+//
+//                    // Configure dialog button (OK)
+//                    alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
+//                            new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(final DialogInterface dialog, int which) {
+//                                    // Delete recipe
+//                                    recipe.deleteInBackground(new DeleteCallback() {
+//                                        @Override
+//                                        public void done(ParseException e) {
+//                                            if (e == null) {
+//                                                loadYourRecipes();
+//                                                reduceContributed();
+//                                                dialog.dismiss();
+//                                            } else {
+//                                                e.printStackTrace();
+//                                            }
+//                                        }
+//                                    });
+//                                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Notification");
+//                                    query.whereEqualTo("recipe", recipe);
+//                                    query.findInBackground(new FindCallback<ParseObject>() {
+//                                        @Override
+//                                        public void done(List<ParseObject> notifications, ParseException e) {
+//                                            if (e == null) {
+//                                                for (ParseObject notification : notifications) {
+//                                                    notification.deleteInBackground();
+//                                                }
+//                                            } else {
+//                                                e.printStackTrace();
+//                                            }
+//                                        }
+//                                    });
+//                                }
+//                            });
+//
+//                    // Configure dialog button (CANCEL)
+//                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL",
+//                            new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(final DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                }
+//                            });
+//
+//                    // Display the dialog
+//                    alertDialog.show();
+//                } else {
+//                    alertDialog.setCancelable(true);
+//                    alertDialog.setMessage(Html.fromHtml("You can't delete <b>" + recipe.getUser().get("Name") + "</b>'s recipe! "));
+//                    // Configure dialog button (OOPS)
+//                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "OOPS!",
+//                            new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(final DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                }
+//                            });
+//
+//                    // Display the dialog
+//                    alertDialog.show();
+//                }
+//            }
+//        });
 
         loadYourRecipes();
 
@@ -198,6 +209,9 @@ public class YourRecipesFragment extends Fragment {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.detach(YourRecipesFragment.this).attach(YourRecipesFragment.this).commit();
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
@@ -219,13 +233,122 @@ public class YourRecipesFragment extends Fragment {
             @Override
             public void done(List<Recipe> newRecipes, ParseException e) {
                 if (e == null) {
-                    // Remember to CLEAR OUT old items before appending in the new ones
-                    profileRecipesAdapter.clear();
-                    // ...the data has come back, add new items to your adapter...
-                    profileRecipesAdapter.addAll(newRecipes);
-                    // Now we call setRefreshing(false) to signal refresh has finished
-                    swipeContainer.setRefreshing(false);
-                    pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                    if (newRecipes.size() != 0) {
+                        pbLoading.setVisibility(ProgressBar.VISIBLE);
+
+                        // find the Recycler View
+                        RecyclerView rvRecipes = getView().findViewById(R.id.rvRecipes);
+                        // initialize the ArrayList (data source)
+                        ArrayList<Recipe> recipes = new ArrayList<>();
+
+                        // construct the adapter from this data source
+                        profileRecipesAdapter = new ProfileRecipesAdapter(recipes);
+                        // RecyclerView setup (layout manager, use adapter)
+                        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+                        rvRecipes.setLayoutManager(layoutManager);
+                        //set the adapter
+                        rvRecipes.setAdapter(profileRecipesAdapter);
+                        rvRecipes.addItemDecoration(new SpacesItemDecoration(32));
+
+                        profileRecipesAdapter.setProfileListener(new ProfileRecipesAdapter.ProfileAdapterCommunication() {
+                            @Override
+                            public void respond(Recipe recipe) {
+                                profileListenerFragment.respond(recipe);
+                            }
+
+                            @Override
+                            public void showDeleteDialog(final Recipe recipe) {
+                                // Create alert dialog
+                                final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                                // Show error when userProfile is not the currentUser's profile
+                                if (user == currentUser) {
+                                    // Add cancel option and message
+                                    alertDialog.setCancelable(true);
+                                    alertDialog.setMessage(Html.fromHtml("Are you sure you want to delete <b>" + recipe.getName() + "</b>?"));
+
+                                    // Configure dialog button (OK)
+                                    alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(final DialogInterface dialog, int which) {
+                                                    // Delete recipe
+                                                    recipe.deleteInBackground(new DeleteCallback() {
+                                                        @Override
+                                                        public void done(ParseException e) {
+                                                            if (e == null) {
+                                                                loadYourRecipes();
+                                                                reduceContributed();
+                                                                dialog.dismiss();
+                                                            } else {
+                                                                e.printStackTrace();
+                                                            }
+                                                        }
+                                                    });
+                                                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Notification");
+                                                    query.whereEqualTo("recipe", recipe);
+                                                    query.findInBackground(new FindCallback<ParseObject>() {
+                                                        @Override
+                                                        public void done(List<ParseObject> notifications, ParseException e) {
+                                                            if (e == null) {
+                                                                for (ParseObject notification : notifications) {
+                                                                    notification.deleteInBackground();
+                                                                }
+                                                            } else {
+                                                                e.printStackTrace();
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            });
+
+                                    // Configure dialog button (CANCEL)
+                                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL",
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(final DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+
+                                    // Display the dialog
+                                    alertDialog.show();
+                                } else {
+                                    alertDialog.setCancelable(true);
+                                    alertDialog.setMessage(Html.fromHtml("You can't delete <b>" + recipe.getUser().get("Name") + "</b>'s recipe! "));
+                                    // Configure dialog button (OOPS)
+                                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "OOPS!",
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(final DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+
+                                    // Display the dialog
+                                    alertDialog.show();
+                                }
+                            }
+                        });
+                        // Remember to CLEAR OUT old items before appending in the new ones
+                        profileRecipesAdapter.clear();
+                        // ...the data has come back, add new items to your adapter...
+                        profileRecipesAdapter.addAll(newRecipes);
+                        // Now we call setRefreshing(false) to signal refresh has finished
+                        swipeContainer.setRefreshing(false);
+                        pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                    } else {
+                        pbLoading.setVisibility(ProgressBar.INVISIBLE);
+                        rvRecipes.setVisibility(View.INVISIBLE);
+
+                        ivPlaceholder.setVisibility(View.VISIBLE);
+//                        Glide.with(context).load(R.drawable.img_placeholder).apply(RequestOptions.circleCropTransform()).into(ivPlaceholder);
+
+                        tvNoRecipes.setVisibility(View.VISIBLE);
+
+                        swipeContainer.setRefreshing(false);
+                    }
+
                 } else {
                     e.printStackTrace();
                 }
@@ -238,4 +361,3 @@ public class YourRecipesFragment extends Fragment {
         contributed.setText(Integer.toString(Integer.parseInt(contributed.getText().toString()) - 1));
     }
 }
-

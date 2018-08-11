@@ -73,6 +73,7 @@ public class SpeechActivity extends AppCompatActivity implements
     private TextToSpeech tts;
     private SpeechRecognizer recognizer;
     private Boolean initializedTts;
+    Bundle onlineSpeech;
 
     // Handler
     HandlerThread speakThread;
@@ -297,16 +298,17 @@ public class SpeechActivity extends AppCompatActivity implements
             @Override
             public void onInit(int status) {
                 if (status != TextToSpeech.ERROR) {
-                    tts.setLanguage(Locale.US);
+                    tts.setLanguage(Locale.UK);
                     tts.setSpeechRate(1.5f);
                     initializedTts = true;
+
                     if (startedRecipe) {
                         beginRecipe();
                         speakStep(stepCount);
                     }
                 }
             }
-        });
+        }, "com.google.android.tts");
     }
 
     private void beginRecipe() {

@@ -147,19 +147,6 @@ public class AddRecipePageOne extends Fragment {
             image = null;
         }
 
-        // Create a new background thread
-//        HandlerThread handlerThread = new HandlerThread("Setup");
-//        handlerThread.start();
-//        Handler mHandler = new Handler(handlerThread.getLooper());
-//        mHandler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                setButtons();
-//                checkStoragePermissions();
-//            }
-//        });
-//        handlerThread.quitSafely();
-
         new Thread(new Runnable() {
             @Override
             public void run() {

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,6 +35,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private NotificationAdapterUserCommunication nuCommunication;
     private final List<Notification> notifications;
     private Context context;
+    private int lastPosition = -1;
 
     // notification recipe listener
     public interface NotificationAdapterRecipeCommunication {
@@ -73,6 +75,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.tvActiveUser.setText(notification.getActiveUser().getUsername());
         holder.tvRelativeTime.setText(getRelativeTimeAgo(notification.getCreatedAt().toString()));
 
+        setAnimation(holder.itemView, i);
+
         ParseFile userPicture = notification.getActiveUser().getParseFile("image");
             if (userPicture != null) {
                 String userPictureUrl = userPicture.getUrl();
@@ -95,8 +99,19 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         if (notification.getRate()) {
             holder.tvNotificationMessage.setText(R.string.rated);
         }
+
+
     }
 
+    private void setAnimation(View viewToAnimate, int position)
+    {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition)
+        {
+            viewToAnimate.startAnimation(AnimationUtils.loadAnimation(context, R.anim.profile_item_animation_fall_down));
+            lastPosition = position;
+        }
+    }
 
     @Override
     public int getItemCount() {

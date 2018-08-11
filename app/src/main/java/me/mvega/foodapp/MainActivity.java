@@ -150,7 +150,13 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     }
 
     public void showAddRecipe() {
+<<<<<<< HEAD
         addRecipeFragment = (AddRecipeFragment) fragmentManager.findFragmentByTag(KEY_ADD_RECIPE);
+=======
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment addRecipeFragment = fragmentManager.findFragmentByTag("newRecipe");
+        // if fragment doesn't exist yet, create one
+>>>>>>> dc7e66951f91b52ce074a27d05f830d2e4e1fca7
         if (addRecipeFragment == null) {
             addRecipeFragment = new AddRecipeFragment();
         }
@@ -167,11 +173,15 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         replaceFragment(NotificationFragment.newInstance());
     }
 
+<<<<<<< HEAD
     private void showProfile() {
         replaceFragment(ProfileFragment.newInstance(currentUser));
     }
 
     public void replaceFragment(Fragment f) {
+=======
+    public void replaceFragmentWithTransition(Fragment f) {
+>>>>>>> dc7e66951f91b52ce074a27d05f830d2e4e1fca7
         setFadeTransition(f);
         // Begin the transaction
         final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -180,12 +190,21 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
         fragmentTransaction.replace(R.id.frameLayout, f, KEY_FRAGMENT).commit();
     }
 
+<<<<<<< HEAD
     private void refreshFragment(Fragment f) {
         setFadeTransition(f);
         // Begin the transaction
         final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         // Replace the contents of the container with the new fragment and complete the changes added above
         fragmentTransaction.replace(R.id.frameLayout, f).commit();
+=======
+    public void replaceFragment(Fragment f) {
+        // Begin the transaction
+        final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        // Replace the contents of the container with the new fragment and complete the changes added above
+        fragmentTransaction.addToBackStack(KEY_FRAGMENT);
+        fragmentTransaction.replace(R.id.frameLayout, f, KEY_FRAGMENT).commit();
+>>>>>>> dc7e66951f91b52ce074a27d05f830d2e4e1fca7
     }
 
     @Override
@@ -213,20 +232,20 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     public void respond(Recipe recipe) {
         RecipeFragment recipeFragment = new RecipeFragment();
         recipeFragment.recipe = recipe;
-        replaceFragment(recipeFragment);
+        replaceFragmentWithTransition(recipeFragment);
     }
 
     @Override
     public void respond (ParseObject notificationRecipe) {
         RecipeFragment recipeFragment = new RecipeFragment();
         recipeFragment.recipe = (Recipe) notificationRecipe;
-        replaceFragment(recipeFragment);
+        replaceFragmentWithTransition(recipeFragment);
     }
 
     @Override
     public void respond(ParseUser notificationUser) {
         ProfileFragment profileFragment = ProfileFragment.newInstance(notificationUser);
-        replaceFragment(profileFragment);
+        replaceFragmentWithTransition(profileFragment);
     }
 
 
@@ -240,11 +259,16 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
 
     @Override
     public void startEdit(Recipe recipe) {
+<<<<<<< HEAD
         replaceFragment(AddRecipeFragment.newInstance(recipe, true));
+=======
+        AddRecipeFragment addRecipeFragment = AddRecipeFragment.newInstance(recipe, true);
+        replaceFragmentWithTransition(addRecipeFragment);
+>>>>>>> dc7e66951f91b52ce074a27d05f830d2e4e1fca7
     }
 
     @Override
     public void editProfile() {
-        replaceFragment(new EditProfileFragment());
+        replaceFragmentWithTransition(new EditProfileFragment());
     }
 }
