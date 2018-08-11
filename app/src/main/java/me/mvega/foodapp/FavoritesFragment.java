@@ -1,8 +1,10 @@
 package me.mvega.foodapp;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -10,7 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -38,15 +42,11 @@ public class FavoritesFragment extends Fragment {
     ParseUser user;
     @BindView(R.id.pbLoading)
     ProgressBar pbLoading;
-
-    // implement interface
-//    public interface YourRecipesFragmentCommunication {
-//        void respond(Recipe recipe);
-//    }
-//
-//    public void setYourRecipeListener(YourRecipesFragment.YourRecipesFragmentCommunication yourRecipesListener) {
-//        this.profileListenerFragment = (YourRecipesFragment.YourRecipesFragmentCommunication) yourRecipesListener;
-//    }
+    @BindView(R.id.ivPlaceholder)
+    ImageView ivPlaceholder;
+    @BindView(R.id.tvNoRecipes)
+    TextView tvNoRecipes;
+    Context context;
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -86,8 +86,10 @@ public class FavoritesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
+        ivPlaceholder.setVisibility(View.INVISIBLE);
+        tvNoRecipes.setVisibility(View.INVISIBLE);
         pbLoading.setVisibility(ProgressBar.VISIBLE);
-
+//
         // find the Recycler View
         RecyclerView rvRecipes = view.findViewById(R.id.rvRecipes);
         // initialize the ArrayList (data source)
@@ -114,9 +116,13 @@ public class FavoritesFragment extends Fragment {
             }
         });
 
+        loadFavorites();
+
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.detach(FavoritesFragment.this).attach(FavoritesFragment.this).commit();
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
@@ -128,8 +134,6 @@ public class FavoritesFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
-        loadFavorites();
     }
 
     private void loadFavorites() {
@@ -138,7 +142,7 @@ public class FavoritesFragment extends Fragment {
             userFavorites = new ArrayList<>();
         }
         final List<ParseQuery<Recipe>> queries = new ArrayList<>();
-        Recipe.Query faveQuery = new Recipe.Query();
+        final Recipe.Query faveQuery = new Recipe.Query();
 
         for (int i = 0; i < userFavorites.size(); i++) {
             final Recipe.Query recipeQuery = new Recipe.Query();
@@ -164,10 +168,16 @@ public class FavoritesFragment extends Fragment {
                 }
             });
         } else {
+            pbLoading.setVisibility(ProgressBar.GONE);
+            rvRecipes.setVisibility(View.GONE);
+
+            ivPlaceholder.setVisibility(View.VISIBLE);
+            tvNoRecipes.setVisibility(View.VISIBLE);
             // Remember to CLEAR OUT old items before appending in the new ones
             profileRecipesAdapter.clear();
             // Now we call setRefreshing(false) to signal refresh has finished
             swipeContainer.setRefreshing(false);
+            pbLoading.setVisibility(ProgressBar.INVISIBLE);
         }
     }
 }
