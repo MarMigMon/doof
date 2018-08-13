@@ -49,7 +49,6 @@ The following **optional** features are implemented:
   * [x] Users can add as many steps and ingredients as needed and delete them in any order on long click
   * [x] Add and Remove steps buttons autoscroll the screen as they are clicked
   * [x] Content inputted is saved when changing tabs in navigation menu
-* [x] Fragments and tabs are persisted across configuration changes
 
 **Recipe Details**
 * [x] User can edit their own recipes via the detail screens
@@ -72,6 +71,7 @@ The following **optional** features are implemented:
 **Misc**
 * [x] Transition animations between fragments
 * [x] Empty state images for notifications and profile tabs
+* [x] Fragments and tabs are persisted across configuration changes
 
 
 The following **stretch goals** are implemented:
