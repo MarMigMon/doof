@@ -10,7 +10,6 @@ import android.support.media.ExifInterface;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -239,12 +238,7 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
                         editing = false;
                         mainActivity.bottomNavigationView.setSelectedItemId(R.id.tab_feed);
-                        FragmentManager fm = mainActivity.getSupportFragmentManager();
-                        FragmentTransaction ft = fm.beginTransaction();
-                        ft.replace(R.id.frameLayout, new FeedFragment());
-                        ft.commit();
-                        // Resets the pages for the next recipe
-                        vpCreation.setCurrentItem(0);
+                        mainActivity.respond(recipe);
                     } else {
                         Toast.makeText(context, "Recipe edit failed!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
