@@ -24,7 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.mvega.foodapp.model.Recipe;
 
-public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication, ProfileFragment.ProfileFragmentCommunication, NotificationFragment.NotificationRecipeFragmentCommunication, NotificationFragment.NotificationUserFragmentCommunication, RecipeFragment.RecipeUserCommunication {
+public class MainActivity extends AppCompatActivity implements FeedFragment.FragmentCommunication, ProfileFragment.ProfileFragmentCommunication, NotificationFragment.NotificationRecipeFragmentCommunication, NotificationFragment.NotificationUserFragmentCommunication, RecipeFragment.RecipeUserCommunication, AddRecipeFragment.SubmitListener {
 
     private static final String KEY_FRAGMENT = "main";
     private static final String KEY_ADD_RECIPE = "addRecipe";
@@ -96,6 +96,10 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
                         refreshFragment(FeedFragment.newInstance());
                         break;
 
+                    case R.id.tab_add:
+                        refreshFragment(addRecipeFragment);
+                        break;
+
                     case R.id.tab_profile:
                         refreshFragment(ProfileFragment.newInstance(currentUser));
                         break;
@@ -137,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     }
 
     public void showAddRecipe() {
-        addRecipeFragment = (AddRecipeFragment) fragmentManager.findFragmentByTag(KEY_ADD_RECIPE);
+//        addRecipeFragment = (AddRecipeFragment) fragmentManager.findFragmentByTag(KEY_ADD_RECIPE);
         if (addRecipeFragment == null) {
             addRecipeFragment = new AddRecipeFragment();
         }
@@ -210,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     }
 
     @Override
-    public void respond (ParseObject notificationRecipe) {
+    public void respond(ParseObject notificationRecipe) {
         RecipeFragment recipeFragment = new RecipeFragment();
         recipeFragment.recipe = (Recipe) notificationRecipe;
         replaceFragmentWithTransition(recipeFragment);
@@ -239,5 +243,14 @@ public class MainActivity extends AppCompatActivity implements FeedFragment.Frag
     @Override
     public void editProfile() {
         replaceFragmentWithTransition(new EditProfileFragment());
+    }
+
+    @Override
+    public void submit() {
+        bottomNavigationView.setSelectedItemId(R.id.tab_feed);
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.replace(R.id.frameLayout, new FeedFragment());
+        ft.commit();
+        addRecipeFragment = null;
     }
 }

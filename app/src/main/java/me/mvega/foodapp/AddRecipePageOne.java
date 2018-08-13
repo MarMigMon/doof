@@ -144,7 +144,11 @@ public class AddRecipePageOne extends Fragment {
                 editing = getArguments().getBoolean(KEY_EDITING);
                 editedRecipe = getArguments().getParcelable(KEY_RECIPE);
             }
-            image = null;
+            if (imagePath != null) {
+                image = addRecipeListenerFragment.getImage(imagePath);
+            } else {
+                image = null;
+            }
         }
 
         new Thread(new Runnable() {

@@ -56,6 +56,11 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
 
     private static final int MAX_SIZE = 720;
     private ParseFile imageFile;
+    private SubmitListener submitListener;
+
+    public interface SubmitListener {
+        void submit();
+    }
 
     // Submitting edited recipe
     private Recipe editedRecipe;
@@ -72,6 +77,7 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
     private static final String KEY_TYPE_TEXT = "typeText";
     private static final String KEY_STEPS = "steps";
     private static final String KEY_INGREDIENTS = "ingredients";
+    private static final String KEY_ADD_RECIPE = "addRecipe";
     // True if a recipe is being edited
     private Boolean editing = false;
 
@@ -88,6 +94,9 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
         super.onAttach(context);
         this.context = context;
         mainActivity = (MainActivity) context;
+        if (context instanceof SubmitListener) {
+            submitListener = (SubmitListener) context;
+        }
     }
 
     @Override
@@ -213,14 +222,7 @@ public class AddRecipeFragment extends Fragment implements AddRecipePageOne.Page
                     if (e == null) {
                         Toast.makeText(context, "Recipe successfully created!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
-                        mainActivity.bottomNavigationView.setSelectedItemId(R.id.tab_feed);
-                        FragmentManager fm = mainActivity.getSupportFragmentManager();
-                        FragmentTransaction ft = fm.beginTransaction();
-                        ft.replace(R.id.frameLayout, new FeedFragment());
-                        ft.commit();
-                        // Resets the pages for the next recipe
-                        vpCreation.setCurrentItem(0);
-                        mainActivity.addRecipeFragment = null;
+                        submitListener.submit();
                     } else {
                         Toast.makeText(context, "Recipe creation failed!", Toast.LENGTH_LONG).show();
                         pbLoading.setVisibility(ProgressBar.INVISIBLE);
