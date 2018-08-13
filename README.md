@@ -2,7 +2,7 @@
 
 Doof is an app that offers the unique feature of a hands-free cooking experience through voice controlled, step by step audio feedback to complete the recipe. It allows users to upload their own recipes and interact with recipes created by other users, which enhance the cooking experience by incorporating this social aspect.
 
-Time spent: [__] hours spent in total
+Time spent: 4 weeks
 
 ## User Stories
 
@@ -33,9 +33,10 @@ The following **optional** features are implemented:
   * [x] Users are prohibited from leaving fields blank
   * [x] Drop down options for category constraints
   * [x] Users can upload a photo for each recipe
-  * [ ] Users can record each step themselves to upload audio.
-  * [x] Users can add as many steps as they require for the recipe (addStep button)
+  * [x] Users can add as many steps and ingredients as needed and delete them in any order on long click
   * [x] Add and Remove steps buttons autoscroll the screen as they are clicked
+  * [x] Content inputted is saved when changing tabs in navigation menu
+* [x] Fragments and tabs are persisted across configuration changes
 * [x] User can edit and delete their own recipes via the details and profile screens
 * [x] While recipe is being played, there is a user progress bar.
   * [x] Recipe progress persists across configuration changes
@@ -43,11 +44,12 @@ The following **optional** features are implemented:
   * [x] User can stop, pause, replay, and resume recipe dictation / speech recognition
   * [x] User can configure speed of recipe dictation
   * [x] Relevant ingredients are listed beneath each step while a popup can be toggled to view full ingredient list
-  * [x] App automatically updates recipes completed count upon reaching the last step
+  * [x] App automatically updates recipes completed count upon reaching the last step and displays confetti
 * [x] Main feed features infinite scrolling.
 * [x] Search bar automatically filters recipes as user types, and displays options for autocompletion.
 * [x] Each recipe displays a view count
 * [x] Transition animations between fragments
+* [x] Empty state images for notifications and profile tabs
 * [x] Recipe details page displays full recipe information
   * [x] Recipe photo features pull to zoom
   * [x] Users can rate each recipe, and the overall rating for that recipe is an average of all users' input.
@@ -60,12 +62,7 @@ The following **stretch goals** are implemented:
 
 * [ ] Push Notifications!
 * [ ] An automatic timer that starts when a timed instruction is read (e.g. baking time, thawing time, etc.)
-
-
-The following **additional** features are implemented:
-
-* [ ] 
-
+* [ ] Users can record each step themselves to upload audio.
 
 ## Wireframe
 ![Home](Home.png) ![Details](Details.png)
