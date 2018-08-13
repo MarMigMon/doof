@@ -16,19 +16,32 @@ The following **required** functionality is completed:
 
 The following **optional** features are implemented:
 
+**Login and Signup**
 * [x] Users can log in and log out of their accounts
 * [x] CurrentUser is persisted across sessions (closing and resuming the app)
 * [x] New users can be created through sign up
+
+**Feed**
 * [x] There will be a search function and a filter to narrow the list of recipes.
   * [x] Options for name, max prep time, rating, and food type.
   * [x] Filter is persisted through opening and closing the filter window
+* [x] Main feed features infinite scrolling.
+* [x] Search bar automatically filters recipes as user types, and displays options for autocompletion.
+* [x] Each recipe displays a view count, image, prep time, description, rating, and type.
+
+**Profile**
 * [x] Users have a profile page.
   * [x] Within the profile page are nested fragments for their own recipes, favorited recipes, and completed recipes.
   * [x] Profile page keeps track of recipes contributed (by that user), recipes reviewed (rated), and recipes completed.
   * [x] Users are able to edit their profile page, such as adding a description and changing their profile picture.
+* [x] Users can delete their own recipes via long click
+  
+**Notifications**
 * [x] Users receive notifications when other users interact with their recipes.
   * [x] Other users' profiles can be accessed through the notification.
   * [x] The recipe details can be accessed through the notification.
+
+**Adding Recipes**
 * [x] Ability for the user to add/import their own saved recipes into the app database.
   * [x] Users are prohibited from leaving fields blank
   * [x] Drop down options for category constraints
@@ -37,19 +50,9 @@ The following **optional** features are implemented:
   * [x] Add and Remove steps buttons autoscroll the screen as they are clicked
   * [x] Content inputted is saved when changing tabs in navigation menu
 * [x] Fragments and tabs are persisted across configuration changes
-* [x] User can edit and delete their own recipes via the details and profile screens
-* [x] While recipe is being played, there is a user progress bar.
-  * [x] Recipe progress persists across configuration changes
-  * [x] Steps are displayed in card views in a view pager
-  * [x] User can stop, pause, replay, and resume recipe dictation / speech recognition
-  * [x] User can configure speed of recipe dictation
-  * [x] Relevant ingredients are listed beneath each step while a popup can be toggled to view full ingredient list
-  * [x] App automatically updates recipes completed count upon reaching the last step and displays confetti
-* [x] Main feed features infinite scrolling.
-* [x] Search bar automatically filters recipes as user types, and displays options for autocompletion.
-* [x] Each recipe displays a view count
-* [x] Transition animations between fragments
-* [x] Empty state images for notifications and profile tabs
+
+**Recipe Details**
+* [x] User can edit their own recipes via the detail screens
 * [x] Recipe details page displays full recipe information
   * [x] Recipe photo features pull to zoom
   * [x] Users can rate each recipe, and the overall rating for that recipe is an average of all users' input.
@@ -57,6 +60,19 @@ The following **optional** features are implemented:
   * [x] Speech activity is launched from this page
   * [x] Profile page (including their recipes) of user who contributed that recipe can be accessed by clicking their handle
   
+**Speech Activity**
+* [x] While recipe is being played, there is a user progress bar.
+  * [x] Recipe progress persists across configuration changes
+  * [x] Steps are displayed in card views in a view pager
+  * [x] User can stop, pause, replay, and resume recipe dictation / speech recognition
+  * [x] User can configure speed of recipe dictation
+  * [x] Relevant ingredients are listed beneath each step while a popup can be toggled to view full ingredient list
+  * [x] App automatically updates recipes completed count upon reaching the last step and displays confetti
+  
+**Misc**
+* [x] Transition animations between fragments
+* [x] Empty state images for notifications and profile tabs
+
 
 The following **stretch goals** are implemented:
 
