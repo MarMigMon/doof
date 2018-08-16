@@ -1,6 +1,6 @@
 # Doof
 
-Cooking is messy, and people like keeping their devices clean (and their food free of germs). Doof is an Android app that offers the unique feature of a hands-free cooking experience through voice controlled, step by step audio feedback to complete the recipe. It allows users to upload their own recipes and interact with recipes created by other users, which enhance the cooking experience by incorporating this social aspect.
+Cooking is messy, and people like keeping their devices clean (and their food free of germs). Doof is an Android recipe app that provides a hands-free cooking experience through voice controlled, step-by-step recipe dictation. To enhance the cooking experience, Doof incorporates social media elements such as allowing users to upload their own recipes and interact with recipes created by other users.
 
 Time spent: 4 weeks
 
