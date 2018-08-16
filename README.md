@@ -3,6 +3,7 @@
 Cooking is messy, and people like keeping their devices clean (and their food free of germs). Doof is an Android app that offers the unique feature of a hands-free cooking experience through voice controlled, step by step audio feedback to complete the recipe. It allows users to upload their own recipes and interact with recipes created by other users, which enhance the cooking experience by incorporating this social aspect.
 
 Time spent: 4 weeks
+
 Built with: [Parse](https://parseplatform.org/), [PocketSphinx](https://github.com/cmusphinx/pocketsphinx), [Glide](https://github.com/bumptech/glide), [Konfetti](https://github.com/DanielMartinus/Konfetti), [ButterKnife](https://github.com/JakeWharton/butterknife)
 
 ## User Stories
