@@ -86,8 +86,10 @@ https://www.figma.com/file/XeCmflnw8JHiKel1N4hADTbL/AMarMigMon
 
 ## Video Walkthrough
 
-Here's a walkthrough of implemented user stories:
+Here's a walkthrough of implemented user stories. In the speech activity, instructions should be read aloud automatically upon pressing the begin button. The "next step" voice command is demonstrated below.
+
 ![Main Layout](walkthrough.gif)
+![Speech Activity](walkthrough1.gif)
 
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
