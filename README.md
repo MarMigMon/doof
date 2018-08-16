@@ -81,23 +81,16 @@ The following **stretch goals** are implemented:
 * [ ] Users can record each step themselves to upload audio.
 
 ## Wireframe
-![Home](Home.png) ![Details](Details.png)
-
 https://www.figma.com/file/XeCmflnw8JHiKel1N4hADTbL/AMarMigMon
 
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
-
+![Main Layout](walkthrough.gif)
 
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
-
-## Notes
-
-Describe any challenges encountered while building the app:
-
 
 ## Open-source libraries used
 
